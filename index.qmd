@@ -50,13 +50,9 @@ This website serves as a portfolio of my learning journey in geospatial analytic
 <div class="announcement-bar">
   <div class="announcement-content">
     🔔 <strong>NEW (4/05)</strong> – 
-    <a href="Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04a.html">Hands-on Exercise 4a</a> and 
-     <a href="Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04b.html">Hands-on Exercise 4b</a> and
-      <a href="Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04c.html">Hands-on Exercise 4c</a> and
-     <a href="Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04d.html">Hands-on Exercise 4d</a> are published!
+    <a href="Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01a.html">Hands-on Exercise 4a</a> and 
+     <a href="Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01b.html">Hands-on Exercise 4d</a> are published!
      
-    🔔 <strong>NEW (3/05)</strong> –     
-     <a href="Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html">Take-home Exercise 1</a> are published!
   </div>
 </div>
 
