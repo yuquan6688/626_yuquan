@@ -81,7 +81,7 @@ ul.task-list li input[type="checkbox"] {
     const options = {
       valueNames: ['listing-image','listing-title','listing-author','listing-date',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
       
-      searchColumns: [],
+      searchColumns: ["listing-title","listing-author","listing-date","listing-image","listing-description"],
     };
 
     window['quarto-listings'] = window['quarto-listings'] || {};
@@ -156,12 +156,12 @@ window.Quarto = {
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-hands-on-exercise">    
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html">
- <span class="dropdown-text">Hands-on Exercise 1</span></a>
+    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01a.html">
+ <span class="dropdown-text">Hands-on Exercise 1a</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html">
- <span class="dropdown-text">Hands-on Exercise 2</span></a>
+    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01b.html">
+ <span class="dropdown-text">Hands-on Exercise 1b</span></a>
   </li>  
     </ul>
   </li>
@@ -231,9 +231,9 @@ window.Quarto = {
 </header>
 
 
-<p>Welcome to Yuquan’s Visual Analytics Website!</p>
-<p>Here, you’ll find all the coursework I’ve completed for the ISSS608 Visual Analytics and Applications course, including Hands-on Exercises, In-Class Exercises, Take-home Exercises, and the Group Project.</p>
-<p>This website is a space where I document my learning journey, practice data visualization skills, and share project work throughout the course. Feel free to explore and see how my visual analytics adventure unfolds!</p>
+<p>Welcome to Yuquan’s Geospatial Analytics and Applications Website!</p>
+<p>Here, you’ll find all the coursework I’ve completed for the ISSS626 Geospatial Analytics and Applications course, including Hands-on Exercises, In-Class Exercises, Take-home Exercises, and the Group Project.</p>
+<p>This website serves as a portfolio of my learning journey in geospatial analytics, where I explore spatial data, apply GIS techniques, and practice visualization methods to uncover geographic patterns and insights. Feel free to browse through the exercises and projects to see how I apply geospatial methods to real-world problems!</p>
 <div style="display: flex; flex-wrap: wrap; justify-content: space-evenly;">
 <div class="card">
 <p><img src="images/homepage.png" alt="Hands-on Exercise" style="max-width: 550px; width: 100%; height: auto;"></p>
@@ -298,32 +298,52 @@ window.Quarto = {
   }
 }
 </style>
-<!-- 插入 SweetAlert2 弹窗-->
-<!-- 隐藏预加载图 -->
-<p><img src="images/tc.png" style="display:none;"></p>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-window.onload = function() {
-  Swal.fire({
-    imageUrl: 'images/tc.png',  
-    imageWidth: 600,                
-    imageHeight: 400,               
-    background: 'transparent',      
-    padding: '0px',                  
-    backdrop: true,                   
-    showConfirmButton: true,         
-    confirmButtonText: 'OK',          
-    confirmButtonColor: '#78C2AD'      
-  })
-}
-</script>
 
 
 
 
 <div class="quarto-listing quarto-listing-container-grid" id="listing-listing">
 <div class="list grid quarto-listing-cols-3">
-
+<div class="g-col-1" data-index="0" data-listing-date-sort="1756396800000" data-listing-file-modified-sort="1756522779916" data-listing-date-modified-sort="1756522779000" data-listing-reading-time-sort="22" data-listing-word-count-sort="4333">
+<a href="./Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01b.html" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<p class="card-img-top"><img src="Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01b_files/figure-html/unnamed-chunk-11-1.png" style="height: 150px;"  class="thumbnail-image card-img"/></p>
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Hand-on Exercise 1b — Introduction to Geospatial Analytics
+</h5>
+<div class="card-attribution card-text-small justify">
+<div class="listing-author">
+Li Yuquan
+</div>
+<div class="listing-date">
+Aug 29, 2025
+</div>
+</div>
+</div>
+</div>
+</a>
+</div>
+<div class="g-col-1" data-index="1" data-listing-date-sort="1756396800000" data-listing-file-modified-sort="1756629651796" data-listing-date-modified-sort="1756629651000" data-listing-reading-time-sort="14" data-listing-word-count-sort="2674">
+<a href="./Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01a.html" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<p class="card-img-top"><img src="Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01a_files/figure-html/unnamed-chunk-8-1.png" style="height: 150px;"  class="thumbnail-image card-img"/></p>
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Hands-on_Ex01a–Geospatial Data Wrangling with R
+</h5>
+<div class="card-attribution card-text-small justify">
+<div class="listing-author">
+Li Yuquan
+</div>
+<div class="listing-date">
+Aug 29, 2025
+</div>
+</div>
+</div>
+</div>
+</a>
+</div>
 </div>
 <div class="listing-no-matching d-none">
 No matching items
