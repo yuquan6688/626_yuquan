@@ -3,7 +3,7 @@ title: "Geospatial Analytics and Applications"
 format:
   html:
     includes:
-        in-header: ga.html
+        in-header:
     toc: false
     page-layout: full
     theme: minty
@@ -49,9 +49,9 @@ This website serves as a portfolio of my learning journey in geospatial analytic
 ```{=html}
 <div class="announcement-bar">
   <div class="announcement-content">
-    🔔 <strong>NEW (4/05)</strong> – 
-    <a href="Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01a.html">Hands-on Exercise 4a</a> and 
-     <a href="Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01b.html">Hands-on Exercise 4d</a> are published!
+    🔔 <strong>NEW (8/30)</strong> – 
+    <a href="Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01a.html">Hands-on Exercise 1a</a> and 
+     <a href="Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01b.html">Hands-on Exercise 1b</a> are published!
      
   </div>
 </div>
