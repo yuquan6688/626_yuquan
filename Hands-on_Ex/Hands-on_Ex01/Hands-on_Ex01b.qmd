@@ -340,6 +340,94 @@ tm_shape(mpsz_pop2024) +
 
 Notice that the distribution of quantile data classification method are more evenly distributed then equal data classification method.
 
+### DIY1
+
+```{r}
+# pretty 
+tm_shape(mpsz_pop2024) +
+  tm_polygons(fill = "DEPENDENCY",
+              fill.scale = tm_scale_intervals(style = "pretty", n = 5)) +
+  tm_borders(fill_alpha = 0.5)
+
+# equal 
+tm_shape(mpsz_pop2024) +
+  tm_polygons(fill = "DEPENDENCY",
+              fill.scale = tm_scale_intervals(style = "equal", n = 5)) +
+  tm_borders(fill_alpha = 0.5)
+
+# quantile 
+tm_shape(mpsz_pop2024) +
+  tm_polygons(fill = "DEPENDENCY",
+              fill.scale = tm_scale_intervals(style = "quantile", n = 5)) +
+  tm_borders(fill_alpha = 0.5)
+
+# sd 
+tm_shape(mpsz_pop2024) +
+  tm_polygons(fill = "DEPENDENCY",
+              fill.scale = tm_scale_intervals(style = "sd", n = 5)) +
+  tm_borders(fill_alpha = 0.5)
+
+# kmeans 
+tm_shape(mpsz_pop2024) +
+  tm_polygons(fill = "DEPENDENCY",
+              fill.scale = tm_scale_intervals(style = "kmeans", n = 5)) +
+  tm_borders(fill_alpha = 0.5)
+
+# hclust 
+tm_shape(mpsz_pop2024) +
+  tm_polygons(fill = "DEPENDENCY",
+              fill.scale = tm_scale_intervals(style = "hclust", n = 5)) +
+  tm_borders(fill_alpha = 0.5)
+
+# bclust 
+tm_shape(mpsz_pop2024) +
+  tm_polygons(fill = "DEPENDENCY",
+              fill.scale = tm_scale_intervals(style = "bclust", n = 5)) +
+  tm_borders(fill_alpha = 0.5)
+
+# fisher 
+tm_shape(mpsz_pop2024) +
+  tm_polygons(fill = "DEPENDENCY",
+              fill.scale = tm_scale_intervals(style = "fisher", n = 5)) +
+  tm_borders(fill_alpha = 0.5)
+
+# jenks 
+tm_shape(mpsz_pop2024) +
+  tm_polygons(fill = "DEPENDENCY",
+              fill.scale = tm_scale_intervals(style = "jenks", n = 5)) +
+  tm_borders(fill_alpha = 0.5)
+
+
+```
+
+### DIY2
+
+```{r}
+# n = 2
+tm_shape(mpsz_pop2024) +
+  tm_polygons(fill = "DEPENDENCY",
+              fill.scale = tm_scale_intervals(style = "quantile", n = 2)) +
+  tm_borders(fill_alpha = 0.5)
+
+# n = 6
+tm_shape(mpsz_pop2024) +
+  tm_polygons(fill = "DEPENDENCY",
+              fill.scale = tm_scale_intervals(style = "quantile", n = 6)) +
+  tm_borders(fill_alpha = 0.5)
+
+# n = 10
+tm_shape(mpsz_pop2024) +
+  tm_polygons(fill = "DEPENDENCY",
+              fill.scale = tm_scale_intervals(style = "quantile", n = 10)) +
+  tm_borders(fill_alpha = 0.5)
+
+# n = 20
+tm_shape(mpsz_pop2024) +
+  tm_polygons(fill = "DEPENDENCY",
+              fill.scale = tm_scale_intervals(style = "quantile", n = 20)) +
+  tm_borders(fill_alpha = 0.5)
+```
+
 ### 4.3.2 Plotting choropleth map with custome break
 
 For all the built-in styles, the category breaks are computed internally. In order to override these defaults, the breakpoints can be set explicitly by means of the `breaks` argument to the `tm_scale_intervals()`. It is important to note that, in **tmap** the breaks include a minimum and maximum. As a result, in order to end up with n categories, n+1 elements must be specified in the `breaks` option (the values must be in increasing order).
