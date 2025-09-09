@@ -1,0 +1,15 @@
+{
+  "hash": "fe058a2714682a7c2a67cef5764722ed",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Take-home Exercise 1\"\nauthor: \"Li Yuquan\"\ndescription: \"\"\ndate: \"September 7, 2025\"\ndate-modified: \"last-modified\"\nformat: html\neditor: visual\nexecute: \n  eval: true\n  echo: true\n  warning: false\n  freeze: true\n---\n\n\n\n# 1 Overview\n\n## 1.1 Objectives\n\n• Visualise spatio-temporal dynamics of road traffic accidents in BMR with appropriate statistical graphics and geovisualisation.\n\n• Conduct network Spatial Point Pattern Analysis (e.g., network intensity/density mapping, network K-functions, and black-spot detection) to examine spatial risk along the road network.\n\n• Conduct temporal-network SPPA (e.g., space–time interaction on networks; season/weekday/time-of-day effects) to identify how behavioral and environmental factors interact over time and space.\n\n# 2 The Data\n\n| **Dataset Name** | **Description** | **Format** | **Source** |\n|------------------|------------------|------------------|------------------|\n| Thailand Road Accident \\[2019-2022\\] | Data on road accidents in Thailand, including accident location and severity | CSV | [Kaggle](https://www.kaggle.com/datasets/thaweewatboy/thailand-road-accident-2019-2022) |\n| Thailand Roads (OpenStreetMap Export) | A detailed export of road networks in Thailand from OpenStreetMap | ESRI Shapefile | [Humanitarian Data Exchange (HDX)](https://data.humdata.org/dataset/hotosm_tha_roads) |\n| Thailand - Subnational Administrative Boundaries | Administrative boundary data for Thailand’s subnational divisions | ESRI Shapefile | [Humanitarian Data Exchange (HDX)](https://data.humdata.org/dataset/cod-ab-tha?) |\n\n# 3 R packages\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\npacman::p_load(sf, spNetwork, spatstat, raster, tmap, tidyverse, classInt, gifski,  spNetwork, sparr, RColorBrewer)\n```\n:::\n\n\n\n# 4 Data Import and Wrangling\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
