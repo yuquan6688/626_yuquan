@@ -17,19 +17,43 @@ execute:
 
 ## 1.1 Objectives
 
-• Visualise spatio-temporal dynamics of road traffic accidents in BMR with appropriate statistical graphics and geovisualisation.
+The location choices of businesses play a pivotal role in shaping urban development, influencing economic growth, job creation, and the provision of resources and services. Strategic siting not only creates competitive advantages and supports efficient supply chains, but also contributes to a city’s identity through specialized districts and accessible infrastructure.
 
-• Conduct network Spatial Point Pattern Analysis (e.g., network intensity/density mapping, network K-functions, and black-spot detection) to examine spatial risk along the road network.
+Studying the spatio-temporal patterns of new businesses is therefore essential, as it highlights how economic activity and urban forms evolve over time. Such analysis enables urban planners to anticipate growth, identify clusters and trends, improve resource allocation, and design more sustainable and livable cities.
 
-• Conduct temporal-network SPPA (e.g., space–time interaction on networks; season/weekday/time-of-day effects) to identify how behavioral and environmental factors interact over time and space.
+In this exercise, the focus is on new business entities established in Singapore during the first six months of 2025. The objectives are:
+
+• To analyze the “where” and “when” of new business establishments, uncovering spatial clusters, temporal trends, and development hotspots.
+
+• To explore complex interaction patterns beyond simple density measures, such as the clustering of related firms, path-dependency of business locations, and structural changes in commercial areas.
+
+## 1.2 The Task
+
+1.  Download ACRA (Accounting and Corporate Regulatory Authority) Information on Corporate Entities datasets from data.gov.sg.
+
+2.  Select at least three business types by referring to [2-digit or 3-digit Singapore Standard Industrial Classification (SSIS) 2020](https://classification.codes/classifications/industry/ssic-singapore). Prepare and tidy the data by applying appropriate data wrangling method.
+
+3.  Extract the selected business entities registered between 1st January 2024 to 30th June 2025.
+
+4.  Geocode the selected records and convert them into simple point features.
+
+5.  Compute spatial and spatio-temporal KDE of the selected business types.
+
+6.  Perform second order spatial and spatio-temporal analysis on the selected business types.
+
+7.  Describe and discuss the analysis results obtained from Step 5 and 6.
+
+8.  For each geovisualisation prepared, write a short report of not more than 150 words describing the spatio-temporal patterns revealed by the geovisualisation and statistical graphics.
+
+9.  With reference to the analysis results above, discuss how these findings can be used to support urban land use planning and management. (Not more than 500 words)
 
 # 2 The Data
 
 | **Dataset Name** | **Description** | **Format** | **Source** |
-|------------------|------------------|------------------|------------------|
-| Thailand Road Accident \[2019-2022\] | Data on road accidents in Thailand, including accident location and severity | CSV | [Kaggle](https://www.kaggle.com/datasets/thaweewatboy/thailand-road-accident-2019-2022) |
-| Thailand Roads (OpenStreetMap Export) | A detailed export of road networks in Thailand from OpenStreetMap | ESRI Shapefile | [Humanitarian Data Exchange (HDX)](https://data.humdata.org/dataset/hotosm_tha_roads) |
-| Thailand - Subnational Administrative Boundaries | Administrative boundary data for Thailand’s subnational divisions | ESRI Shapefile | [Humanitarian Data Exchange (HDX)](https://data.humdata.org/dataset/cod-ab-tha?) |
+|------------------|-----------------|------------|------------|
+|                  |                 |            |            |
+|                  |                 |            |            |
+|                  |                 |            |            |
 
 # 3 R packages
 

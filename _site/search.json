@@ -4,21 +4,21 @@
     "href": "Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html",
     "title": "Take-home Exercise 1",
     "section": "",
-    "text": "• Visualise spatio-temporal dynamics of road traffic accidents in BMR with appropriate statistical graphics and geovisualisation.\n• Conduct network Spatial Point Pattern Analysis (e.g., network intensity/density mapping, network K-functions, and black-spot detection) to examine spatial risk along the road network.\n• Conduct temporal-network SPPA (e.g., space–time interaction on networks; season/weekday/time-of-day effects) to identify how behavioral and environmental factors interact over time and space."
+    "text": "The location choices of businesses play a pivotal role in shaping urban development, influencing economic growth, job creation, and the provision of resources and services. Strategic siting not only creates competitive advantages and supports efficient supply chains, but also contributes to a city’s identity through specialized districts and accessible infrastructure.\nStudying the spatio-temporal patterns of new businesses is therefore essential, as it highlights how economic activity and urban forms evolve over time. Such analysis enables urban planners to anticipate growth, identify clusters and trends, improve resource allocation, and design more sustainable and livable cities.\nIn this exercise, the focus is on new business entities established in Singapore during the first six months of 2025. The objectives are:\n• To analyze the “where” and “when” of new business establishments, uncovering spatial clusters, temporal trends, and development hotspots.\n• To explore complex interaction patterns beyond simple density measures, such as the clustering of related firms, path-dependency of business locations, and structural changes in commercial areas."
   },
   {
     "objectID": "Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html#objectives",
     "href": "Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html#objectives",
     "title": "Take-home Exercise 1",
     "section": "",
-    "text": "• Visualise spatio-temporal dynamics of road traffic accidents in BMR with appropriate statistical graphics and geovisualisation.\n• Conduct network Spatial Point Pattern Analysis (e.g., network intensity/density mapping, network K-functions, and black-spot detection) to examine spatial risk along the road network.\n• Conduct temporal-network SPPA (e.g., space–time interaction on networks; season/weekday/time-of-day effects) to identify how behavioral and environmental factors interact over time and space."
+    "text": "The location choices of businesses play a pivotal role in shaping urban development, influencing economic growth, job creation, and the provision of resources and services. Strategic siting not only creates competitive advantages and supports efficient supply chains, but also contributes to a city’s identity through specialized districts and accessible infrastructure.\nStudying the spatio-temporal patterns of new businesses is therefore essential, as it highlights how economic activity and urban forms evolve over time. Such analysis enables urban planners to anticipate growth, identify clusters and trends, improve resource allocation, and design more sustainable and livable cities.\nIn this exercise, the focus is on new business entities established in Singapore during the first six months of 2025. The objectives are:\n• To analyze the “where” and “when” of new business establishments, uncovering spatial clusters, temporal trends, and development hotspots.\n• To explore complex interaction patterns beyond simple density measures, such as the clustering of related firms, path-dependency of business locations, and structural changes in commercial areas."
   },
   {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Geospatial Analytics and Applications",
     "section": "",
-    "text": "Welcome to Yuquan’s Geospatial Analytics and Applications Website!\nHere, you’ll find all the coursework I’ve completed for the ISSS626 Geospatial Analytics and Applications course, including Hands-on Exercises, In-Class Exercises, Take-home Exercises, and the Group Project.\nThis website serves as a portfolio of my learning journey in geospatial analytics, where I explore spatial data, apply GIS techniques, and practice visualization methods to uncover geographic patterns and insights. Feel free to browse through the exercises and projects to see how I apply geospatial methods to real-world problems!\n\n\n\n\n\n\n  \n    Last Post\n    \n      (You can see all the assignments through this link)\n    \n  \n\n\n  \n    🔔 NEW (8/30) – \n    Hands-on Exercise 1a and \n     Hands-on Exercise 1b are published!\n     \n  \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHand-on Exercise 3 — Spatio-Temporal Point Patterns Analysis\n\n\n\nLi Yuquan\n\n\nSep 9, 2025\n\n\n\n\n\n\n\n\n\n\n\n\nTake-home Exercise 1\n\n\n\nLi Yuquan\n\n\nSep 7, 2025\n\n\n\n\n\n\n\n\nNo matching items"
+    "text": "Welcome to Yuquan’s Geospatial Analytics and Applications Website!\nHere, you’ll find all the coursework I’ve completed for the ISSS626 Geospatial Analytics and Applications course, including Hands-on Exercises, In-Class Exercises, Take-home Exercises, and the Group Project.\nThis website serves as a portfolio of my learning journey in geospatial analytics, where I explore spatial data, apply GIS techniques, and practice visualization methods to uncover geographic patterns and insights. Feel free to browse through the exercises and projects to see how I apply geospatial methods to real-world problems!\n\n\n\n\n\n\n  \n    Last Post\n    \n      (You can see all the assignments through this link)\n    \n  \n\n\n  \n    🔔 NEW (8/30) – \n    Hands-on Exercise 1a and \n     Hands-on Exercise 1b are published!\n     \n  \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nIn-class Exercise 3: Interactive K-function\n\n\n\nLi Yuquan\n\n\nSep 13, 2025\n\n\n\n\n\n\n\n\n\n\n\n\nIn-class Exercise 3b\n\n\n\nLi Yuquan\n\n\nSep 13, 2025\n\n\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01b.html",
@@ -551,5 +551,75 @@
     "title": "Hand-on Exercise 3 — Spatio-Temporal Point Patterns Analysis",
     "section": "10.2 Plotting the output spatio-temporal KDE",
     "text": "10.2 Plotting the output spatio-temporal KDE\nLast, plot() of sparr package is used to plot the output as shown below.\n\nplot(kde_yday)"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex03/In-class_Ex03a.html",
+    "href": "In-class_Ex/In-class_Ex03/In-class_Ex03a.html",
+    "title": "In-class Exercise 3: Interactive K-function",
+    "section": "",
+    "text": "pacman::p_load(sf, terra, spatstat, \n               tmap, rvest, tidyverse,\n               ggthemes, plotly)\nchildcare_sf &lt;- read_rds(\"data/childcare_sf.rds\")\nchildcare_ppp &lt;- as.ppp(childcare_sf) %&gt;%\n  rjitter(retry = TRUE,\n          nsim = 1,\n          drop = TRUE)\npg &lt;- mpsz_cl %&gt;%\n  filter(PLN_AREA_N == \"PUNGGOL\")\ntm &lt;- mpsz_cl %&gt;%\n  filter(PLN_AREA_N == \"TAMPINES\")\nck &lt;- mpsz_cl %&gt;%\n  filter(PLN_AREA_N == \"CHOA CHU KANG\")\njw &lt;- mpsz_cl %&gt;%\n  filter(PLN_AREA_N == \"JURONG WEST\")\npg_owin = as.owin(pg)\ntm_owin = as.owin(tm)\nck_owin = as.owin(ck)\njw_owin = as.owin(jw)\nchildcare_pg_ppp = childcare_ppp[pg_owin]\nchildcare_tm_ppp = childcare_ppp[tm_owin]\nchildcare_ck_ppp = childcare_ppp[ck_owin]\nchildcare_jw_ppp = childcare_ppp[jw_owin]"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex03/In-class_Ex03a.html#building-an-interative-plot-with-ggplotly",
+    "href": "In-class_Ex/In-class_Ex03/In-class_Ex03a.html#building-an-interative-plot-with-ggplotly",
+    "title": "In-class Exercise 3: Interactive K-function",
+    "section": "Building an interative plot with ggplotly",
+    "text": "Building an interative plot with ggplotly\nThe previous code chunks uses plot() to visualise the envelopes of the second-order summary statistics (such as L-function). The output is a static plot, therefore it can be difficult to make accurate guesstimates of the statistics and the corresponding distance, r.\nThe below code chunk converts the output (which is in a list form) into a dataframe, which can be used to generate a similar plot using appropriate aesthetic mappings from ggplot package. Finally, ggplotly() is used to convert the ggplot into an interactive plotly visualisation.\nThe codes were referenced from a R-blogger article. Further modifications were made to enhance the user experience by customizing the tooltips for greater clarity and intuition.\n\ntitle &lt;- \"Pairwise Distance: L function\"\n\nLcsr_df &lt;- as.data.frame(L_tm.csr)\n\ncolour=c(\"#0D657D\",\"#ee770d\",\"#D3D3D3\")\ncsr_plot &lt;- ggplot(Lcsr_df, aes(r, obs-r))+\n  # plot observed value\n  geom_line(colour=c(\"#4d4d4d\"))+\n  geom_line(aes(r,theo-r), colour=\"red\", linetype = \"dashed\")+\n  # plot simulation envelopes\n  geom_ribbon(aes(ymin=lo-r,ymax=hi-r),alpha=0.1, colour=c(\"#91bfdb\")) +\n  xlab(\"Distance r (m)\") +\n  ylab(\"L(r)-r\") +\n  geom_rug(data=Lcsr_df[Lcsr_df$obs &gt; Lcsr_df$hi,], sides=\"b\", colour=colour[1])  +\n  geom_rug(data=Lcsr_df[Lcsr_df$obs &lt; Lcsr_df$lo,], sides=\"b\", colour=colour[2]) +\n  geom_rug(data=Lcsr_df[Lcsr_df$obs &gt;= Lcsr_df$lo & Lcsr_df$obs &lt;= Lcsr_df$hi,], sides=\"b\", color=colour[3]) +\n  theme_tufte()+\n  ggtitle(title)\n\ntext1&lt;-\"Significant clustering\"\ntext2&lt;-\"Significant segregation\"\ntext3&lt;-\"Not significant clustering/segregation\"\n\n# the below conditional statement is required to ensure that the labels (text1/2/3) are assigned to the correct traces\nif (nrow(Lcsr_df[Lcsr_df$obs &gt; Lcsr_df$hi,])==0){ \n  if (nrow(Lcsr_df[Lcsr_df$obs &lt; Lcsr_df$lo,])==0){ \n    ggplotly(csr_plot, dynamicTicks=T) %&gt;%\n      style(text = text3, traces = 4) %&gt;%\n      rangeslider() \n  }else if (nrow(Lcsr_df[Lcsr_df$obs &gt;= Lcsr_df$lo & Lcsr_df$obs &lt;= Lcsr_df$hi,])==0){ \n    ggplotly(csr_plot, dynamicTicks=T) %&gt;%\n      style(text = text2, traces = 4) %&gt;%\n      rangeslider() \n  }else {\n    ggplotly(csr_plot, dynamicTicks=T) %&gt;%\n      style(text = text2, traces = 4) %&gt;%\n      style(text = text3, traces = 5) %&gt;%\n      rangeslider() \n  }\n} else if (nrow(Lcsr_df[Lcsr_df$obs &lt; Lcsr_df$lo,])==0){\n  if (nrow(Lcsr_df[Lcsr_df$obs &gt;= Lcsr_df$lo & Lcsr_df$obs &lt;= Lcsr_df$hi,])==0){\n    ggplotly(csr_plot, dynamicTicks=T) %&gt;%\n      style(text = text1, traces = 4) %&gt;%\n      rangeslider() \n  } else{\n    ggplotly(csr_plot, dynamicTicks=T) %&gt;%\n      style(text = text1, traces = 4) %&gt;%\n      style(text = text3, traces = 5) %&gt;%\n      rangeslider()\n  }\n} else{\n  ggplotly(csr_plot, dynamicTicks=T) %&gt;%\n    style(text = text1, traces = 4) %&gt;%\n    style(text = text2, traces = 5) %&gt;%\n    style(text = text3, traces = 6) %&gt;%\n    rangeslider()\n  }\n\n\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nThe main features of the above visualisation:\n\nThe observed and theoretical values of L(r)-r (including the upper and lower curves of the simulated envelope) can be found in the tooltip upon hovering the cursor over the geometry layers.\nThe range slider below the plot enables users to pan and zoom in to a specific range of distance.\nThe colored bands at the bottom of the line graph gives a clearer indication of significant or insignificant spatial segregation/ clustering at distance r. Dark green bands indicate significant clustering, orange indicate significant segregation, while grey indicates insignificant clustering/segregation.\nTooltips were added to provide color legend information."
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex03/In-class_Ex3b.html",
+    "href": "In-class_Ex/In-class_Ex03/In-class_Ex3b.html",
+    "title": "In-class Exercise 3b",
+    "section": "",
+    "text": "##Loading the R packages\npacman::p_load(tidyverse, sf, tmap, httr)"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex03/In-class_Ex3b.html#importing-acra-data",
+    "href": "In-class_Ex/In-class_Ex03/In-class_Ex3b.html#importing-acra-data",
+    "title": "In-class Exercise 3b",
+    "section": "Importing ACRA data",
+    "text": "Importing ACRA data\n\nfolder_path &lt;- \"data/aspatial\"\nfile_list &lt;- list.files(path = folder_path,\n                        pattern = \"^ACRA*.*\\\\.csv$\",\n                        full.names = TRUE)\n\nacra_data &lt;- file_list %&gt;%\n  map_dfr(read_csv)"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex03/In-class_Ex3b.html#saving-acra-data",
+    "href": "In-class_Ex/In-class_Ex03/In-class_Ex3b.html#saving-acra-data",
+    "title": "In-class Exercise 3b",
+    "section": "Saving ACRA data",
+    "text": "Saving ACRA data\n\nwrite_rds(acra_data,\n          \"data/rds/acra_data.rds\")"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex03/In-class_Ex3b.html#tidying-acra-data",
+    "href": "In-class_Ex/In-class_Ex03/In-class_Ex3b.html#tidying-acra-data",
+    "title": "In-class Exercise 3b",
+    "section": "Tidying ACRA data",
+    "text": "Tidying ACRA data\n\nbiz_56111 &lt;- acra_data %&gt;%\n  select(1:24) %&gt;%\n  filter(primary_ssic_code == 56111) %&gt;%\n  rename(date = registration_incorporation_date) %&gt;%\n  mutate(date = as.Date(date),\n         YEAR = year(date),\n         MONTH_NUM = month(date),\n         MONTH_ABBR = month(date,\n                            label = TRUE,\n                            abbr = TRUE)) %&gt;%\n  mutate(\n    postal_code = str_pad(postal_code, \n    width = 6, side = \"left\", pad = \"0\")) %&gt;% \n           filter(YEAR == 2025)"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex03/In-class_Ex3b.html#geocoding",
+    "href": "In-class_Ex/In-class_Ex03/In-class_Ex3b.html#geocoding",
+    "title": "In-class Exercise 3b",
+    "section": "Geocoding",
+    "text": "Geocoding\n\npostcodes &lt;- unique(biz_56111$postal_code)\n\nurl &lt;- \"https://onemap.gov.sg/api/common/elastic/search\"\n\nfound &lt;- data.frame()\nnot_found &lt;- data.frame(postcode = character())\n\nfor (pc in postcodes) {\n  query &lt;- list(\n    searchVal = pc,\n    returnGeom = \"Y\",\n    getAddrDetails = \"Y\",\n    pageNum = \"1\"\n  )\n\n  res &lt;- GET(url, query = query)\n  json &lt;- content(res)\n  \n  if (json$found != 0) {\n    df &lt;- as.data.frame(json$results, stringsAsFactors = FALSE)\n    df$input_postcode &lt;- pc\n    found &lt;- bind_rows(found, df)\n  } else {\n    not_found &lt;- bind_rows(not_found, data.frame(postcode = pc))\n  }\n}"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex03/In-class_Ex3b.html#tidying-the-geocoded-data",
+    "href": "In-class_Ex/In-class_Ex03/In-class_Ex3b.html#tidying-the-geocoded-data",
+    "title": "In-class Exercise 3b",
+    "section": "Tidying the geocoded data",
+    "text": "Tidying the geocoded data"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex03/In-class_Ex3b.html#appending-the-location-information",
+    "href": "In-class_Ex/In-class_Ex03/In-class_Ex3b.html#appending-the-location-information",
+    "title": "In-class Exercise 3b",
+    "section": "Appending the location information",
+    "text": "Appending the location information\n\nbiz_56111 = biz_56111 %&gt;%\n  left_join(found,\n            by = c('postal_code' = 'POSTAL'))"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex03/In-class_Ex3b.html#converting-into-sf-data-frame",
+    "href": "In-class_Ex/In-class_Ex03/In-class_Ex3b.html#converting-into-sf-data-frame",
+    "title": "In-class Exercise 3b",
+    "section": "Converting into SF data frame",
+    "text": "Converting into SF data frame\n\nbiz_56111_sf &lt;- st_as_sf(biz_56111,\n                         coords = c(\"X\", \"Y\"),\n                         crs = 3414)"
   }
 ]
