@@ -2,7 +2,7 @@
 title: "Take-home Exercise 1"
 author: "Li Yuquan"
 description: ""
-date: "September 7, 2025"
+date: "September 15, 2025"
 date-modified: "last-modified"
 format: html
 editor: visual
@@ -58,7 +58,214 @@ In this exercise, the focus is on new business entities established in Singapore
 # 3 R packages
 
 ```{r}
-pacman::p_load(sf, spNetwork, spatstat, raster, tmap, tidyverse, classInt, gifski,  spNetwork, sparr, RColorBrewer)
+pacman::p_load(sf, spNetwork, spatstat, raster, tmap, tidyverse, classInt, gifski,  spNetwork, sparr, RColorBrewer, httr)
 ```
 
 # 4 Data Import and Wrangling
+
+## 4.1 Importing ACRA data
+
+```{r setup_data, eval=TRUE}
+folder_path <- "data/aspatial"
+file_list <- list.files(path = folder_path,
+                        pattern = "^ACRA*.*\\.csv$",
+                        full.names = TRUE)
+
+acra_data <- file_list %>%
+  map_dfr(read_csv)
+```
+
+## 4.2 Saving ACRA data
+
+```{r}
+write_rds(acra_data,
+          "data/rds/acra_data.rds")
+```
+
+## 4.3 Tidying ACRA data
+
+```{r}
+ssic_vec <- c("86201", "86202", "47722", "47723", "93111")
+
+acra_core <- acra_data %>%
+  select(1:24) %>% 
+  mutate(
+    primary_ssic_code = as.character(primary_ssic_code),
+    date  = as.Date(registration_incorporation_date),
+    YEAR  = year(date),
+    MONTH_NUM  = month(date),
+    MONTH_ABBR = month(date, label = TRUE, abbr = TRUE)
+  ) %>%
+  filter(
+    date >= as.Date("2024-01-01"),
+    date <= as.Date("2025-06-30"),
+    primary_ssic_code %in% ssic_vec
+  ) %>%
+  mutate(
+    postal_code = str_pad(postal_code, width = 6, side = "left", pad = "0")
+  )
+
+# 合并后的三类数据框
+biz_clinic  <- acra_core %>% filter(primary_ssic_code %in% c("86201", "86202"))
+biz_pharma  <- acra_core %>% filter(primary_ssic_code %in% c("47722", "47723"))
+biz_fitness <- acra_core %>% filter(primary_ssic_code == "93111")
+```
+
+## 4.4 Geocoding
+
+```{r}
+postcodes <- c(biz_clinic$postal_code,
+               biz_pharma$postal_code,
+               biz_fitness$postal_code) %>%
+  unique() %>%
+  na.omit()
+
+url <- "https://onemap.gov.sg/api/common/elastic/search"
+
+found     <- data.frame()
+not_found <- data.frame(postcode = character())
+
+for (pc in postcodes) {
+  query <- list(
+    searchVal = pc,
+    returnGeom = "Y",
+    getAddrDetails = "Y",
+    pageNum = "1"
+  )
+  res  <- GET(url, query = query)
+  json <- content(res)
+  
+  if (!is.null(json$found) && json$found != 0) {
+    df <- as.data.frame(json$results, stringsAsFactors = FALSE)
+    df$input_postcode <- pc
+    found <- bind_rows(found, df)
+  } else {
+    not_found <- bind_rows(not_found, data.frame(postcode = pc))
+  }
+ 
+}
+```
+
+## 4.5 Tidying the geocoded data
+
+```{r}
+found <- found %>%
+  select(1:10)
+```
+
+## Appending the location information
+
+```{r}
+biz_clinic  <- biz_clinic  %>% left_join(found, by = c("postal_code" = "POSTAL"))
+biz_pharma  <- biz_pharma  %>% left_join(found, by = c("postal_code" = "POSTAL"))
+biz_fitness <- biz_fitness %>% left_join(found, by = c("postal_code" = "POSTAL"))
+```
+
+## Converting into SF data frame
+
+```{r}
+biz_clinic_sf <- st_as_sf(
+  biz_clinic %>% filter(!is.na(X), !is.na(Y)),
+  coords = c("X","Y"), crs = 3414
+)
+
+biz_pharma_sf <- st_as_sf(
+  biz_pharma %>% filter(!is.na(X), !is.na(Y)),
+  coords = c("X","Y"), crs = 3414
+)
+
+biz_fitness_sf <- st_as_sf(
+  biz_fitness %>% filter(!is.na(X), !is.na(Y)),
+  coords = c("X","Y"), crs = 3414
+)
+```
+
+## Visualising the distribution
+
+```{r}
+# Clinics
+ggplot(biz_clinic, aes(x = MONTH_ABBR)) +
+  geom_bar() +
+  facet_wrap(~ YEAR, ncol = 2) +
+  labs(title = "Monthly Count of New Clinics (86201 & 86202), 2024–2025",
+       x = "Month", y = "Count")
+
+# Pharmacies
+ggplot(biz_pharma, aes(x = MONTH_ABBR)) +
+  geom_bar() +
+  facet_wrap(~ YEAR, ncol = 2) +
+  labs(title = "Monthly Count of New Pharmacies (47722 & 47723), 2024–2025",
+       x = "Month", y = "Count")
+
+# Fitness centres
+ggplot(biz_fitness, aes(x = MONTH_ABBR)) +
+  geom_bar() +
+  facet_wrap(~ YEAR, ncol = 2) +
+  labs(title = "Monthly Count of New Fitness Centres (93111), 2024–2025",
+       x = "Month", y = "Count")
+```
+
+## Visualising the business
+
+```{r}
+tmap_mode("view")
+```
+
+```{r}
+# Clinics
+tm_shape(biz_clinic_sf) +
+  tm_dots(col = "blue", alpha = 0.7, size = 0.06) +
+  tm_view(set.view = c(103.851959, 1.290270, 11)) +
+  tm_layout(title = "Locations of New Clinics (86201 & 86202)")
+
+```
+
+```{r}
+# Pharmacies
+tm_shape(biz_pharma_sf) +
+  tm_dots(col = "red", alpha = 0.7, size = 0.3) +
+  tm_view(set.view = c(103.851959, 1.290270, 11)) +
+  tm_layout(title = "Locations of New Pharmacies (47722 & 47723)")
+```
+
+```{r}
+# Fitness centres
+tm_shape(biz_fitness_sf) +
+  tm_dots(col = "green", alpha = 0.7, size = 0.3) +
+  tm_view(set.view = c(103.851959, 1.290270, 11)) +
+  tm_layout(title = "Locations of New Fitness Centres (93111)")
+```
+
+```{r}
+tmap_mode("plot")
+```
+
+
+```{r}
+#ppp
+clinic_ppp <- as.ppp(biz_clinic_sf)
+```
+
+```{r}
+class(clinic_ppp)
+```
+
+```{r}
+summary(clinic_ppp)
+```
+
+
+
+## owin
+
+```{r}
+sg_owin <- as.owin(acra_data)
+```
+
+```{r}
+class(acra_data)
+```
+
+```{r}
+plot(acra_data)
+```
