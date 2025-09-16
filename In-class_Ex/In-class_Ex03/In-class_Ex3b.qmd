@@ -90,6 +90,11 @@ for (pc in postcodes) {
 
 ## Tidying the geocoded data
 
+```{r}
+found <- found %>%
+  select(1:10)
+```
+
 ## Appending the location information
 
 ```{r}
@@ -98,10 +103,32 @@ biz_56111 = biz_56111 %>%
             by = c('postal_code' = 'POSTAL'))
 ```
 
+## Saving Data
+
+```{r}
+write_rds(biz_56111, "data/rds/biz_56111.rds")
+```
+
 ## Converting into SF data frame
 
 ```{r}
 biz_56111_sf <- st_as_sf(biz_56111,
                          coords = c("X", "Y"),
                          crs = 3414)
+```
+
+## Visualising the distribution
+
+```{r}
+ggplot(data = biz_56111,
+       aes(x = MONTH_ABBR)) +
+  geom_bar()
+```
+
+## Visualising the business
+
+```{r}
+tmap_mode('view')
+tm_shape(biz_56111_sf)+
+  tm_dots()
 ```
