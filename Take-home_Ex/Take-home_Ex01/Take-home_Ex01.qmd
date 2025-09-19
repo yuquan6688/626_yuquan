@@ -58,14 +58,15 @@ In this exercise, the focus is on new business entities established in Singapore
 # 3 R packages
 
 ```{r}
-pacman::p_load(sf, spNetwork, spatstat, raster, tmap, tidyverse, classInt, gifski,  spNetwork, sparr, RColorBrewer, httr)
+pacman::p_load(sf, spNetwork, spatstat, raster, tmap, tidyverse, classInt, gifski,  spNetwork, sparr, RColorBrewer, httr, rvest, terra, lwgeom)
 ```
 
 # 4 Data Import and Wrangling
 
 ## 4.1 Importing ACRA data
 
-```{r setup_data, eval=TRUE}
+```{r}
+
 folder_path <- "data/aspatial"
 file_list <- list.files(path = folder_path,
                         pattern = "^ACRA*.*\\.csv$",
@@ -85,7 +86,7 @@ write_rds(acra_data,
 ## 4.3 Tidying ACRA data
 
 ```{r}
-ssic_vec <- c("86201", "86202", "47722", "47723", "93111")
+ssic_vec <- c("86201", "86202", "96024", "93111")
 
 acra_core <- acra_data %>%
   select(1:24) %>% 
@@ -105,9 +106,9 @@ acra_core <- acra_data %>%
     postal_code = str_pad(postal_code, width = 6, side = "left", pad = "0")
   )
 
-# 合并后的三类数据框
+
 biz_clinic  <- acra_core %>% filter(primary_ssic_code %in% c("86201", "86202"))
-biz_pharma  <- acra_core %>% filter(primary_ssic_code %in% c("47722", "47723"))
+biz_Massage  <- acra_core %>% filter(primary_ssic_code %in% c("96024"))
 biz_fitness <- acra_core %>% filter(primary_ssic_code == "93111")
 ```
 
@@ -115,7 +116,7 @@ biz_fitness <- acra_core %>% filter(primary_ssic_code == "93111")
 
 ```{r}
 postcodes <- c(biz_clinic$postal_code,
-               biz_pharma$postal_code,
+               biz_Massage$postal_code,
                biz_fitness$postal_code) %>%
   unique() %>%
   na.omit()
@@ -157,8 +158,14 @@ found <- found %>%
 
 ```{r}
 biz_clinic  <- biz_clinic  %>% left_join(found, by = c("postal_code" = "POSTAL"))
-biz_pharma  <- biz_pharma  %>% left_join(found, by = c("postal_code" = "POSTAL"))
+biz_Massage  <- biz_Massage  %>% left_join(found, by = c("postal_code" = "POSTAL"))
 biz_fitness <- biz_fitness %>% left_join(found, by = c("postal_code" = "POSTAL"))
+```
+
+```{r}
+write_rds(biz_clinic, "data/rds/biz_clinic.rds")
+write_rds(biz_Massage, "data/rds/Massage.rds")
+write_rds(biz_fitness, "data/rds/biz_fitness.rds")
 ```
 
 ## Converting into SF data frame
@@ -169,8 +176,8 @@ biz_clinic_sf <- st_as_sf(
   coords = c("X","Y"), crs = 3414
 )
 
-biz_pharma_sf <- st_as_sf(
-  biz_pharma %>% filter(!is.na(X), !is.na(Y)),
+biz_Massage_sf <- st_as_sf(
+  biz_Massage %>% filter(!is.na(X), !is.na(Y)),
   coords = c("X","Y"), crs = 3414
 )
 
@@ -187,21 +194,21 @@ biz_fitness_sf <- st_as_sf(
 ggplot(biz_clinic, aes(x = MONTH_ABBR)) +
   geom_bar() +
   facet_wrap(~ YEAR, ncol = 2) +
-  labs(title = "Monthly Count of New Clinics (86201 & 86202), 2024–2025",
+  labs(title = "Monthly Count of New Clinics, 2024–2025",
        x = "Month", y = "Count")
 
-# Pharmacies
-ggplot(biz_pharma, aes(x = MONTH_ABBR)) +
+# Massage
+ggplot(biz_Massage, aes(x = MONTH_ABBR)) +
   geom_bar() +
   facet_wrap(~ YEAR, ncol = 2) +
-  labs(title = "Monthly Count of New Pharmacies (47722 & 47723), 2024–2025",
+  labs(title = "Monthly Count of New Massage, 2024–2025",
        x = "Month", y = "Count")
 
 # Fitness centres
 ggplot(biz_fitness, aes(x = MONTH_ABBR)) +
   geom_bar() +
   facet_wrap(~ YEAR, ncol = 2) +
-  labs(title = "Monthly Count of New Fitness Centres (93111), 2024–2025",
+  labs(title = "Monthly Count of New Fitness Centres , 2024–2025",
        x = "Month", y = "Count")
 ```
 
@@ -216,16 +223,16 @@ tmap_mode("view")
 tm_shape(biz_clinic_sf) +
   tm_dots(col = "blue", alpha = 0.7, size = 0.06) +
   tm_view(set.view = c(103.851959, 1.290270, 11)) +
-  tm_layout(title = "Locations of New Clinics (86201 & 86202)")
+  tm_layout(title = "Locations of New Clinics")
 
 ```
 
 ```{r}
-# Pharmacies
-tm_shape(biz_pharma_sf) +
+# Massage
+tm_shape(biz_Massage_sf) +
   tm_dots(col = "red", alpha = 0.7, size = 0.3) +
   tm_view(set.view = c(103.851959, 1.290270, 11)) +
-  tm_layout(title = "Locations of New Pharmacies (47722 & 47723)")
+  tm_layout(title = "Locations of New Massage")
 ```
 
 ```{r}
@@ -233,39 +240,909 @@ tm_shape(biz_pharma_sf) +
 tm_shape(biz_fitness_sf) +
   tm_dots(col = "green", alpha = 0.7, size = 0.3) +
   tm_view(set.view = c(103.851959, 1.290270, 11)) +
-  tm_layout(title = "Locations of New Fitness Centres (93111)")
+  tm_layout(title = "Locations of New Fitness Centres")
+```
+
+```{r}
+biz_clinic_sf  <- biz_clinic_sf  %>% mutate(type = "Clinic")
+biz_Massage_sf <- biz_Massage_sf %>% mutate(type = "Massage")
+biz_fitness_sf <- biz_fitness_sf %>% mutate(type = "Fitness")
+
+biz_all_sf <- rbind(biz_clinic_sf, biz_Massage_sf, biz_fitness_sf)
+
+tmap_mode("view")
+
+tm_shape(biz_all_sf) +
+  tm_dots(col = "type", palette = c("blue","red","green"),
+          alpha = 0.7, size = 0.2, legend.show = TRUE) +
+  tm_view(set.view = c(103.851959, 1.290270, 11)) +
+  tm_layout(title = "Locations of Clinics, Massage and Fitness Centres",
+            legend.outside = TRUE)
 ```
 
 ```{r}
 tmap_mode("plot")
 ```
 
+## import map
 
 ```{r}
-#ppp
-clinic_ppp <- as.ppp(biz_clinic_sf)
+mpsz <- st_read("data/MasterPlan2019SubzoneBoundaryNoSeaKML.kml")
 ```
 
 ```{r}
+mpsz <- mpsz %>% st_transform(crs=3414)
+```
+
+```{r}
+write_rds(mpsz, "data/rds/mpsz.rds")
+```
+
+## overview for SinMap
+```{r}
+tmap_style("natural")
+tm_shape(mpsz) +
+  tm_fill("lightgreen", title = "Singapore Boundary") +
+  tm_borders(alpha = 0.5) +
+  tm_layout(main.title = "Map of Singapore",
+            main.title.position = "center",
+            main.title.size = 1.0,
+            legend.height = 0.35, 
+            legend.width = 0.35,
+            frame = TRUE) +
+  tm_compass(type="8star", size = 2) +
+  tm_scale_bar() +
+  tm_grid(alpha = 0.2)
+```
+
+```{r}
+extract_kml_field <- function(html_text, field_name) {
+  if (is.na(html_text) || html_text == "") return(NA_character_)
+  
+  page <- read_html(html_text)
+  rows <- page %>% html_elements("tr")
+  
+  value <- rows %>%
+    keep(~ html_text2(html_element(.x, "th")) == field_name) %>%
+    html_element("td") %>%
+    html_text2()
+  
+  if (length(value) == 0) NA_character_ else value
+}
+
+mpsz <- mpsz %>%
+  mutate(
+    REGION_N = map_chr(Description, extract_kml_field, "REGION_N"),
+    PLN_AREA_N = map_chr(Description, extract_kml_field, "PLN_AREA_N"),
+    SUBZONE_N = map_chr(Description, extract_kml_field, "SUBZONE_N"),
+    SUBZONE_C = map_chr(Description, extract_kml_field, "SUBZONE_C")
+  ) %>%
+  select(-Name, -Description) %>%
+  relocate(geometry, .after = last_col())
+```
+
+```{r}
+glimpse(mpsz)
+```
+
+## glimpse 3 industry
+:::panel-tabset
+
+# Clinics
+
+
+```{r}
+glimpse(biz_clinic_sf)
+```
+
+# Massage
+
+
+```{r}
+glimpse(biz_Massage_sf)
+```
+
+# Fitness Centres
+
+
+```{r}
+glimpse(biz_fitness_sf)
+```
+
+:::
+
+## overview for 3 industry
+
+:::panel-tabset
+
+# Clinics
+
+
+```{r}
+qtm(biz_clinic_sf)
+```
+
+# Massage
+
+
+```{r}
+qtm(biz_Massage_sf)
+```
+
+# Fitness Centres
+
+
+```{r}
+qtm(biz_fitness_sf)
+```
+
+:::
+
+## region overview for 3 industry
+
+
+:::panel-tabset
+
+# Clinics
+
+
+```{r}
+tm_shape(mpsz) +
+  tm_polygons("REGION_N", alpha = 0.3) +
+tm_shape(biz_clinic_sf) +
+  tm_dots(col = "blue", size = 0.05, popup.vars = c("entity_name", "ADDRESS"))
+```
+
+# Massage
+
+
+```{r}
+tm_shape(mpsz) +
+  tm_polygons("REGION_N", alpha = 0.3) +
+tm_shape(biz_Massage_sf) +
+  tm_dots(col = "blue", size = 0.05, popup.vars = c("entity_name", "ADDRESS"))
+```
+
+# Fitness Centres
+
+
+```{r}
+tm_shape(mpsz) +
+  tm_polygons("REGION_N", alpha = 0.3) +
+tm_shape(biz_fitness_sf) +
+  tm_dots(col = "blue", size = 0.05, popup.vars = c("entity_name", "ADDRESS"))
+```
+
+:::
+
+
+## choropleth map
+
+
+
+
+```{r}
+mpsz <- st_zm(mpsz, drop = TRUE)     
+mpsz <- st_make_valid(mpsz)          
+mpsz <- st_collection_extract(mpsz, "POLYGON")
+mpsz <- st_cast(mpsz, "MULTIPOLYGON", warn = FALSE)
+mpsz <- st_transform(mpsz, 3414)     
+stopifnot(all(st_is_valid(mpsz)))
+```
+
+
+
+:::panel-tabset
+
+# Clinics
+
+
+```{r}
+clinic_with_zone <- st_join(biz_clinic_sf, mpsz, join = st_within)
+
+clinic_count <- clinic_with_zone %>%
+  st_drop_geometry() %>%
+  group_by(SUBZONE_N) %>%
+  summarise(count = n())
+
+mpsz_clinic <- mpsz %>%
+  left_join(clinic_count, by = "SUBZONE_N")
+
+tm_shape(mpsz_clinic) +
+  tm_polygons("count", palette = "Blues", title = "Clinics") +
+tm_shape(biz_clinic_sf) +
+  tm_dots(col = "blue", size = 0.05)
+```
+
+# Massage
+
+
+```{r}
+massage_with_zone <- st_join(biz_Massage_sf, mpsz, join = st_within)
+
+massage_count <- massage_with_zone %>%
+  st_drop_geometry() %>%
+  group_by(SUBZONE_N) %>%
+  summarise(count = n())
+
+mpsz_massage <- mpsz %>%
+  left_join(massage_count, by = "SUBZONE_N")
+
+tm_shape(mpsz_massage) +
+  tm_polygons("count", palette = "Blues", title = "Massage") +
+tm_shape(biz_Massage_sf) +
+  tm_dots(col = "red", size = 0.05)
+```
+
+# Fitness Centres
+
+
+```{r}
+fitness_with_zone <- st_join(biz_fitness_sf, mpsz, join = st_within)
+
+fitness_count <- fitness_with_zone %>%
+  st_drop_geometry() %>%
+  group_by(SUBZONE_N) %>%
+  summarise(count = n())
+
+mpsz_fitness <- mpsz %>%
+  left_join(fitness_count, by = "SUBZONE_N")
+
+tm_shape(mpsz_fitness) +
+  tm_polygons("count", palette = "Blues", title = "Fitness Businesses") +
+tm_shape(biz_fitness_sf) +
+  tm_dots(col = "red", size = 0.05)
+```
+
+:::
+
+## Creating owin object
+
+```{r}
+sg_owin <- as.owin(mpsz)
+```
+
+```{r}
+class(sg_owin)
+```
+
+```{r}
+plot(sg_owin)
+```
+
+
+## Converting sf data frames to ppp class
+
+
+:::panel-tabset
+
+# Clinics
+
+
+```{r}
+clinic_ppp <- as.ppp(biz_clinic_sf)
 class(clinic_ppp)
 ```
 
+# Massage
+
+
 ```{r}
-summary(clinic_ppp)
+Massage_ppp <- as.ppp(biz_Massage_sf)
+class(Massage_ppp)
+```
+
+# Fitness Centres
+
+
+```{r}
+fitness_ppp <- as.ppp(biz_fitness_sf)
+class(fitness_ppp)
+```
+
+:::
+
+## Combining point events object and owin object
+
+:::panel-tabset
+
+# Clinics
+
+```{r}
+clinic_ppp = clinic_ppp[sg_owin]
+```
+
+```{r}
+clinic_ppp
+```
+
+# Massage
+
+
+```{r}
+Massage_ppp = Massage_ppp[sg_owin]
+```
+
+```{r}
+Massage_ppp
+```
+
+# Fitness Centres
+
+
+```{r}
+fit_ppp = fitness_ppp[sg_owin]
+```
+
+```{r}
+fit_ppp
+```
+
+:::
+
+## Clark-Evan Test for Nearest Neighbour Analysis
+
+Nearest Neighbor Analysis (NNA) is a spatial statistics method that calculates the average distance between each point and its closest neighbor to determine if a pattern of points is clustered, dispersed, or randomly distributed.
+
+Clark-Evans test is a specific statistical method used within NNA to quantify whether a point pattern is clustered, random, or uniformly spaced, using the Clark-Evans aggregation index (R) to describe this pattern. NNA provides a numerical value that describes the degree of clustering or regularity, and the Clark-Evans test calculates a specific index (R) for this purpose.
+
+
+
+:::panel-tabset
+
+# Clinics
+假设检验
+
+```{r}
+clarkevans.test(clinic_ppp,
+                correction="none",
+                clipregion="sg_owin",
+                alternative=c("clustered"))
+```
+
+
+# Massage
+
+```{r}
+clarkevans.test(Massage_ppp,
+                correction="none",
+                clipregion="sg_owin",
+                alternative=c("clustered"))
+```
+
+
+# Fitness Centres
+
+
+```{r}
+clarkevans.test(fit_ppp,
+                correction="none",
+                clipregion="sg_owin",
+                alternative=c("clustered"))
+```
+:::
+
+## Kernel Density Estimation Method
+
+Kernel Density Estimation (KDE) is a valuable tool for visualising and analyzing first-order spatial point patterns. It is widely considered a method within Exploratory Spatial Data Analysis (ESDA) because it’s used to visualize and understand spatial data patterns by transforms discrete point data (like locations of childcare service, crime incidents or disease cases) into continuous density surfaces that reveal clusters and variations in event occurrences, without making prior assumptions about data distribution. It helps to begin understanding data distribution, identify hotspots, and explore relationships between spatial variables before performing more rigorous analysis.
+
+### automatic bandwidth selection method
+
+
+
+:::panel-tabset
+
+# Clinics
+
+
+```{r}
+clinic_ppp_km <- rescale.ppp(
+  clinic_ppp, 1000, "km")
+
+kde_clinic_diggle_km <- density(clinic_ppp_km,
+                                sigma = bw.diggle,
+                                edge = TRUE,
+                                kernel = "gaussian")
+
+plot(kde_clinic_diggle_km, main = "Clinic KDE (bw.diggle, km)")
+```
+
+# Massage
+
+
+```{r}
+massage_ppp_km <- rescale.ppp(
+  Massage_ppp, 1000, "km")
+
+kde_massage_diggle_km <- density(massage_ppp_km,
+                                 sigma = bw.diggle,
+                                 edge = TRUE,
+                                 kernel = "gaussian")
+
+plot(kde_massage_diggle_km, main = "Massage KDE (bw.diggle, km)")
+```
+
+# Fitness Centres
+
+
+```{r}
+fit_ppp_km <- rescale.ppp(
+  fit_ppp, 1000, "km")
+
+kde_fit_diggle_km <- density(fit_ppp_km,
+                              sigma=bw.diggle,
+                              edge=TRUE,
+                              kernel="gaussian")
+plot(kde_fit_diggle_km)
+```
+
+:::
+
+
+### adaptive bandwidth
+:::panel-tabset
+
+# Clinics
+
+
+```{r}
+kde_clinic_ab <- adaptive.density(
+  clinic_ppp_km, 
+  method="kernel")
+plot(kde_clinic_ab)
+```
+
+# Massage
+
+
+```{r}
+kde_massage_ab <- adaptive.density(
+  massage_ppp_km, 
+  method="kernel")
+plot(kde_massage_ab)
+```
+
+# Fitness Centres
+
+
+```{r}
+kde_fit_ab <- adaptive.density(
+  fit_ppp_km, 
+  method="kernel")
+plot(kde_fit_ab)
+```
+
+:::
+
+
+
+
+### cartographic quality KDE map
+
+```{r}
+kde_clinic_bw_terra <- rast(kde_clinic_diggle_km)
+crs(kde_clinic_bw_terra) <- "EPSG:3414"
+class(kde_clinic_bw_terra)
+kde_clinic_bw_terra
+
+
+kde_massage_bw_terra <- rast(kde_massage_diggle_km)
+crs(kde_massage_bw_terra) <- "EPSG:3414"
+class(kde_massage_bw_terra)
+kde_massage_bw_terra
+
+
+
+kde_fit_bw_terra <- rast(kde_fit_diggle_km)
+crs(kde_fit_bw_terra) <- "EPSG:3414"
+class(kde_fit_bw_terra)
+kde_fit_bw_terra
+```
+
+:::panel-tabset
+
+# Clinics
+
+```{r}
+tm_shape(kde_clinic_bw_terra) + 
+  tm_raster(col.scale = 
+              tm_scale_continuous(
+                values = "viridis"),
+            col.legend = tm_legend(
+            title = "Density values",
+            title.size = 0.7,
+            text.size = 0.7,
+            bg.color = "white",
+            bg.alpha = 0.7,
+            position = tm_pos_in(
+              "right", "bottom"),
+            frame = TRUE)) +
+  tm_graticules(labels.size = 0.7) +
+  tm_compass() +
+  tm_layout(scale = 1.0)
+```
+
+
+# Massage
+
+```{r}
+tm_shape(kde_massage_bw_terra) + 
+  tm_raster(col.scale = 
+              tm_scale_continuous(
+                values = "viridis"),
+            col.legend = tm_legend(
+            title = "Density values",
+            title.size = 0.7,
+            text.size = 0.7,
+            bg.color = "white",
+            bg.alpha = 0.7,
+            position = tm_pos_in(
+              "right", "bottom"),
+            frame = TRUE)) +
+  tm_graticules(labels.size = 0.7) +
+  tm_compass() +
+  tm_layout(scale = 1.0)
+```
+
+# Fitness Centres
+
+
+```{r}
+tm_shape(kde_fit_bw_terra) + 
+  tm_raster(col.scale = 
+              tm_scale_continuous(
+                values = "viridis"),
+            col.legend = tm_legend(
+            title = "Density values",
+            title.size = 0.7,
+            text.size = 0.7,
+            bg.color = "white",
+            bg.alpha = 0.7,
+            position = tm_pos_in(
+              "right", "bottom"),
+            frame = TRUE)) +
+  tm_graticules(labels.size = 0.7) +
+  tm_compass() +
+  tm_layout(scale = 1.0)
+```
+
+:::
+
+
+
+
+# region
+
+```{r}
+cr <- mpsz %>%
+  filter(REGION_N == "CENTRAL REGION")
+er <- mpsz %>%
+  filter(REGION_N == "EAST REGION")
+wr <- mpsz %>%
+  filter(REGION_N == "WEST REGION")
+nr <- mpsz %>%
+  filter(REGION_N == "NORTH REGION")
+ner <- mpsz %>%
+  filter(REGION_N == "NORTH-EAST REGION")
+```
+
+```{r}
+par(mfrow=c(2,2))
+plot(st_geometry(cr), main = "CENTRAL REGION")
+plot(st_geometry(er), main = "EAST REGION")
+plot(st_geometry(wr), main = "WEST REGION")
+plot(st_geometry(nr), main = "JNORTH REGION")
+plot(st_geometry(ner), main = "NORTH-EAST REGION")
+```
+
+```{r}
+cr_owin = as.owin(cr)
+er_owin = as.owin(er)
+wr_owin = as.owin(wr)
+nr_owin = as.owin(nr)
+ner_owin = as.owin(ner)
 ```
 
 
 
-## owin
+
+## Group by Region
+
+:::panel-tabset
+
+# Clinics
 
 ```{r}
-sg_owin <- as.owin(acra_data)
+clinic_cr_ppp  = clinic_ppp[cr_owin]
+clinic_er_ppp  = clinic_ppp[er_owin]
+clinic_wr_ppp  = clinic_ppp[wr_owin]
+clinic_nr_ppp  = clinic_ppp[nr_owin]
+clinic_ner_ppp = clinic_ppp[ner_owin]
+
+clinic_cr_ppp.km  = rescale.ppp(clinic_cr_ppp,  1000, "km")
+clinic_er_ppp.km  = rescale.ppp(clinic_er_ppp,  1000, "km")
+clinic_wr_ppp.km  = rescale.ppp(clinic_wr_ppp,  1000, "km")
+clinic_nr_ppp.km  = rescale.ppp(clinic_nr_ppp,  1000, "km")
+clinic_ner_ppp.km = rescale.ppp(clinic_ner_ppp, 1000, "km")
+
+par(mfrow = c(2, 3), cex = 0.3)
+plot(unmark(clinic_cr_ppp.km),  main = "CENTRAL REGION (Clinic)")
+plot(unmark(clinic_er_ppp.km),  main = "EAST REGION (Clinic)")
+plot(unmark(clinic_wr_ppp.km),  main = "WEST REGION (Clinic)")
+plot(unmark(clinic_nr_ppp.km),  main = "NORTH REGION (Clinic)")
+plot(unmark(clinic_ner_ppp.km), main = "NORTH-EAST REGION (Clinic)")
+```
+
+
+# Massage
+
+```{r}
+massage_cr_ppp  = Massage_ppp[cr_owin]
+massage_er_ppp  = Massage_ppp[er_owin]
+massage_wr_ppp  = Massage_ppp[wr_owin]
+massage_nr_ppp  = Massage_ppp[nr_owin]
+massage_ner_ppp = Massage_ppp[ner_owin]
+
+massage_cr_ppp.km  = rescale.ppp(massage_cr_ppp,  1000, "km")
+massage_er_ppp.km  = rescale.ppp(massage_er_ppp,  1000, "km")
+massage_wr_ppp.km  = rescale.ppp(massage_wr_ppp,  1000, "km")
+massage_nr_ppp.km  = rescale.ppp(massage_nr_ppp,  1000, "km")
+massage_ner_ppp.km = rescale.ppp(massage_ner_ppp, 1000, "km")
+
+par(mfrow = c(2, 3), cex = 0.3)
+plot(unmark(massage_cr_ppp.km),  main = "CENTRAL REGION (Massage)")
+plot(unmark(massage_er_ppp.km),  main = "EAST REGION (Massage)")
+plot(unmark(massage_wr_ppp.km),  main = "WEST REGION (Massage)")
+plot(unmark(massage_nr_ppp.km),  main = "NORTH REGION (Massage)")
+plot(unmark(massage_ner_ppp.km), main = "NORTH-EAST REGION (Massage)")
+```
+
+# Fitness Centres
+
+
+```{r}
+fit_cr_ppp = fitness_ppp[cr_owin]
+fit_er_ppp = fitness_ppp[er_owin]
+fit_wr_ppp = fitness_ppp[wr_owin]
+fit_nr_ppp = fitness_ppp[nr_owin]
+fit_ner_ppp = fitness_ppp[ner_owin]
+
+fit_cr_ppp.km = rescale.ppp(fit_cr_ppp, 1000, "km")
+fit_er_ppp.km = rescale.ppp(fit_er_ppp, 1000, "km")
+fit_wr_ppp.km = rescale.ppp(fit_wr_ppp, 1000, "km")
+fit_nr_ppp.km = rescale.ppp(fit_nr_ppp, 1000, "km")
+fit_ner_ppp.km = rescale.ppp(fit_ner_ppp, 1000, "km")
+
+par(mfrow=c(2,2), cex = 0.3)
+plot(unmark(fit_cr_ppp.km), 
+  main="CENTRAL REGIONl")
+plot(unmark(fit_er_ppp.km), 
+  main="EAST REGION")
+plot(unmark(fit_wr_ppp.km), 
+  main="WEST REGION")
+plot(unmark(fit_nr_ppp.km), 
+  main="JNORTH REGION")
+plot(unmark(fit_ner_ppp.km), 
+  main="NORTH-EAST REGION")
+```
+
+:::
+
+
+# Second-order Spatial Point Patterns Analysis
+```{r}
+set.seed(1234)
+```
+
+
+## clinic
+假设检验
+
+
+:::panel-tabset
+# G-function
+```{r}
+G_clinic_sg = Gest(clinic_ppp, correction = "border")
+plot(G_clinic_sg, xlim=c(0,500))
 ```
 
 ```{r}
-class(acra_data)
+#| cache: true
+G_clinic_sg.csr <- envelope(clinic_ppp, Gest, nsim = 999)
 ```
 
 ```{r}
-plot(acra_data)
+plot(G_clinic_sg.csr)
 ```
+
+# F-function
+```{r}
+F_clinic_sg = Fest(clinic_ppp)
+plot(F_clinic_sg)
+```
+
+```{r}
+#| cache: true
+F_clinic_sg.csr <- envelope(clinic_ppp, Fest, nsim = 999)
+```
+
+```{r}
+plot(F_clinic_sg.csr)
+```
+
+# K-function
+```{r}
+K_clinic_sg = Kest(clinic_ppp, correction = "Ripley")
+plot(K_clinic_sg, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
+```
+
+```{r}
+#| cache: true
+K_clinic_sg.csr <- envelope(clinic_ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)
+```
+
+```{r}
+plot(K_clinic_sg.csr, . - r ~ r, xlab="d", ylab="K(d)-r")
+```
+
+
+# L-function
+```{r}
+L_clinic_sg = Lest(clinic_ppp, correction = "Ripley")
+plot(L_clinic_sg, . -r ~ r, 
+     ylab= "L(d)-r", xlab = "d(m)")
+```
+
+```{r}
+#| cache: true
+L_clinic_sg.csr <- envelope(clinic_ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)
+```
+
+```{r}
+plot(L_clinic_sg.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
+```
+
+:::
+
+
+## massage
+假设检验
+
+
+:::panel-tabset
+# G-function
+```{r}
+G_Massage_sg = Gest(Massage_ppp, correction = "border")
+plot(G_Massage_sg, xlim=c(0,500))
+```
+
+```{r}
+#| cache: true
+G_Massage_sg.csr <- envelope(Massage_ppp, Gest, nsim = 999)
+```
+
+```{r}
+plot(G_Massage_sg.csr)
+```
+
+# F-function
+```{r}
+F_Massage_sg = Fest(Massage_ppp)
+plot(F_Massage_sg)
+```
+
+```{r}
+#| cache: true
+F_Massage_sg.csr <- envelope(Massage_ppp, Fest, nsim = 999)
+```
+
+```{r}
+plot(F_Massage_sg.csr)
+```
+
+# K-function
+```{r}
+K_Massage_sg = Kest(Massage_ppp, correction = "Ripley")
+plot(K_Massage_sg, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
+```
+
+```{r}
+#| cache: true
+K_Massage_sg.csr <- envelope(Massage_ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)
+```
+
+```{r}
+plot(K_Massage_sg.csr, . - r ~ r, xlab="d", ylab="K(d)-r")
+```
+
+
+# L-function
+```{r}
+L_Massage_sg = Lest(Massage_ppp, correction = "Ripley")
+plot(L_Massage_sg, . -r ~ r, 
+     ylab= "L(d)-r", xlab = "d(m)")
+```
+
+```{r}
+#| cache: true
+L_Massage_sg.csr <- envelope(Massage_ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)
+```
+
+```{r}
+plot(L_Massage_sg.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
+```
+
+:::
+
+## fitness
+假设检验
+
+
+:::panel-tabset
+# G-function
+```{r}
+G_fit_sg = Gest(fit_ppp, correction = "border")
+plot(G_fit_sg, xlim=c(0,500))
+```
+
+```{r}
+#| cache: true
+G_fit_sg.csr <- envelope(fit_ppp, Gest, nsim = 999)
+```
+
+```{r}
+plot(G_fit_sg.csr)
+```
+
+# F-function
+```{r}
+F_fit_sg = Fest(fit_ppp)
+plot(F_fit_sg)
+```
+
+```{r}
+#| cache: true
+F_fit_sg.csr <- envelope(fit_ppp, Fest, nsim = 999)
+```
+
+```{r}
+plot(F_fit_sg.csr)
+```
+
+# K-function
+```{r}
+K_fit_sg = Kest(fit_ppp, correction = "Ripley")
+plot(K_fit_sg, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
+```
+
+```{r}
+#| cache: true
+K_fit_sg.csr <- envelope(fit_ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)
+```
+
+```{r}
+plot(K_fit_sg.csr, . - r ~ r, xlab="d", ylab="K(d)-r")
+```
+
+
+# L-function
+```{r}
+L_fit_sg = Lest(fit_ppp, correction = "Ripley")
+plot(L_fit_sg, . -r ~ r, 
+     ylab= "L(d)-r", xlab = "d(m)")
+```
+
+```{r}
+#| cache: true
+L_fit_sg.csr <- envelope(fit_ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)
+```
+
+```{r}
+plot(L_fit_sg.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
+```
+
+:::
+
+
+
+
