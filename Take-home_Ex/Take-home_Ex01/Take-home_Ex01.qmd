@@ -47,23 +47,38 @@ In this exercise, the focus is on new business entities established in Singapore
 
 9.  With reference to the analysis results above, discuss how these findings can be used to support urban land use planning and management. (Not more than 500 words)
 
-# 2 The Data
+# 1.3 R packages
 
-| **Dataset Name** | **Description** | **Format** | **Source** |
-|------------------|-----------------|------------|------------|
-|                  |                 |            |            |
-|                  |                 |            |            |
-|                  |                 |            |            |
-
-# 3 R packages
+| **Package** | **Description** |
+|------------------------------------|------------------------------------|
+| sf | Simple Features for handling and analyzing spatial vector data. |
+| spNetwork | Network-based spatial analysis, e.g. kernel density along road networks. |
+| spatstat | Spatial point pattern analysis (ppp, owin, G/F/K/L functions, KDE). |
+| tmap | Thematic maps creation (static and interactive). |
+| tidyverse | Data science suite (dplyr, ggplot2, readr, purrr, etc.). |
+| httr | Tools for working with HTTP to access web APIs. |
+| rvest | Web scraping and HTML parsing. |
+| terra | Spatial raster data handling and analysis. |
+| lwgeom | Geometry operations, fixing invalid shapes (wraps GEOS). |
 
 ```{r}
-pacman::p_load(sf, spNetwork, spatstat, raster, tmap, tidyverse, classInt, gifski,  spNetwork, sparr, RColorBrewer, httr, rvest, terra, lwgeom)
+pacman::p_load(sf, spNetwork, spatstat,tmap, tidyverse, httr, rvest, terra, lwgeom)
 ```
+
+# 1.4 The Data
+
+| **Dataset Name** | **Description** | **Format** | **Source** |
+|------------------|------------------|------------------|------------------|
+| ACRA Information on Corporate Entities ('A-Z-Others') | Business registration information (clinics, massage, fitness filtered by SSIC) | CSV | data.gov.sg |
+| OneMap Geocoding Results | Geocoded coordinates (X, Y) for postal codes | API | [OneMap API (Singapore Land Authority)](https://onemap.gov.sg/api/common/elastic/search) |
+| MasterPlan2019SubzoneBoundaryNoSeaKML | Planning region and subzone polygon boundaries | KML | URA (Urban Redevelopment Authority) |
+| Singapore Standard Industrial Classification (SSIS) 2020 | SSIS Code Matching Table | Excel | [2-digit or 3-digit Singapore Standard Industrial Classification (SSIS) 2020](https://classification.codes/classifications/industry/ssic-singapore) |
 
 # 4 Data Import and Wrangling
 
 ## 4.1 Importing ACRA data
+
+Import ACRA data to R studio, combin all 27 file togeter and save it as rds file.
 
 ```{r}
 
@@ -76,14 +91,46 @@ acra_data <- file_list %>%
   map_dfr(read_csv)
 ```
 
-## 4.2 Saving ACRA data
-
 ```{r}
 write_rds(acra_data,
           "data/rds/acra_data.rds")
 ```
 
+```{r}
+summary(acra_data) 
+```
+
+```{r}
+glimpse(acra_data)
+```
+
+## 4.2 Importing MasterPlan2019SubzoneBoundaryNoSea data
+
+The Master Plan 2019 Subzone Boundary (KML) file was imported, re-projected to Singapore’s SVY21 coordinate system (EPSG:3414), and saved as an RDS file for later mapping and analysis.
+
+```{r}
+mpsz <- st_read("data/MasterPlan2019SubzoneBoundaryNoSeaKML.kml")
+mpsz <- mpsz %>% st_transform(crs=3414)
+write_rds(mpsz, "data/rds/mpsz.rds")
+```
+
+```{r}
+summary(mpsz) 
+```
+
+```{r}
+glimpse(mpsz)
+```
+
 ## 4.3 Tidying ACRA data
+
+The ACRA dataset was filtered to keep only four SSIC codes representing three industry types: Clinics (86201, 86202), Massage services (96024), and Fitness centres (93111). The data was cleaned (date fields, year/month extraction, postal code formatting) and then split into three subsets: biz_clinic, biz_Massage, and biz_fitness.
+
+| **Industry Type** | **SSIC Code(s)** | **Description** |
+|------------------|-----------------|-------------------------------------|
+| Clinics | 86201, 86202 | Clinics and other general medical services (Western & Non-Western) |
+| Massage Services | 96024 | Massage parlours and foot reflexology |
+| Fitness Centres | 93111 | Fitness centres and gymnasiums |
 
 ```{r}
 ssic_vec <- c("86201", "86202", "96024", "93111")
@@ -113,6 +160,8 @@ biz_fitness <- acra_core %>% filter(primary_ssic_code == "93111")
 ```
 
 ## 4.4 Geocoding
+
+The postal codes from the three business subsets (clinics, massage, fitness centres) were extracted and cleaned to remove duplicates and missing values. These unique postal codes were then sent to the OneMap API for geocoding. For each code, the API returned geographic coordinates (X, Y) and address details if found. The results were stored in a found dataset, while unmatched postal codes were recorded separately in a not_found dataset.
 
 ```{r}
 postcodes <- c(biz_clinic$postal_code,
@@ -148,13 +197,16 @@ for (pc in postcodes) {
 ```
 
 ## 4.5 Tidying the geocoded data
+The geocoding results were cleaned by selecting only the first 10 relevant fields from the found dataset to keep essential location attributes.
 
 ```{r}
 found <- found %>%
   select(1:10)
 ```
 
-## Appending the location information
+## 4.6 Appending the location information
+
+The cleaned geocoded results were joined back to the three business datasets (biz_clinic, biz_Massage, biz_fitness) using postal code as the key, enriching each business record with its spatial coordinates and address details. The updated datasets were then saved as RDS files for later use.
 
 ```{r}
 biz_clinic  <- biz_clinic  %>% left_join(found, by = c("postal_code" = "POSTAL"))
@@ -168,7 +220,32 @@ write_rds(biz_Massage, "data/rds/Massage.rds")
 write_rds(biz_fitness, "data/rds/biz_fitness.rds")
 ```
 
-## Converting into SF data frame
+### 4.6.1 Glimpse for 3 industry
+
+By performing the Glimpse operation on the data sets of the three industries, we can determine the amount of data contained in each one by looking at the number of rows.
+
+::: panel-tabset
+# Clinics
+
+```{r}
+glimpse(biz_clinic_sf)
+```
+
+# Massage
+
+```{r}
+glimpse(biz_Massage_sf)
+```
+
+# Fitness Centres
+
+```{r}
+glimpse(biz_fitness_sf)
+```
+:::
+## 4.7 Converting into SF data frame
+
+Each business dataset was transformed into an sf (simple features) object (biz_clinic_sf, biz_Massage_sf, biz_fitness_sf), keeping only records with valid coordinates (X, Y). The coordinate system was set to EPSG:3414 (SVY21 / Singapore TM), enabling spatial mapping and analysis.
 
 ```{r}
 biz_clinic_sf <- st_as_sf(
@@ -186,6 +263,58 @@ biz_fitness_sf <- st_as_sf(
   coords = c("X","Y"), crs = 3414
 )
 ```
+
+## 4.8 Extracting Attributes from KML Description
+
+The imported Master Plan 2019 Subzone Boundary (mpsz) dataset contained key attributes (e.g., region, planning area, subzone name, subzone code) embedded inside the Description field of the KML file. A custom function extract_kml_field() was created to parse the HTML structure and extract these values. The extracted fields (REGION_N, PLN_AREA_N, SUBZONE_N, SUBZONE_C) were then added as new columns to the dataset. Finally, redundant fields (Name, Description) were removed, and the geometry column was relocated to the end for a cleaner structure.
+
+
+```{r}
+extract_kml_field <- function(html_text, field_name) {
+  if (is.na(html_text) || html_text == "") return(NA_character_)
+  
+  page <- read_html(html_text)
+  rows <- page %>% html_elements("tr")
+  
+  value <- rows %>%
+    keep(~ html_text2(html_element(.x, "th")) == field_name) %>%
+    html_element("td") %>%
+    html_text2()
+  
+  if (length(value) == 0) NA_character_ else value
+}
+
+mpsz <- mpsz %>%
+  mutate(
+    REGION_N = map_chr(Description, extract_kml_field, "REGION_N"),
+    PLN_AREA_N = map_chr(Description, extract_kml_field, "PLN_AREA_N"),
+    SUBZONE_N = map_chr(Description, extract_kml_field, "SUBZONE_N"),
+    SUBZONE_C = map_chr(Description, extract_kml_field, "SUBZONE_C")
+  ) %>%
+  select(-Name, -Description) %>%
+  relocate(geometry, .after = last_col())
+```
+
+```{r}
+glimpse(mpsz)
+```
+## 4.9 Splitting Singapore Map by Regions
+
+This step filters the Singapore planning subzone dataset (mpsz) into five separate regions: Central, East, West, North, and North-East. Each subset can then be used for regional-level spatial analysis and visualization.
+```{r}
+cr <- mpsz %>%
+  filter(REGION_N == "CENTRAL REGION")
+er <- mpsz %>%
+  filter(REGION_N == "EAST REGION")
+wr <- mpsz %>%
+  filter(REGION_N == "WEST REGION")
+nr <- mpsz %>%
+  filter(REGION_N == "NORTH REGION")
+ner <- mpsz %>%
+  filter(REGION_N == "NORTH-EAST REGION")
+```
+
+
 
 ## Visualising the distribution
 
@@ -264,21 +393,8 @@ tm_shape(biz_all_sf) +
 tmap_mode("plot")
 ```
 
-## import map
-
-```{r}
-mpsz <- st_read("data/MasterPlan2019SubzoneBoundaryNoSeaKML.kml")
-```
-
-```{r}
-mpsz <- mpsz %>% st_transform(crs=3414)
-```
-
-```{r}
-write_rds(mpsz, "data/rds/mpsz.rds")
-```
-
 ## overview for SinMap
+
 ```{r}
 tmap_style("natural")
 tm_shape(mpsz) +
@@ -295,68 +411,14 @@ tm_shape(mpsz) +
   tm_grid(alpha = 0.2)
 ```
 
-```{r}
-extract_kml_field <- function(html_text, field_name) {
-  if (is.na(html_text) || html_text == "") return(NA_character_)
-  
-  page <- read_html(html_text)
-  rows <- page %>% html_elements("tr")
-  
-  value <- rows %>%
-    keep(~ html_text2(html_element(.x, "th")) == field_name) %>%
-    html_element("td") %>%
-    html_text2()
-  
-  if (length(value) == 0) NA_character_ else value
-}
-
-mpsz <- mpsz %>%
-  mutate(
-    REGION_N = map_chr(Description, extract_kml_field, "REGION_N"),
-    PLN_AREA_N = map_chr(Description, extract_kml_field, "PLN_AREA_N"),
-    SUBZONE_N = map_chr(Description, extract_kml_field, "SUBZONE_N"),
-    SUBZONE_C = map_chr(Description, extract_kml_field, "SUBZONE_C")
-  ) %>%
-  select(-Name, -Description) %>%
-  relocate(geometry, .after = last_col())
-```
-
-```{r}
-glimpse(mpsz)
-```
-
-## glimpse 3 industry
-:::panel-tabset
-
-# Clinics
 
 
-```{r}
-glimpse(biz_clinic_sf)
-```
 
-# Massage
-
-
-```{r}
-glimpse(biz_Massage_sf)
-```
-
-# Fitness Centres
-
-
-```{r}
-glimpse(biz_fitness_sf)
-```
-
-:::
 
 ## overview for 3 industry
 
-:::panel-tabset
-
+::: panel-tabset
 # Clinics
-
 
 ```{r}
 qtm(biz_clinic_sf)
@@ -364,27 +426,21 @@ qtm(biz_clinic_sf)
 
 # Massage
 
-
 ```{r}
 qtm(biz_Massage_sf)
 ```
 
 # Fitness Centres
 
-
 ```{r}
 qtm(biz_fitness_sf)
 ```
-
 :::
 
 ## region overview for 3 industry
 
-
-:::panel-tabset
-
+::: panel-tabset
 # Clinics
-
 
 ```{r}
 tm_shape(mpsz) +
@@ -395,7 +451,6 @@ tm_shape(biz_clinic_sf) +
 
 # Massage
 
-
 ```{r}
 tm_shape(mpsz) +
   tm_polygons("REGION_N", alpha = 0.3) +
@@ -405,21 +460,15 @@ tm_shape(biz_Massage_sf) +
 
 # Fitness Centres
 
-
 ```{r}
 tm_shape(mpsz) +
   tm_polygons("REGION_N", alpha = 0.3) +
 tm_shape(biz_fitness_sf) +
   tm_dots(col = "blue", size = 0.05, popup.vars = c("entity_name", "ADDRESS"))
 ```
-
 :::
 
-
 ## choropleth map
-
-
-
 
 ```{r}
 mpsz <- st_zm(mpsz, drop = TRUE)     
@@ -430,12 +479,8 @@ mpsz <- st_transform(mpsz, 3414)
 stopifnot(all(st_is_valid(mpsz)))
 ```
 
-
-
-:::panel-tabset
-
+::: panel-tabset
 # Clinics
-
 
 ```{r}
 clinic_with_zone <- st_join(biz_clinic_sf, mpsz, join = st_within)
@@ -456,7 +501,6 @@ tm_shape(biz_clinic_sf) +
 
 # Massage
 
-
 ```{r}
 massage_with_zone <- st_join(biz_Massage_sf, mpsz, join = st_within)
 
@@ -476,7 +520,6 @@ tm_shape(biz_Massage_sf) +
 
 # Fitness Centres
 
-
 ```{r}
 fitness_with_zone <- st_join(biz_fitness_sf, mpsz, join = st_within)
 
@@ -493,7 +536,6 @@ tm_shape(mpsz_fitness) +
 tm_shape(biz_fitness_sf) +
   tm_dots(col = "red", size = 0.05)
 ```
-
 :::
 
 ## Creating owin object
@@ -510,14 +552,10 @@ class(sg_owin)
 plot(sg_owin)
 ```
 
-
 ## Converting sf data frames to ppp class
 
-
-:::panel-tabset
-
+::: panel-tabset
 # Clinics
-
 
 ```{r}
 clinic_ppp <- as.ppp(biz_clinic_sf)
@@ -526,7 +564,6 @@ class(clinic_ppp)
 
 # Massage
 
-
 ```{r}
 Massage_ppp <- as.ppp(biz_Massage_sf)
 class(Massage_ppp)
@@ -534,18 +571,15 @@ class(Massage_ppp)
 
 # Fitness Centres
 
-
 ```{r}
 fitness_ppp <- as.ppp(biz_fitness_sf)
 class(fitness_ppp)
 ```
-
 :::
 
 ## Combining point events object and owin object
 
-:::panel-tabset
-
+::: panel-tabset
 # Clinics
 
 ```{r}
@@ -558,7 +592,6 @@ clinic_ppp
 
 # Massage
 
-
 ```{r}
 Massage_ppp = Massage_ppp[sg_owin]
 ```
@@ -569,7 +602,6 @@ Massage_ppp
 
 # Fitness Centres
 
-
 ```{r}
 fit_ppp = fitness_ppp[sg_owin]
 ```
@@ -577,7 +609,6 @@ fit_ppp = fitness_ppp[sg_owin]
 ```{r}
 fit_ppp
 ```
-
 :::
 
 ## Clark-Evan Test for Nearest Neighbour Analysis
@@ -586,11 +617,9 @@ Nearest Neighbor Analysis (NNA) is a spatial statistics method that calculates t
 
 Clark-Evans test is a specific statistical method used within NNA to quantify whether a point pattern is clustered, random, or uniformly spaced, using the Clark-Evans aggregation index (R) to describe this pattern. NNA provides a numerical value that describes the degree of clustering or regularity, and the Clark-Evans test calculates a specific index (R) for this purpose.
 
-
-
-:::panel-tabset
-
+::: panel-tabset
 # Clinics
+
 假设检验
 
 ```{r}
@@ -599,7 +628,6 @@ clarkevans.test(clinic_ppp,
                 clipregion="sg_owin",
                 alternative=c("clustered"))
 ```
-
 
 # Massage
 
@@ -610,9 +638,7 @@ clarkevans.test(Massage_ppp,
                 alternative=c("clustered"))
 ```
 
-
 # Fitness Centres
-
 
 ```{r}
 clarkevans.test(fit_ppp,
@@ -628,12 +654,8 @@ Kernel Density Estimation (KDE) is a valuable tool for visualising and analyzing
 
 ### automatic bandwidth selection method
 
-
-
-:::panel-tabset
-
+::: panel-tabset
 # Clinics
-
 
 ```{r}
 clinic_ppp_km <- rescale.ppp(
@@ -649,7 +671,6 @@ plot(kde_clinic_diggle_km, main = "Clinic KDE (bw.diggle, km)")
 
 # Massage
 
-
 ```{r}
 massage_ppp_km <- rescale.ppp(
   Massage_ppp, 1000, "km")
@@ -664,7 +685,6 @@ plot(kde_massage_diggle_km, main = "Massage KDE (bw.diggle, km)")
 
 # Fitness Centres
 
-
 ```{r}
 fit_ppp_km <- rescale.ppp(
   fit_ppp, 1000, "km")
@@ -675,15 +695,12 @@ kde_fit_diggle_km <- density(fit_ppp_km,
                               kernel="gaussian")
 plot(kde_fit_diggle_km)
 ```
-
 :::
 
-
 ### adaptive bandwidth
-:::panel-tabset
 
+::: panel-tabset
 # Clinics
-
 
 ```{r}
 kde_clinic_ab <- adaptive.density(
@@ -694,7 +711,6 @@ plot(kde_clinic_ab)
 
 # Massage
 
-
 ```{r}
 kde_massage_ab <- adaptive.density(
   massage_ppp_km, 
@@ -704,20 +720,16 @@ plot(kde_massage_ab)
 
 # Fitness Centres
 
-
 ```{r}
 kde_fit_ab <- adaptive.density(
   fit_ppp_km, 
   method="kernel")
 plot(kde_fit_ab)
 ```
-
 :::
 
-
-
-
 ### cartographic quality KDE map
+
 
 ```{r}
 kde_clinic_bw_terra <- rast(kde_clinic_diggle_km)
@@ -725,13 +737,10 @@ crs(kde_clinic_bw_terra) <- "EPSG:3414"
 class(kde_clinic_bw_terra)
 kde_clinic_bw_terra
 
-
 kde_massage_bw_terra <- rast(kde_massage_diggle_km)
 crs(kde_massage_bw_terra) <- "EPSG:3414"
 class(kde_massage_bw_terra)
 kde_massage_bw_terra
-
-
 
 kde_fit_bw_terra <- rast(kde_fit_diggle_km)
 crs(kde_fit_bw_terra) <- "EPSG:3414"
@@ -739,8 +748,7 @@ class(kde_fit_bw_terra)
 kde_fit_bw_terra
 ```
 
-:::panel-tabset
-
+::: panel-tabset
 # Clinics
 
 ```{r}
@@ -761,7 +769,6 @@ tm_shape(kde_clinic_bw_terra) +
   tm_compass() +
   tm_layout(scale = 1.0)
 ```
-
 
 # Massage
 
@@ -786,7 +793,6 @@ tm_shape(kde_massage_bw_terra) +
 
 # Fitness Centres
 
-
 ```{r}
 tm_shape(kde_fit_bw_terra) + 
   tm_raster(col.scale = 
@@ -805,26 +811,11 @@ tm_shape(kde_fit_bw_terra) +
   tm_compass() +
   tm_layout(scale = 1.0)
 ```
-
 :::
-
-
-
 
 # region
 
-```{r}
-cr <- mpsz %>%
-  filter(REGION_N == "CENTRAL REGION")
-er <- mpsz %>%
-  filter(REGION_N == "EAST REGION")
-wr <- mpsz %>%
-  filter(REGION_N == "WEST REGION")
-nr <- mpsz %>%
-  filter(REGION_N == "NORTH REGION")
-ner <- mpsz %>%
-  filter(REGION_N == "NORTH-EAST REGION")
-```
+
 
 ```{r}
 par(mfrow=c(2,2))
@@ -843,13 +834,9 @@ nr_owin = as.owin(nr)
 ner_owin = as.owin(ner)
 ```
 
-
-
-
 ## Group by Region
 
-:::panel-tabset
-
+::: panel-tabset
 # Clinics
 
 ```{r}
@@ -872,7 +859,6 @@ plot(unmark(clinic_wr_ppp.km),  main = "WEST REGION (Clinic)")
 plot(unmark(clinic_nr_ppp.km),  main = "NORTH REGION (Clinic)")
 plot(unmark(clinic_ner_ppp.km), main = "NORTH-EAST REGION (Clinic)")
 ```
-
 
 # Massage
 
@@ -899,7 +885,6 @@ plot(unmark(massage_ner_ppp.km), main = "NORTH-EAST REGION (Massage)")
 
 # Fitness Centres
 
-
 ```{r}
 fit_cr_ppp = fitness_ppp[cr_owin]
 fit_er_ppp = fitness_ppp[er_owin]
@@ -925,22 +910,21 @@ plot(unmark(fit_nr_ppp.km),
 plot(unmark(fit_ner_ppp.km), 
   main="NORTH-EAST REGION")
 ```
-
 :::
 
-
 # Second-order Spatial Point Patterns Analysis
+
 ```{r}
 set.seed(1234)
 ```
 
-
 ## clinic
+
 假设检验
 
-
-:::panel-tabset
+::: panel-tabset
 # G-function
+
 ```{r}
 G_clinic_sg = Gest(clinic_ppp, correction = "border")
 plot(G_clinic_sg, xlim=c(0,500))
@@ -956,6 +940,7 @@ plot(G_clinic_sg.csr)
 ```
 
 # F-function
+
 ```{r}
 F_clinic_sg = Fest(clinic_ppp)
 plot(F_clinic_sg)
@@ -971,6 +956,7 @@ plot(F_clinic_sg.csr)
 ```
 
 # K-function
+
 ```{r}
 K_clinic_sg = Kest(clinic_ppp, correction = "Ripley")
 plot(K_clinic_sg, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
@@ -985,8 +971,8 @@ K_clinic_sg.csr <- envelope(clinic_ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)
 plot(K_clinic_sg.csr, . - r ~ r, xlab="d", ylab="K(d)-r")
 ```
 
-
 # L-function
+
 ```{r}
 L_clinic_sg = Lest(clinic_ppp, correction = "Ripley")
 plot(L_clinic_sg, . -r ~ r, 
@@ -1001,16 +987,15 @@ L_clinic_sg.csr <- envelope(clinic_ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)
 ```{r}
 plot(L_clinic_sg.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
 ```
-
 :::
 
-
 ## massage
+
 假设检验
 
-
-:::panel-tabset
+::: panel-tabset
 # G-function
+
 ```{r}
 G_Massage_sg = Gest(Massage_ppp, correction = "border")
 plot(G_Massage_sg, xlim=c(0,500))
@@ -1026,6 +1011,7 @@ plot(G_Massage_sg.csr)
 ```
 
 # F-function
+
 ```{r}
 F_Massage_sg = Fest(Massage_ppp)
 plot(F_Massage_sg)
@@ -1041,6 +1027,7 @@ plot(F_Massage_sg.csr)
 ```
 
 # K-function
+
 ```{r}
 K_Massage_sg = Kest(Massage_ppp, correction = "Ripley")
 plot(K_Massage_sg, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
@@ -1055,8 +1042,8 @@ K_Massage_sg.csr <- envelope(Massage_ppp, Kest, nsim = 99, rank = 1, glocal=TRUE
 plot(K_Massage_sg.csr, . - r ~ r, xlab="d", ylab="K(d)-r")
 ```
 
-
 # L-function
+
 ```{r}
 L_Massage_sg = Lest(Massage_ppp, correction = "Ripley")
 plot(L_Massage_sg, . -r ~ r, 
@@ -1071,15 +1058,15 @@ L_Massage_sg.csr <- envelope(Massage_ppp, Lest, nsim = 99, rank = 1, glocal=TRUE
 ```{r}
 plot(L_Massage_sg.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
 ```
-
 :::
 
 ## fitness
+
 假设检验
 
-
-:::panel-tabset
+::: panel-tabset
 # G-function
+
 ```{r}
 G_fit_sg = Gest(fit_ppp, correction = "border")
 plot(G_fit_sg, xlim=c(0,500))
@@ -1095,6 +1082,7 @@ plot(G_fit_sg.csr)
 ```
 
 # F-function
+
 ```{r}
 F_fit_sg = Fest(fit_ppp)
 plot(F_fit_sg)
@@ -1110,6 +1098,7 @@ plot(F_fit_sg.csr)
 ```
 
 # K-function
+
 ```{r}
 K_fit_sg = Kest(fit_ppp, correction = "Ripley")
 plot(K_fit_sg, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
@@ -1124,8 +1113,8 @@ K_fit_sg.csr <- envelope(fit_ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)
 plot(K_fit_sg.csr, . - r ~ r, xlab="d", ylab="K(d)-r")
 ```
 
-
 # L-function
+
 ```{r}
 L_fit_sg = Lest(fit_ppp, correction = "Ripley")
 plot(L_fit_sg, . -r ~ r, 
@@ -1140,9 +1129,4 @@ L_fit_sg.csr <- envelope(fit_ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)
 ```{r}
 plot(L_fit_sg.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
 ```
-
 :::
-
-
-
-
