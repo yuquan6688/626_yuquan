@@ -62,7 +62,7 @@ In this exercise, the focus is on new business entities established in Singapore
 | lwgeom | Geometry operations, fixing invalid shapes (wraps GEOS). |
 
 ```{r}
-pacman::p_load(sf, spNetwork, spatstat,tmap, tidyverse, httr, rvest, terra, lwgeom)
+pacman::p_load(sf, spNetwork, spatstat,tmap, tidyverse, httr, rvest, terra, lwgeom, stpp)
 ```
 
 # 1.4 The Data
@@ -1406,6 +1406,35 @@ tm_facets(
 tm_title("Fitness centres  in SERANGOON by Month") 
 ```
 :::
+
+
+## 9.3 Spatio-temporal Point Patterns Analysis: stpp methods
+
+```{r}
+coords <- st_coordinates(biz_clinic_sf)
+```
+
+```{r}
+clinic_df <- data.frame(
+  x = coords[, 1],  
+  y = coords[, 2],
+  t = biz_clinic_sf$`date`)
+
+clinic_stpp <- as.3dpoints(clinic_df)
+
+class(clinic_stpp)
+```
+
+```{r}
+plot(clinic_stpp)
+```
+```{r}
+kbb_clinic <- STIKhat(clinic_stpp)
+```
+
+```{r}
+plotK(kbb_clinic)
+```
 
 # 10 Reference
 

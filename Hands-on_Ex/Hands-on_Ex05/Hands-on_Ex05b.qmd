@@ -1,0 +1,16 @@
+---
+title: "Hand-on Exercise 5b --- Local Measures of Spatial Autocorrelation"
+author: "Li Yuquan"
+description: ""
+date: "September 22, 2025"
+date-modified: "last-modified"
+format: html
+editor: visual
+execute: 
+  eval: true
+  echo: true
+  warning: false
+  freeze: true
+---
+
+# 1 Overview
