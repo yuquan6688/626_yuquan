@@ -62,7 +62,7 @@ In this exercise, the focus is on new business entities established in Singapore
 | lwgeom | Geometry operations, fixing invalid shapes (wraps GEOS). |
 
 ```{r}
-pacman::p_load(sf, spNetwork, spatstat,tmap, tidyverse, httr, rvest, terra, lwgeom, stpp)
+pacman::p_load(sf, spNetwork, spatstat,tmap, tidyverse, httr, rvest, terra, lwgeom, stpp, dplyr, lubridate, spatstat.geom)
 ```
 
 # 1.4 The Data
@@ -134,7 +134,7 @@ glimpse(mpsz)
 The ACRA dataset was filtered to keep only four SSIC codes representing three industry types: Clinics (86201, 86202), Massage services (96024), and Fitness centres (93111). The data was cleaned (date fields, year/month extraction, postal code formatting) and then split into three subsets: biz_clinic, biz_Massage, and biz_fitness.
 
 | **Industry Type** | **SSIC Code(s)** | **Description** |
-|-------------------|-------------------|----------------------------------|
+|------------------------|------------------------|------------------------|
 | Clinics | 86201, 86202 | Clinics and other general medical services (Western & Non-Western) |
 | Massage Services | 96024 | Massage parlours and foot reflexology |
 | Fitness Centres | 93111 | Fitness centres and gymnasiums |
@@ -447,62 +447,7 @@ tm_shape(mpsz) +
   tm_grid(alpha = 0.2)
 ```
 
-## 5.4 Quick Maps by Industry
-
-These three graphs are visualizations of the distribution of data points, and they have not been combined with a map. From these points, it can be seen that the distribution of massage services is somewhat scattered in the non-central area, while the distributions of clinics and fitness centers are more concentrated, showing a clustered trend.
-
-::: panel-tabset
-# Clinics
-
-```{r}
-qtm(biz_clinic_sf)
-```
-
-# Massage
-
-```{r}
-qtm(biz_Massage_sf)
-```
-
-# Fitness Centres
-
-```{r}
-qtm(biz_fitness_sf)
-```
-:::
-
-## 5.5 Regional Overlay Maps
-
-::: panel-tabset
-# Clinics
-
-```{r}
-tm_shape(mpsz) +
-  tm_polygons("REGION_N", alpha = 0.3) +
-tm_shape(biz_clinic_sf) +
-  tm_dots(col = "blue", size = 0.05, popup.vars = c("entity_name", "ADDRESS"))
-```
-
-# Massage
-
-```{r}
-tm_shape(mpsz) +
-  tm_polygons("REGION_N", alpha = 0.3) +
-tm_shape(biz_Massage_sf) +
-  tm_dots(col = "blue", size = 0.05, popup.vars = c("entity_name", "ADDRESS"))
-```
-
-# Fitness Centres
-
-```{r}
-tm_shape(mpsz) +
-  tm_polygons("REGION_N", alpha = 0.3) +
-tm_shape(biz_fitness_sf) +
-  tm_dots(col = "blue", size = 0.05, popup.vars = c("entity_name", "ADDRESS"))
-```
-:::
-
-## 5.6 Choropleth Maps by Subzone
+## 5.4 Choropleth Maps by Subzone
 
 ```{r}
 mpsz <- st_zm(mpsz, drop = TRUE)     
@@ -513,11 +458,17 @@ mpsz <- st_transform(mpsz, 3414)
 stopifnot(all(st_is_valid(mpsz)))
 ```
 
+```{r}
+tmap_mode("view")
+```
+
 -   Fitness centres are moderately dispersed, balancing between city and neighbourhood coverage.
 
 -   Massage services are highly centralised, clustered in commercial and entertainment hubs, with limited suburban presence.
 
 -   Clinics are the most evenly spread and most numerous, with strong representation across nearly all regions, reflecting their role as a public necessity rather than a lifestyle or leisure option.
+
+In conclusion, based on the content in the chart, two concentrated areas were selected for in-depth analysis for each of the three industry types. For clinics, NOVENA and GAYLANG were chosen. For massage, OUTRAM and KALLANG were selected. For fitness, DOWNTOWN CORE and GAYLANG were chosen.
 
 ::: panel-tabset
 # Clinics
@@ -584,6 +535,10 @@ tm_shape(biz_fitness_sf) +
 ```
 :::
 
+```{r}
+tmap_mode("plot")
+```
+
 # 6 Point Pattern Preparation
 
 ## 6.1 Converting Boundary to Owin Object
@@ -612,21 +567,24 @@ In this step, the three business datasets (clinics, massage services, and fitnes
 # Clinics
 
 ```{r}
-clinic_ppp <- as.ppp(biz_clinic_sf)
+clinic_ppp <- as.ppp(biz_clinic_sf) %>%
+  rjitter(retry = TRUE, nsim = 1, drop = TRUE)
 class(clinic_ppp)
 ```
 
 # Massage
 
 ```{r}
-Massage_ppp <- as.ppp(biz_Massage_sf)
+Massage_ppp <- as.ppp(biz_Massage_sf) %>%
+  rjitter(retry = TRUE, nsim = 1, drop = TRUE)
 class(Massage_ppp)
 ```
 
 # Fitness Centres
 
 ```{r}
-fitness_ppp <- as.ppp(biz_fitness_sf)
+fitness_ppp <- as.ppp(biz_fitness_sf) %>%
+  rjitter(retry = TRUE, nsim = 1, drop = TRUE)
 class(fitness_ppp)
 ```
 :::
@@ -680,9 +638,11 @@ Clark-Evans test is a specific statistical method used within NNA to quantify wh
 ::: panel-tabset
 # Clinics
 
-• H₀ (Null Hypothesis): The distribution of clinics is randomly distributed. • H₁ (Alternative Hypothesis): The distribution of clinics is not randomly distributed.
+• H₀ (Null Hypothesis): The distribution of clinics is randomly distributed.
 
-Result: R = 0.38104, p-value \< 2.2e-16. Reject H₀. The distribution of clinics is not random, with a clustered pattern across Singapore.
+• H₁ (Alternative Hypothesis): The distribution of clinics is not randomly distributed.
+
+Result: R = 0.40285, p-value \< 2.2e-16. Reject H₀. The distribution of clinics is not random, with a clustered pattern across Singapore.
 
 ```{r}
 clarkevans.test(clinic_ppp,
@@ -693,9 +653,11 @@ clarkevans.test(clinic_ppp,
 
 # Massage
 
-• H₀ (Null Hypothesis): The distribution of massage services is randomly distributed. • H₁ (Alternative Hypothesis): The distribution of massage services is not randomly distributed.
+• H₀ (Null Hypothesis): The distribution of massage services is randomly distributed.
 
-Result: R = 0.33504, p-value \< 2.2e-16. Reject H₀. The distribution of massage services is not random, showing the strongest clustering among the three industries.
+• H₁ (Alternative Hypothesis): The distribution of massage services is not randomly distributed.
+
+Result: R = 0.3682, p-value \< 2.2e-16. Reject H₀. The distribution of massage services is not random, showing the strongest clustering among the three industries.
 
 ```{r}
 clarkevans.test(Massage_ppp,
@@ -706,9 +668,11 @@ clarkevans.test(Massage_ppp,
 
 # Fitness Centres
 
-• H₀ (Null Hypothesis): The distribution of fitness centres is randomly distributed. • H₁ (Alternative Hypothesis): The distribution of fitness centres is not randomly distributed.
+• H₀ (Null Hypothesis): The distribution of fitness centres is randomly distributed.
 
-Result: R = 0.39117, p-value \< 2.2e-16. Reject H₀. The distribution of fitness centres is not random, but significantly clustered.
+• H₁ (Alternative Hypothesis): The distribution of fitness centres is not randomly distributed.
+
+Result: R = 0.41085, p-value \< 2.2e-16. Reject H₀. The distribution of fitness centres is not random, but significantly clustered.
 
 ```{r}
 clarkevans.test(fit_ppp,
@@ -722,10 +686,13 @@ clarkevans.test(fit_ppp,
 
 Kernel Density Estimation (KDE) is a valuable tool for visualising and analyzing first-order spatial point patterns. It is widely considered a method within Exploratory Spatial Data Analysis (ESDA) because it’s used to visualize and understand spatial data patterns by transforms discrete point data (like locations of childcare service, crime incidents or disease cases) into continuous density surfaces that reveal clusters and variations in event occurrences, without making prior assumptions about data distribution. It helps to begin understanding data distribution, identify hotspots, and explore relationships between spatial variables before performing more rigorous analysis.
 
-### 7.2.1 Automatic bandwidth selection method
+## 7.2.1 Data Prepare for KDE
 
-::: panel-tabset
-# Clinics
+First, the code performs a scale transformation on the point pattern objects of the three types of points of interest (clinics, massage parlors, and fitness centers). By using rescale.ppp(..., 1000, "km"), the original spatial point data are rescaled into a coordinate system measured in kilometers, which facilitates subsequent density estimation and comparative analysis.
+
+Next, the density() function is applied in combination with Diggle’s bandwidth selection method (bw.diggle) to conduct Kernel Density Estimation (KDE). The Gaussian kernel is chosen, and the option edge=TRUE is enabled for edge correction, in order to minimize the impact of boundary effects on the density estimation. This step produces raster objects representing the spatial intensity distributions of the three facility types.
+
+Subsequently, the KDE results are converted from spatstat density map objects into raster objects (rast) of the terra package, and the Singapore projected coordinate system EPSG:3414 is assigned as the coordinate reference system (CRS). This ensures that the KDE results of the three facility types can be visualized, overlaid, and further analyzed under a unified spatial reference framework.
 
 ```{r}
 clinic_ppp_km <- rescale.ppp(
@@ -736,12 +703,6 @@ kde_clinic_diggle_km <- density(clinic_ppp_km,
                                 edge = TRUE,
                                 kernel = "gaussian")
 
-plot(kde_clinic_diggle_km, main = "Clinic KDE (bw.diggle, km)")
-```
-
-# Massage
-
-```{r}
 massage_ppp_km <- rescale.ppp(
   Massage_ppp, 1000, "km")
 
@@ -750,55 +711,14 @@ kde_massage_diggle_km <- density(massage_ppp_km,
                                  edge = TRUE,
                                  kernel = "gaussian")
 
-plot(kde_massage_diggle_km, main = "Massage KDE (bw.diggle, km)")
-```
-
-# Fitness Centres
-
-```{r}
-fit_ppp_km <- rescale.ppp(
-  fit_ppp, 1000, "km")
+fit_ppp_km <- rescale.ppp(fit_ppp, 1000, "km")
 
 kde_fit_diggle_km <- density(fit_ppp_km,
                               sigma=bw.diggle,
                               edge=TRUE,
                               kernel="gaussian")
-plot(kde_fit_diggle_km)
+
 ```
-:::
-
-### 7.2.2 Adaptive bandwidth
-
-::: panel-tabset
-# Clinics
-
-```{r}
-kde_clinic_ab <- adaptive.density(
-  clinic_ppp_km, 
-  method="kernel")
-plot(kde_clinic_ab)
-```
-
-# Massage
-
-```{r}
-kde_massage_ab <- adaptive.density(
-  massage_ppp_km, 
-  method="kernel")
-plot(kde_massage_ab)
-```
-
-# Fitness Centres
-
-```{r}
-kde_fit_ab <- adaptive.density(
-  fit_ppp_km, 
-  method="kernel")
-plot(kde_fit_ab)
-```
-:::
-
-### 7.2.3 Cartographic quality KDE map
 
 ```{r}
 kde_clinic_bw_terra <- rast(kde_clinic_diggle_km)
@@ -816,6 +736,10 @@ crs(kde_fit_bw_terra) <- "EPSG:3414"
 class(kde_fit_bw_terra)
 kde_fit_bw_terra
 ```
+
+### 7.2.2 Cartographic quality KDE map
+
+Through the visualization of KDE analysis, it can be seen that the main concentration areas of the clinic, massage, and fitness industries are all located in the city center. There are also small clusters in the northern and eastern parts close to the city center. This is consistent with the analysis results in the Choropleth Maps. Therefore, we will continue to use the previously selected areas for in-depth analysis in the next step. For clinics, NOVENA and GAYLANG were chosen. For massage, OUTRAM and KALLANG were selected. For fitness, DOWNTOWN CORE and GAYLANG were chosen.
 
 ::: panel-tabset
 # Clinics
@@ -886,19 +810,23 @@ tm_shape(kde_fit_bw_terra) +
 
 ## 8.1 Subset by Planning area
 
-From the mpsz dataset, five sub-datasets, namely Jurong East/West, Newton, Serangoon, and Woodlands, were selected based on the planning areas (PLN_AREA_N) for facilitating the analysis by regions.
+Extract the 6 regions from the mpsz file that correspond to the 3 industries previously selected.
 
 ```{r}
-je <- mpsz %>%
-  filter(PLN_AREA_N == "JURONG EAST")
-jw <- mpsz %>%
-  filter(PLN_AREA_N == "JURONG WEST")
-nt <- mpsz %>%
-  filter(PLN_AREA_N == "NEWTON")
-se <- mpsz %>%
-  filter(PLN_AREA_N == "SERANGOON")
-wl <- mpsz %>%
-  filter(PLN_AREA_N == "WOODLANDS")
+# clinic
+no <- mpsz %>%
+  filter(PLN_AREA_N == "NOVENA")
+ge <- mpsz %>%
+  filter(PLN_AREA_N == "GEYLANG")
+#massage
+ou <- mpsz %>%
+  filter(PLN_AREA_N == "OUTRAM")
+ka <- mpsz %>%
+  filter(PLN_AREA_N == "KALLANG")
+# fitness
+dc <- mpsz %>%
+  filter(PLN_AREA_N == "DOWNTOWN CORE")
+# fitness also includ "GEYLANG"
 ```
 
 ## 8.2 Plot Planning Area Geometries
@@ -906,12 +834,18 @@ wl <- mpsz %>%
 Quickly visualize the polygon geometries of the five planning areas, check whether the boundaries are correct, and whether there are any invalid geometries or coordinate issues.
 
 ```{r}
-par(mfrow=c(2,2))
-plot(st_geometry(je), main = "JURONG EAST")
-plot(st_geometry(jw), main = "JURONG WEST")
-plot(st_geometry(nt), main = "NEWTON")
-plot(st_geometry(se), main = "SERANGOON")
-plot(st_geometry(wl), main = "WOODLANDS")
+par(mfrow = c(2,3))   
+
+# clinic
+plot(st_geometry(no), main = "NOVENA")
+plot(st_geometry(ge), main = "GEYLANG")
+
+# massage
+plot(st_geometry(ou), main = "OUTRAM")
+plot(st_geometry(ka), main = "KALLANG")
+
+# fitness
+plot(st_geometry(dc), main = "DOWNTOWN CORE")
 ```
 
 ## 8.3 Convert Planning Areas to Windows (owin)
@@ -919,11 +853,16 @@ plot(st_geometry(wl), main = "WOODLANDS")
 Convert each planning area polygon into an observation window owin in spatstat, which will serve as the research boundary for subsequent point pattern clipping and analysis.
 
 ```{r}
-je_owin = as.owin(je)
-jw_owin = as.owin(jw)
-nt_owin = as.owin(nt)
-se_owin = as.owin(se)
-wl_owin = as.owin(wl)
+# clinic
+no_owin = as.owin(no)
+ge_owin = as.owin(ge)
+
+# massage
+ou_owin = as.owin(ou)
+ka_owin = as.owin(ka)
+
+# fitness
+dc_owin = as.owin(dc)
 ```
 
 ## 8.4 Point Patterns per Planning Area (Clinics / Massage / Fitness)
@@ -933,71 +872,57 @@ The point pattern data were clipped to their corresponding planning area windows
 ::: panel-tabset
 # Clinics
 
+In Novena, clinics demonstrate a strong core clustering effect, with almost all facilities located around the medical hub and areas with good transport accessibility. This aligns with Novena’s status as one of Singapore’s major medical hubs, showing that the clinic industry here is highly concentrated under the influence of regional healthcare resources.
+
+In Geylang, the number of clinics is relatively high, and their distribution is more dispersed, covering almost the entire area. This layout suggests that the clinic industry in Geylang primarily aims to meet community-level healthcare needs, emphasizing accessibility and balanced regional distribution. At the same time, it may also be associated with the presence of the sex trade in Geylang. This contrasts with Novena’s positioning as a specialized medical hub.
+
+
 ```{r}
-clinic_je_ppp  = clinic_ppp[je_owin]
-clinic_jw_ppp  = clinic_ppp[jw_owin]
-clinic_nt_ppp  = clinic_ppp[nt_owin]
-clinic_se_ppp  = clinic_ppp[se_owin]
-clinic_wl_ppp  = clinic_ppp[wl_owin]
+clinic_no_ppp  = clinic_ppp[no_owin]
+clinic_ge_ppp  = clinic_ppp[ge_owin]
 
-clinic_je_ppp.km  = rescale.ppp(clinic_je_ppp, 1000, "km")
-clinic_jw_ppp.km  = rescale.ppp(clinic_jw_ppp, 1000, "km")
-clinic_nt_ppp.km  = rescale.ppp(clinic_nt_ppp, 1000, "km")
-clinic_se_ppp.km  = rescale.ppp(clinic_se_ppp, 1000, "km")
-clinic_wl_ppp.km  = rescale.ppp(clinic_wl_ppp, 1000, "km")
+clinic_no_ppp.km  = rescale.ppp(clinic_no_ppp, 1000, "km")
+clinic_ge_ppp.km  = rescale.ppp(clinic_ge_ppp, 1000, "km")
 
-par(mfrow = c(2, 3), cex = 0.3)
-plot(unmark(clinic_je_ppp.km), main = "JURONG EAST (Clinic)")
-plot(unmark(clinic_jw_ppp.km), main = "JURONG WEST (Clinic)")
-plot(unmark(clinic_nt_ppp.km), main = "NEWTON (Clinic)")
-plot(unmark(clinic_se_ppp.km), main = "SERANGOON (Clinic)")
-plot(unmark(clinic_wl_ppp.km), main = "WOODLANDS (Clinic)")
+par(mfrow = c(1,2), cex = 0.6)
+plot(unmark(clinic_no_ppp.km), main = "NOVENA (Clinic)")
+plot(unmark(clinic_ge_ppp.km), main = "GEYLANG (Clinic)")
 ```
 
 # Massage
 
+In Outram, massage service outlets are relatively numerous and evenly distributed, with a focus on areas of strong transport connectivity and commercial activity. This distribution is consistent with Outram’s role as a district with medical, commercial, and leisure functions, reflecting the positioning of the massage industry here as primarily leisure and wellness services.
+
+In Kallang, the number of massage outlets is also considerable, but they are more heavily concentrated in the southern boundary area, possibly due to proximity to transportation hubs and commercial centers. This clustering indicates that the massage industry in Kallang tends to align with transport and consumption nodes, forming localized, high-density service zones.
+
 ```{r}
-massage_je_ppp  = Massage_ppp[je_owin]
-massage_jw_ppp  = Massage_ppp[jw_owin]
-massage_nt_ppp  = Massage_ppp[nt_owin]
-massage_se_ppp  = Massage_ppp[se_owin]
-massage_wl_ppp  = Massage_ppp[wl_owin]
+massage_ou_ppp  = Massage_ppp[ou_owin]
+massage_ka_ppp  = Massage_ppp[ka_owin]
 
-massage_je_ppp.km  = rescale.ppp(massage_je_ppp, 1000, "km")
-massage_jw_ppp.km  = rescale.ppp(massage_jw_ppp, 1000, "km")
-massage_nt_ppp.km  = rescale.ppp(massage_nt_ppp, 1000, "km")
-massage_se_ppp.km  = rescale.ppp(massage_se_ppp, 1000, "km")
-massage_wl_ppp.km  = rescale.ppp(massage_wl_ppp, 1000, "km")
+massage_ou_ppp.km  = rescale.ppp(massage_ou_ppp, 1000, "km")
+massage_ka_ppp.km  = rescale.ppp(massage_ka_ppp, 1000, "km")
 
-par(mfrow = c(2, 3), cex = 0.3)
-plot(unmark(massage_je_ppp.km), main = "JURONG EAST (Massage)")
-plot(unmark(massage_jw_ppp.km), main = "JURONG WEST (Massage)")
-plot(unmark(massage_nt_ppp.km), main = "NEWTON (Massage)")
-plot(unmark(massage_se_ppp.km), main = "SERANGOON (Massage)")
-plot(unmark(massage_wl_ppp.km), main = "WOODLANDS (Massage)")
+par(mfrow = c(1,2), cex = 0.6)
+plot(unmark(massage_ou_ppp.km), main = "OUTRAM (Massage)")
+plot(unmark(massage_ka_ppp.km), main = "KALLANG (Massage)")
+
 ```
 
 # Fitness Centres
 
+In Downtown Core, fitness centers exhibit a clear clustering pattern, particularly concentrated in the southern and western areas. This aligns closely with the district’s role as a commercial and office hub. The high density of fitness centers in locations with a large working population reflects the strong correlation between fitness demand and workplace population density.
+
+In contrast, in Geylang, fitness centers are more dispersed, with points scattered across the area and only small-scale clusters in certain spots. This pattern suggests that in Geylang, fitness centers primarily serve the residential population and community-based consumption needs, rather than relying heavily on concentrated demand from business districts.
+
 ```{r}
-fit_je_ppp  = fitness_ppp[je_owin]
-fit_jw_ppp  = fitness_ppp[jw_owin]
-fit_nt_ppp  = fitness_ppp[nt_owin]
-fit_se_ppp  = fitness_ppp[se_owin]
-fit_wl_ppp  = fitness_ppp[wl_owin]
+fit_dc_ppp  = fitness_ppp[dc_owin]
+fit_ge_ppp  = fitness_ppp[ge_owin]
 
-fit_je_ppp.km  = rescale.ppp(fit_je_ppp, 1000, "km")
-fit_jw_ppp.km  = rescale.ppp(fit_jw_ppp, 1000, "km")
-fit_nt_ppp.km  = rescale.ppp(fit_nt_ppp, 1000, "km")
-fit_se_ppp.km  = rescale.ppp(fit_se_ppp, 1000, "km")
-fit_wl_ppp.km  = rescale.ppp(fit_wl_ppp, 1000, "km")
-
-par(mfrow = c(2, 3), cex = 0.3)
-plot(unmark(fit_je_ppp.km), main = "JURONG EAST (Fitness)")
-plot(unmark(fit_jw_ppp.km), main = "JURONG WEST (Fitness)")
-plot(unmark(fit_nt_ppp.km), main = "NEWTON (Fitness)")
-plot(unmark(fit_se_ppp.km), main = "SERANGOON (Fitness)")
-plot(unmark(fit_wl_ppp.km), main = "WOODLANDS (Fitness)")
+fit_dc_ppp.km  = rescale.ppp(fit_dc_ppp, 1000, "km")
+fit_ge_ppp.km  = rescale.ppp(fit_ge_ppp, 1000, "km")
+par(mfrow = c(1,2), cex = 0.6)
+plot(unmark(fit_dc_ppp.km), main = "DOWNTOWN CORE (Fitness)")
+plot(unmark(fit_ge_ppp.km), main = "GEYLANG (Fitness)")
 ```
 :::
 
@@ -1011,431 +936,284 @@ set.seed(1234)
 
 ## 8.6 Second-Order Spatial Analysis For Clinic
 
-Ho = The distribution of Clinic at SERANGOON are randomly distributed.
+The second-order spatial analysis of clinics in both Geylang and Novena indicates significant clustering, as the observed K(d) and L(d) values are consistently higher than the CSR benchmark. Thus, the null hypothesis of random distribution is rejected in both cases. However, the nature of clustering differs between the two areas.
 
-H1= The distribution of Clinic at SERANGOON are not randomly distributed.
+Although neither Geylang nor Novena is part of the city’s central business district, their clinic distributions show distinct spatial patterns. Novena exhibits a highly concentrated core clustering, reflecting its role as a major healthcare hub where clinics agglomerate around specialized medical facilities and transport nodes. By contrast, Geylang shows a more dispersed form of clustering, with clinics spread relatively evenly across the area. This suggests that while clustering exists, it is community-oriented and designed to ensure accessibility for local residents, rather than forming a tightly bounded medical core.
 
-Taken together, the K and L functions—and to a lesser extent the G function—show significant departures above the CSR envelopes over specific distance bands, indicating scale-dependent clustering of clinics in Serangoon. Although the F function does not reject CSR, the convergent evidence from K and L (which are more sensitive to cumulative interaction over distance) supports the conclusion that the pattern is not fully random. Overall, we reject H₀ and infer that clinic locations in Serangoon exhibit statistically significant clustering at particular spatial scales, while acknowledging that the effect is not uniform across all distances.
+
+::::: panel-tabset
+# Novena
+
+Ho = The distribution of Clinic at NOVENA are randomly distributed.
+
+H1= The distribution of Clinic at NOVENA are not randomly distributed.
+
+Based on the calculation of the K-function and L-function, both K(d) and L(d) are significantly higher than CSR. Therefore, we reject H_0 and accept H_1, indicating that clinic establishments in the Novena area are significantly clustered.
 
 ::: panel-tabset
-# G-function
-
-Ho = The distribution of Clinic at SERANGOON are randomly distributed.
-
-H1= The distribution of Clinic at SERANGOON are not randomly distributed.
-
-The observed curve exceeds the CSR envelope over parts of the distance range, indicating statistically significant clustering at those scales; elsewhere it remains within the envelope. Decision: Reject H₀ only for the distances where the curve is above the envelope (scale-dependent effect).
+## K-function
 
 ```{r}
-G_clinic_se = Gest(clinic_se_ppp, correction = "best")
-plot(G_clinic_se, xlim=c(0,500))
+K_clinic_no = Kest(clinic_no_ppp, correction = "Ripley")
+plot(K_clinic_no, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
 ```
 
 ```{r}
-
-G_clinic_se.csr <- envelope(clinic_se_ppp, Gest, nsim = 999)
+K_clinic_no.csr <- envelope(clinic_no_ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)
 ```
 
 ```{r}
-plot(G_clinic_se.csr)
+plot(K_clinic_no.csr, . - r ~ r, xlab="d", ylab="K(d)-r")
 ```
 
-# F-function
-
-Ho = The distribution of Clinic at SERANGOON are randomly distributed.
-
-H1= The distribution of Clinic at SERANGOON are not randomly distributed.
-
-The observed curve lies entirely within the CSR envelope, providing no statistically significant departure from CSR. Decision: Fail to reject H₀.
+## L-function
 
 ```{r}
-F_clinic_se = Fest(clinic_se_ppp, correction = "best")
-plot(F_clinic_se)
-```
-
-```{r}
-
-F_clinic_se.csr <- envelope(clinic_se_ppp, Fest, nsim = 999)
-```
-
-```{r}
-plot(F_clinic_se.csr)
-```
-
-# K-function
-
-Ho = The distribution of Clinic at SERANGOON are randomly distributed.
-
-H1= The distribution of Clinic at SERANGOON are not randomly distributed.
-
-The observed curve rises above the upper CSR envelope across portions of the range, implying more neighbours than expected under CSR. Decision: Reject H₀ for those distance ranges, consistent with clustering.
-
-```{r}
-K_clinic_se = Kest(clinic_se_ppp, correction = "Ripley")
-plot(K_clinic_se, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
-```
-
-```{r}
-K_clinic_se.csr <- envelope(clinic_se_ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)
-```
-
-```{r}
-plot(K_clinic_se.csr, . - r ~ r, xlab="d", ylab="K(d)-r")
-```
-
-# L-function
-
-Ho = The distribution of Clinic at SERANGOON are randomly distributed.
-
-H1= The distribution of Clinic at SERANGOON are not randomly distributed.
-
-The variance-stabilised curve similarly exceeds the CSR envelope over certain distances, corroborating the clustering signal. Decision: Reject H₀ for the distances where the curve is above the envelope.
-
-```{r}
-L_clinic_se = Lest(clinic_se_ppp, correction = "Ripley")
-plot(L_clinic_se, . -r ~ r, 
+L_clinic_no = Lest(clinic_no_ppp, correction = "Ripley")
+plot(L_clinic_no, . -r ~ r, 
      ylab= "L(d)-r", xlab = "d(m)")
 ```
 
 ```{r}
-#| cache: true
-L_clinic_se.csr <- envelope(clinic_se_ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)
+L_clinic_no.csr <- envelope(clinic_no_ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)
 ```
 
 ```{r}
-plot(L_clinic_se.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
+plot(L_clinic_no.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
 ```
 :::
+
+# Geylang
+
+Ho = The distribution of Clinic at Geylang are randomly distributed.
+
+H1= The distribution of Clinic at Geylang are not randomly distributed.
+
+Based on the calculation of the K-function and L-function, both K(d) and L(d) are significantly higher than CSR. Therefore, we reject H_0 and accept H_1, indicating that clinic establishments in the Geylang area are significantly clustered.
+
+::: panel-tabset
+## K-function
+
+```{r}
+K_clinic_ge = Kest(clinic_ge_ppp, correction = "Ripley")
+plot(K_clinic_ge, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
+```
+
+```{r}
+K_clinic_ge.csr <- envelope(clinic_ge_ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)
+```
+
+```{r}
+plot(K_clinic_ge.csr, . - r ~ r, xlab="d", ylab="K(d)-r")
+```
+
+## L-function
+
+```{r}
+L_clinic_ge = Lest(clinic_ge_ppp, correction = "Ripley")
+plot(L_clinic_ge, . -r ~ r, 
+     ylab= "L(d)-r", xlab = "d(m)")
+```
+
+```{r}
+L_clinic_ge.csr <- envelope(clinic_ge_ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)
+```
+
+```{r}
+plot(L_clinic_ge.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
+```
+:::
+:::::
 
 ## 8.7 Second-Order Spatial Analysis For Massage
 
-Ho = The distribution of Massage at SERANGOON are randomly distributed.
+The second-order spatial analysis shows that both Outram and Kallang exhibit significant clustering of massage establishments, as indicated by K(d) and L(d) values exceeding the CSR benchmark. However, the nature and intensity of clustering differ across the two regions.
 
-H1= The distribution of Massage at SERANGOON are not randomly distributed.
+In Outram, massage outlets display a moderately clustered yet relatively balanced distribution, with establishments concentrated around central accessible areas but also dispersed into smaller sub-clusters across the region. This suggests that the massage industry in Outram is integrated into the district’s mixed-use character, combining healthcare, leisure, and commercial activities.
 
-Although the F-function does not reject CSR and the G-function shows only slight departures at limited scales, the K and L functions provide robust evidence of clustering across a broad range of distances, with L indicating consistent, scale-spanning departures from CSR. Given that K and L integrate information over neighborhoods and are more sensitive to cumulative interaction than G and F, the weight of evidence supports rejection of H₀: massage establishments in Serangoon are not randomly distributed but exhibit statistically significant clustering, with the effect strongest and most pervasive at medium to larger spatial scales.
+By contrast, in Kallang, clustering is much more pronounced and localized, with a dense concentration of establishments in the southern part of the district, near major transport nodes and commercial corridors. Beyond this hotspot, the distribution becomes more scattered. This indicates that in Kallang, the massage industry is more dependent on high-traffic and high-consumption nodes, forming a strong local cluster rather than a balanced spread.
+
+::::: panel-tabset
+# Outram
+Ho = The distribution of Massage at Outram are randomly distributed.
+
+H1= The distribution of Massage at Outram are not randomly distributed.
+
+Based on the calculation of the K-function and L-function, both K(d) and L(d) are significantly higher than CSR. Therefore, we reject H_0 and accept H_1, indicating that massage establishments in the Outram area are significantly clustered.
+
 
 ::: panel-tabset
-# G-function
-
-Ho = The distribution of Massage at SERANGOON are randomly distributed.
-
-H1= The distribution of Massage at SERANGOON are not randomly distributed.
-
-The observed curve only marginally exceeds the CSR envelope over a very limited distance range, indicating weak, scale-limited clustering; elsewhere it remains within the envelope. Decision: Reject H₀ only at those narrow distances; otherwise fail to reject.
+## K-function
 
 ```{r}
-G_massage_se = Gest(massage_se_ppp, correction = "best")
-plot(G_massage_se, xlim=c(0,500))
+K_massage_ou = Kest(massage_ou_ppp, correction = "Ripley")
+plot(K_massage_ou, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
 ```
 
 ```{r}
-G_massage_se.csr <- envelope(massage_se_ppp, Gest, nsim = 999)
+K_massage_ou.csr <- envelope(massage_ou_ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)
 ```
 
 ```{r}
-plot(G_massage_se.csr)
+plot(K_massage_ou.csr, . - r ~ r, xlab="d", ylab="K(d)-r")
 ```
 
-# F-function
-
-Ho = The distribution of Massage at SERANGOON are randomly distributed.
-
-H1= The distribution of Massage at SERANGOON are not randomly distributed.
-
-The observed curve lies entirely within the CSR envelope, providing no statistically significant departure from CSR. Decision: Fail to reject H₀.
+## L-function
 
 ```{r}
-F_massage_se = Fest(massage_se_ppp, correction = "best")
-plot(F_massage_se)
-```
-
-```{r}
-F_massage_se.csr <- envelope(massage_se_ppp, Fest, nsim = 999)
-```
-
-```{r}
-plot(F_massage_se.csr)
-```
-
-# K-function
-
-Ho = The distribution of Massage at SERANGOON are randomly distributed.
-
-H1= The distribution of Massage at SERANGOON are not randomly distributed.
-
-The observed curve is above the CSR envelope for most distances, dipping inside only briefly, implying more neighbors than expected under CSR across a wide range of scales. Decision: Reject H₀ (clustering) over most distances.
-
-```{r}
-K_massage_se = Kest(massage_se_ppp, correction = "Ripley")
-plot(K_massage_se, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
-```
-
-```{r}
-K_massage_se.csr <- envelope(massage_se_ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)
-```
-
-```{r}
-plot(K_massage_se.csr, . - r ~ r, xlab="d", ylab="K(d)-r")
-```
-
-# L-function
-
-Ho = The distribution of Massage at SERANGOON are randomly distributed.
-
-H1= The distribution of Massage at SERANGOON are not randomly distributed.
-
-The variance-stabilized curve remains above the CSR envelope across all distances considered, offering strong and consistent evidence of clustering. Decision: Reject H₀.
-
-```{r}
-L_massage_se = Lest(massage_se_ppp, correction = "Ripley")
-plot(L_massage_se, . -r ~ r, 
+L_massage_ou = Lest(massage_ou_ppp, correction = "Ripley")
+plot(L_massage_ou, . -r ~ r, 
      ylab= "L(d)-r", xlab = "d(m)")
 ```
 
 ```{r}
-L_massage_se.csr <- envelope(massage_se_ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)
+L_massage_ou.csr <- envelope(massage_ou_ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)
 ```
 
 ```{r}
-plot(L_massage_se.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
+plot(L_massage_ou.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
 ```
 :::
+
+# Kallang
+
+Ho = The distribution of Massage at Outram are randomly distributed.
+
+H1= The distribution of Massage at Outram are not randomly distributed.
+
+Based on the calculation of the K-function and L-function, both K(d) and L(d) are significantly higher than CSR. Therefore, we reject H_0 and accept H_1, indicating that massage establishments in the Kallang area are significantly clustered.
+
+::: panel-tabset
+## K-function
+
+```{r}
+K_massage_ka = Kest(massage_ka_ppp, correction = "Ripley")
+plot(K_massage_ka, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
+```
+
+```{r}
+K_massage_ka.csr <- envelope(massage_ka_ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)
+```
+
+```{r}
+plot(K_massage_ka.csr, . - r ~ r, xlab="d", ylab="K(d)-r")
+```
+
+## L-function
+
+```{r}
+L_massage_ka = Lest(massage_ka_ppp, correction = "Ripley")
+plot(L_massage_ka, . -r ~ r, 
+     ylab= "L(d)-r", xlab = "d(m)")
+```
+
+```{r}
+L_massage_ka.csr <- envelope(massage_ka_ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)
+```
+
+```{r}
+plot(L_massage_ka.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
+```
+:::
+:::::
 
 ## 8.8 Second-Order Spatial Analysis For Fitness
 
-Ho = The distribution of Fitness at SERANGOON are randomly distributed.
+Based on the results of second-order spatial analysis, the distribution of fitness centers in both Geylang and Downtown Core significantly deviates from complete spatial randomness, showing clear clustering patterns. However, the clustering characteristics differ between the two areas.
 
-H1= The distribution of Fitness at SERANGOON are not randomly distributed.
+In Downtown Core, fitness centers are highly concentrated in the southern and southwestern parts of the district, forming a compact core cluster. This aligns with the area’s role as a commercial and office hub with a dense working population. The distribution pattern of fitness centers here is strongly linked to workplace demand.
 
-Taken together, G shows clustering confined to very short distances (0–100 m), while K and L demonstrate statistically significant clustering up to \~600 m, beyond which both functions revert to compatibility with CSR. The F-function does not reject CSR at any scale, which is not uncommon given its different sensitivity (distance from random locations). Overall, the convergent evidence from K and L—supported by G at the smallest scales—indicates that fitness establishments in Serangoon are not randomly distributed, but exhibit scale-dependent clustering concentrated at short to medium ranges (≤ 600 m); at larger scales, the pattern is indistinguishable from CSR. Accordingly, we reject H₀ for distances below 600 m and fail to reject H₀ at greater distances.
+In contrast, in Geylang, fitness centers also exhibit significant clustering, but the overall distribution is more dispersed. Facilities are spread across the area, with only small-scale clusters forming in certain locations. This indicates that fitness centers in Geylang are more oriented toward serving the residential population and everyday community needs, rather than being driven primarily by business or workplace demand.
+
+
+::::: panel-tabset
+# Downtown Core
+
+Ho = The distribution of Fitness at Downtown Core are randomly distributed.
+
+H1 = The distribution of Fitness at Downtown Core are not randomly
+distributed.
+
+Based on the calculation of the K-function and L-function, both K(d) and L(d) are significantly higher than CSR. Therefore, we reject H_0 and accept H_1, indicating that fitness establishments in the Downtown Core area are significantly clustered.
 
 ::: panel-tabset
-# G-function
-
-Ho = The distribution of Fitness at SERANGOON are randomly distributed.
-
-H1= The distribution of Fitness at SERANGOON are not randomly distributed.
-
-The observed curve exceeds the CSR envelope only at 0–100 m, indicating short-range clustering; elsewhere it falls within the envelope. Decision: Reject H₀ at 0–100 m only; otherwise fail to reject.
+## K-function
 
 ```{r}
-G_fit_se = Gest(fit_se_ppp, correction = "best")
-plot(G_fit_se, xlim=c(0,500))
+K_fit_dc = Kest(fit_dc_ppp, correction = "Ripley")
+plot(K_fit_dc, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
 ```
 
 ```{r}
-#| cache: true
-G_fit_se.csr <- envelope(fit_se_ppp, Gest, nsim = 999)
+K_fit_dc.csr <- envelope(fit_dc_ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)
 ```
 
 ```{r}
-plot(G_fit_se.csr)
+plot(K_fit_dc.csr, . - r ~ r, xlab="d", ylab="K(d)-r")
 ```
 
-# F-function
-
-Ho = The distribution of Fitness at SERANGOON are randomly distributed.
-
-H1= The distribution of Fitness at SERANGOON are not randomly distributed.
-
-The observed curve remains entirely within the CSR envelope across all distances, providing no significant departure from CSR. Decision: Fail to reject H₀.
+## L-function
 
 ```{r}
-F_fit_se = Fest(fit_se_ppp, correction = "best")
-plot(F_fit_se)
-```
-
-```{r}
-F_fit_se.csr <- envelope(fit_se_ppp, Fest, nsim = 999)
-```
-
-```{r}
-plot(F_fit_se.csr)
-```
-
-# K-function
-
-Ho = The distribution of Fitness at SERANGOON are randomly distributed.
-
-H1= The distribution of Fitness at SERANGOON are not randomly distributed.
-
-The observed curve lies above the CSR envelope for r \< 600 m and falls within it for r ≥ 600 m, implying scale-limited clustering concentrated at short to medium ranges. Decision: Reject H₀ for r \< 600 m; fail to reject for r ≥ 600 m.
-
-```{r}
-K_fit_se = Kest(fit_se_ppp, correction = "Ripley")
-plot(K_fit_se, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
-```
-
-```{r}
-K_fit_se.csr <- envelope(fit_se_ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)
-```
-
-```{r}
-plot(K_fit_se.csr, . - r ~ r, xlab="d", ylab="K(d)-r")
-```
-
-# L-function
-
-Ho = The distribution of Fitness at SERANGOON are randomly distributed.
-
-H1= The distribution of Fitness at SERANGOON are not randomly distributed.
-
-The variance-stabilized curve is above the CSR envelope for r \< 600 m and inside the envelope for r ≥ 600 m, corroborating short- to mid-range clustering with no large-scale departure. Decision: Reject H₀ for r \< 600 m; fail to reject for r ≥ 600 m.
-
-```{r}
-L_fit_se = Lest(fit_se_ppp, correction = "Ripley")
-plot(L_fit_se, . -r ~ r, 
+L_fit_dc = Lest(fit_dc_ppp, correction = "Ripley")
+plot(L_fit_dc, . -r ~ r, 
      ylab= "L(d)-r", xlab = "d(m)")
 ```
 
 ```{r}
-#| cache: true
-L_fit_se.csr <- envelope(fit_se_ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)
+L_fit_dc.csr <- envelope(fit_dc_ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)
 ```
 
 ```{r}
-plot(L_fit_se.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
+plot(L_fit_dc.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
 ```
 :::
 
-# 9 Spatio-Temporal Point Patterns Analysis
+# Geylang
+Ho = The distribution of Fitness at Geylang are randomly distributed.
 
-## 9.1 Data Prepare for Spatio-Temporal Point Patterns Analysis
+H1= The distribution of Fitness at Geylang are not randomly distributed.
 
-This code prepares the business datasets for spatio-temporal analysis in the Serangoon planning area. First, the study period is defined from January 2024 to June 2025, and a complete sequence of months within this range is generated and formatted as categorical labels (e.g., Jan 2024), which serve as ordered factors for subsequent faceted visualizations. The Serangoon boundary polygon is then extracted from the URA Master Plan 2019 subzone dataset to delimit the study region.
-
-A custom function, prep_points(), is implemented to standardize data preprocessing across all three industry types (clinics, massage services, and fitness centres). The function clips point locations to the Serangoon boundary, filters records by the defined time range, and assigns the corresponding YearMonth factor to each entry. Applying this function produces three cleaned subsets: biz_clinic_se, biz_massage_se, and biz_fitness_se.
-
-Finally, a facetable polygon layer (mpsz_se_facets) is constructed by replicating the Serangoon boundary for each month in the study period and attaching the appropriate YearMonth label. This ensures that monthly facet maps will display consistently, even for months with no business registrations.
-
-Overall, this procedure integrates both spatial and temporal dimensions, generating harmonized datasets and a reusable polygon base layer to support monthly faceted mapping and subsequent spatial analyses.
-
-```{r}
-range_start <- as.Date("2024-01-01")
-range_end   <- as.Date("2025-06-30")
-
-all_months <- seq(as.Date("2024-01-01"), as.Date("2025-06-01"), by = "1 month")
-all_levels <- format(all_months, "%b %Y")
-
-mpsz_se <- mpsz %>% dplyr::filter(PLN_AREA_N == "SERANGOON")
-stopifnot(nrow(mpsz_se) > 0)
-
-prep_points <- function(sf_points, boundary_sf, start_date, end_date, levels_vec){
-  sf::st_join(sf_points, boundary_sf %>% dplyr::select(PLN_AREA_N),
-              join = sf::st_within, left = FALSE) %>%
-    dplyr::filter(date >= start_date, date <= end_date) %>%
-    dplyr::mutate(YearMonth = factor(format(date, "%b %Y"),
-                                     levels = levels_vec, ordered = TRUE))
-}
-
-biz_fitness_se <- prep_points(biz_fitness_sf,  mpsz_se, range_start, range_end, all_levels)
-biz_clinic_se  <- prep_points(biz_clinic_sf,   mpsz_se, range_start, range_end, all_levels)
-biz_massage_se <- prep_points(biz_Massage_sf,  mpsz_se, range_start, range_end, all_levels)
-
-mpsz_se_facets <- dplyr::bind_rows(lapply(all_levels, function(m) {
-  tmp <- mpsz_se %>% dplyr::select(geometry)
-  tmp$YearMonth <- factor(m, levels = all_levels, ordered = TRUE)
-  tmp
-})) %>% sf::st_as_sf()
-```
-
-## 9.2 Visuaising geographic distribution of 3 industry by month
-
-Both clinics and fitness centres demonstrate broad community coverage, indicating that they serve everyday living needs (healthcare + wellness). Massage services, however, follow a different logic, being more dependent on commercial and leisure demand, and showing lower overlap with the other two. Overall, the three industries exhibit complementarity rather than competition: clinics ensure essential healthcare, fitness centres promote healthy lifestyles, and massage services satisfy scattered leisure needs.
+Based on the calculation of the K-function and L-function, both K(d) and L(d) are significantly higher than CSR. Therefore, we reject H_0 and accept H_1, indicating that fitness establishments in the Gelang area are significantly clustered.
 
 ::: panel-tabset
-# Clinic
-
-Clinics in Serangoon show the widest and most stable spatial distribution, covering different subzones. This reflects the public service nature of clinics, which are designed to meet residents’ healthcare needs across the area. Between February and June 2024 there were no new establishments, but from March to June 2025 multiple new clinics appeared each month, which may be related to policy changes.
+## K-function
 
 ```{r}
-tm_shape(mpsz_se_facets, is.master = TRUE) +
-  tm_polygons(fill = "grey90") +
-  tm_borders(col = "grey60") +
-tm_shape(biz_clinic_se) +
-  tm_dots(size = 0.3, col = "blue") +
-tm_facets(
-  by = "YearMonth",
-  ncol = 6, nrow = 3,
-  drop.units = TRUE,       
-  drop.empty.facets = FALSE, 
-  free.coords = FALSE     
-) +
-tm_title("Clinics in SERANGOON by Month")
-
+K_fit_ge = Kest(fit_ge_ppp, correction = "Ripley")
+plot(K_fit_ge, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
 ```
 
-# Massage
-
-Massage services are the least numerous and most spatially limited among the three industries. Over the 18-month period, only a handful of new outlets were registered, with most months recording just one. Their distribution is highly scattered, often located in central or easily accessible parts of Serangoon. This pattern reflects the commercial and leisure-oriented nature of massage services, which differ from clinics in their lack of uniform distribution. Compared with clinics and fitness centres, massage services have a weaker presence in Serangoon and represent a niche industry.
-
 ```{r}
-tm_shape(mpsz_se_facets, is.master = TRUE) +
-  tm_polygons(fill = "grey90") +
-  tm_borders(col = "grey60") +
-tm_shape(biz_massage_se) +
-  tm_dots(size = 0.3, col = "red") +
-tm_facets(
-  by = "YearMonth",
-  ncol = 6, nrow = 3,
-  drop.units = TRUE,
-  drop.empty.facets = FALSE,
-  free.coords = FALSE
-) +
-tm_title("Massage  in SERANGOON by Month")
+K_fit_ge.csr <- envelope(fit_ge_ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)
 ```
 
-# Fitness
+```{r}
+plot(K_fit_ge.csr, . - r ~ r, xlab="d", ylab="K(d)-r")
+```
 
-Fitness centres are moderate in scale but unevenly distributed. In some months multiple new establishments were registered, while in others none appeared. Their locations are widely spread, covering both central and peripheral subzones, with some small-scale clusters observed. Compared with clinics, fitness centres display greater volatility in registration, reflecting market fluctuations, shifting consumer demand, and industry competition.
+## L-function
 
 ```{r}
-tm_shape(mpsz_se_facets, is.master = TRUE) +
-  tm_polygons(fill = "grey90") +
-  tm_borders(col = "grey60") +
-tm_shape(biz_fitness_se) +
-  tm_dots(size = 0.3) +
-tm_facets(
-  by = "YearMonth",
-  ncol = 6, nrow = 3,
-  drop.units = TRUE,       
-  drop.empty.facets = FALSE,
-  free.coords = FALSE       
-)+
-tm_title("Fitness centres  in SERANGOON by Month") 
+L_fit_ge = Lest(fit_ge_ppp, correction = "Ripley")
+plot(L_fit_ge, . -r ~ r, 
+     ylab= "L(d)-r", xlab = "d(m)")
+```
+
+```{r}
+L_fit_ge.csr <- envelope(fit_ge_ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)
+```
+
+```{r}
+plot(L_fit_ge.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
 ```
 :::
+:::::
+
+# 10 Conclusion
 
 
-## 9.3 Spatio-temporal Point Patterns Analysis: stpp methods
 
-```{r}
-coords <- st_coordinates(biz_clinic_sf)
-```
-
-```{r}
-clinic_df <- data.frame(
-  x = coords[, 1],  
-  y = coords[, 2],
-  t = biz_clinic_sf$`date`)
-
-clinic_stpp <- as.3dpoints(clinic_df)
-
-class(clinic_stpp)
-```
-
-```{r}
-plot(clinic_stpp)
-```
-```{r}
-kbb_clinic <- STIKhat(clinic_stpp)
-```
-
-```{r}
-plotK(kbb_clinic)
-```
-
-# 10 Reference
+# 11 Reference
 
 -   Kam, T. S. (2024). *R for Geospatial Data Science and Analytics* <https://r4gdsa.netlify.app>
