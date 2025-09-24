@@ -62,7 +62,8 @@ In this exercise, the focus is on new business entities established in Singapore
 | lwgeom | Geometry operations, fixing invalid shapes (wraps GEOS). |
 
 ```{r}
-pacman::p_load(sf, spNetwork, spatstat,tmap, tidyverse, httr, rvest, terra, lwgeom, stpp, dplyr, lubridate, spatstat.geom)
+pacman::p_load(sf, spNetwork, spatstat,tmap, tidyverse, httr, rvest, terra, lwgeom, stpp, dplyr, lubridate, spatstat.geom, sf, spatstat, sparr, 
+               tmap, stpp, tidyverse, magick, fields)
 ```
 
 # 1.4 The Data
@@ -876,7 +877,6 @@ In Novena, clinics demonstrate a strong core clustering effect, with almost all 
 
 In Geylang, the number of clinics is relatively high, and their distribution is more dispersed, covering almost the entire area. This layout suggests that the clinic industry in Geylang primarily aims to meet community-level healthcare needs, emphasizing accessibility and balanced regional distribution. At the same time, it may also be associated with the presence of the sex trade in Geylang. This contrasts with Novena’s positioning as a specialized medical hub.
 
-
 ```{r}
 clinic_no_ppp  = clinic_ppp[no_owin]
 clinic_ge_ppp  = clinic_ppp[ge_owin]
@@ -939,7 +939,6 @@ set.seed(1234)
 The second-order spatial analysis of clinics in both Geylang and Novena indicates significant clustering, as the observed K(d) and L(d) values are consistently higher than the CSR benchmark. Thus, the null hypothesis of random distribution is rejected in both cases. However, the nature of clustering differs between the two areas.
 
 Although neither Geylang nor Novena is part of the city’s central business district, their clinic distributions show distinct spatial patterns. Novena exhibits a highly concentrated core clustering, reflecting its role as a major healthcare hub where clinics agglomerate around specialized medical facilities and transport nodes. By contrast, Geylang shows a more dispersed form of clustering, with clinics spread relatively evenly across the area. This suggests that while clustering exists, it is community-oriented and designed to ensure accessibility for local residents, rather than forming a tightly bounded medical core.
-
 
 ::::: panel-tabset
 # Novena
@@ -1035,12 +1034,12 @@ By contrast, in Kallang, clustering is much more pronounced and localized, with 
 
 ::::: panel-tabset
 # Outram
+
 Ho = The distribution of Massage at Outram are randomly distributed.
 
 H1= The distribution of Massage at Outram are not randomly distributed.
 
 Based on the calculation of the K-function and L-function, both K(d) and L(d) are significantly higher than CSR. Therefore, we reject H_0 and accept H_1, indicating that massage establishments in the Outram area are significantly clustered.
-
 
 ::: panel-tabset
 ## K-function
@@ -1125,14 +1124,12 @@ In Downtown Core, fitness centers are highly concentrated in the southern and so
 
 In contrast, in Geylang, fitness centers also exhibit significant clustering, but the overall distribution is more dispersed. Facilities are spread across the area, with only small-scale clusters forming in certain locations. This indicates that fitness centers in Geylang are more oriented toward serving the residential population and everyday community needs, rather than being driven primarily by business or workplace demand.
 
-
 ::::: panel-tabset
 # Downtown Core
 
 Ho = The distribution of Fitness at Downtown Core are randomly distributed.
 
-H1 = The distribution of Fitness at Downtown Core are not randomly
-distributed.
+H1 = The distribution of Fitness at Downtown Core are not randomly distributed.
 
 Based on the calculation of the K-function and L-function, both K(d) and L(d) are significantly higher than CSR. Therefore, we reject H_0 and accept H_1, indicating that fitness establishments in the Downtown Core area are significantly clustered.
 
@@ -1170,6 +1167,7 @@ plot(L_fit_dc.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
 :::
 
 # Geylang
+
 Ho = The distribution of Fitness at Geylang are randomly distributed.
 
 H1= The distribution of Fitness at Geylang are not randomly distributed.
@@ -1210,9 +1208,178 @@ plot(L_fit_ge.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
 :::
 :::::
 
+## 9 Spatio-temporal Point Patterns Analysis: stpp methods
+
+### 9.1 Data Prepare for stpp
+
+In this step, the three business datasets (clinics, massage, and fitness centres) were first converted into sf objects with valid spatial coordinates (EPSG:3414). Each dataset was then spatially joined with the URA Master Plan 2019 planning area boundaries (mpsz) to append the corresponding planning area attributes.
+
+From these enriched datasets, six sub-areas of interest were selected for further analysis:
+
+• Clinics: Novena and Geylang
+
+• Massage: Outram and Kallang
+
+• Fitness centres: Downtown Core and Geylang
+
+The spatial coordinates (x, y) and registration dates (t) of each subset were extracted and assembled into data frames, which were then transformed into 3D spatio-temporal point pattern objects using as.3dpoints(). Finally, the spatio-temporal K-function (STIKhat) was applied to each subset to measure clustering behaviour over both spatial and temporal dimensions.
+
+```{r}
+
+biz_clinic_sf <- st_as_sf(
+  biz_clinic %>% filter(!is.na(X), !is.na(Y)),
+  coords = c("X","Y"), crs = 3414
+)
+
+biz_massage_sf <- st_as_sf(
+  biz_Massage %>% filter(!is.na(X), !is.na(Y)),
+  coords = c("X","Y"), crs = 3414
+)
+
+biz_fitness_sf <- st_as_sf(
+  biz_fitness %>% filter(!is.na(X), !is.na(Y)),
+  coords = c("X","Y"), crs = 3414
+)
+
+biz_clinic_sf <- st_join(biz_clinic_sf, mpsz, join = st_within)
+biz_massage_sf <- st_join(biz_massage_sf, mpsz, join = st_within)
+biz_fitness_sf <- st_join(biz_fitness_sf, mpsz, join = st_within)
+
+clinic_no_sf <- biz_clinic_sf %>%
+  filter(PLN_AREA_N == "NOVENA")
+clinic_ge_sf <- biz_clinic_sf %>%
+  filter(PLN_AREA_N == "GEYLANG")
+massage_ou_sf <- biz_massage_sf %>%
+  filter(PLN_AREA_N == "OUTRAM")
+massage_ka_sf <- biz_massage_sf %>%
+  filter(PLN_AREA_N == "KALLANG")
+fitness_dc_sf <- biz_fitness_sf %>%
+  filter(PLN_AREA_N == "DOWNTOWN CORE")
+fitness_ge_sf <- biz_fitness_sf %>%
+  filter(PLN_AREA_N == "GEYLANG")
+
+coords_c_no <- st_coordinates(clinic_no_sf)   # Novena
+coords_c_ge <- st_coordinates(clinic_ge_sf)   # Geylang
+coords_m_ou <- st_coordinates(massage_ou_sf)  # Outram
+coords_m_ka <- st_coordinates(massage_ka_sf)  # Kallang
+coords_f_dc <- st_coordinates(fitness_dc_sf)  # Downtown Core
+coords_f_ge <- st_coordinates(fitness_ge_sf)  # Geylang
+
+
+# --- Clinics: Novena ---
+clinic_no_df <- data.frame(
+  x = coords_c_no[, 1],  
+  y = coords_c_no[, 2],
+  t = clinic_no_sf$date
+)
+clinic_no_stpp <- as.3dpoints(clinic_no_df)
+kbb_clinic_no <- STIKhat(clinic_no_stpp)
+
+# --- Clinics: Geylang ---
+clinic_ge_df <- data.frame(
+  x = coords_c_ge[, 1],  
+  y = coords_c_ge[, 2],
+  t = clinic_ge_sf$date
+)
+clinic_ge_stpp <- as.3dpoints(clinic_ge_df)
+kbb_clinic_ge <- STIKhat(clinic_ge_stpp)
+
+# --- Massage: Outram ---
+massage_ou_df <- data.frame(
+  x = coords_m_ou[, 1],  
+  y = coords_m_ou[, 2],
+  t = massage_ou_sf$date
+)
+massage_ou_stpp <- as.3dpoints(massage_ou_df)
+kbb_massage_ou <- STIKhat(massage_ou_stpp)
+
+# --- Massage: Kallang ---
+massage_ka_df <- data.frame(
+  x = coords_m_ka[, 1],  
+  y = coords_m_ka[, 2],
+  t = massage_ka_sf$date
+)
+massage_ka_stpp <- as.3dpoints(massage_ka_df)
+kbb_massage_ka <- STIKhat(massage_ka_stpp)
+
+# --- Fitness: Downtown Core ---
+fitness_dc_df <- data.frame(
+  x = coords_f_dc[, 1],  
+  y = coords_f_dc[, 2],
+  t = fitness_dc_sf$date
+)
+fitness_dc_stpp <- as.3dpoints(fitness_dc_df)
+kbb_fitness_dc <- STIKhat(fitness_dc_stpp)
+
+# --- Fitness: Geylang ---
+fitness_ge_df <- data.frame(
+  x = coords_f_ge[, 1],  
+  y = coords_f_ge[, 2],
+  t = fitness_ge_sf$date
+)
+fitness_ge_stpp <- as.3dpoints(fitness_ge_df)
+kbb_fitness_ge <- STIKhat(fitness_ge_stpp)
+
+```
+
+### 9.2 Spatio-temporal Point Patterns Analysis
+
+::: panel-tabset
+# clinic
+
+Novena: The contour plot shows moderate clustering with flatter, lighter lines at short spatial and temporal distances. Clustering exists but is localized and less intense, consistent with Novena’s role as a structured medical hub where clinics cluster around a core but without strong temporal bursts.
+
+Geylang: Steeper and darker contour lines indicate stronger clustering across larger spatial and temporal scales. Clinics in Geylang are not only spatially close but also appear more synchronously in time, reflecting community-driven demand and dynamic bursts of activity.
+
+Comparison: Both areas show clustering, but Novena’s is moderate and core-focused, while Geylang’s is stronger and more widespread, tied to broader local healthcare demand.
+
+```{r}
+par(mfrow = c(1, 2))  
+plotK(kbb_clinic_no, main = "Clinic - Novena")
+plotK(kbb_clinic_ge, main = "Clinic - Geylang")
+par(mfrow = c(1, 1))  
+```
+
+# massage
+
+Outram shows weaker clustering, with flatter and lighter contour lines concentrated in the lower ranges of spatial and temporal distances. This indicates that while clustering occurs, it is more localized and less intense. Outram’s clustering reflects steady demand tied to its mixed medical, leisure, and commercial context, but without strong temporal bursts.
+
+Kallang, in contrast, demonstrates much stronger clustering, with steeper and darker contours that extend over broader spatial and temporal scales. This suggests that massage businesses tend to open closer together both in time and in space, forming stronger synchronized clusters. The pattern aligns with Kallang’s proximity to transport hubs and entertainment areas, which may drive denser and more simultaneous establishment activity.
+
+Comparison: Outram’s clustering is moderate and localized, while Kallang shows more intense and widespread clustering, reflecting higher spatial-temporal concentration of business activity.
+
+```{r}
+par(mfrow = c(1, 2))  
+plotK(kbb_massage_ou, main = "Massage - Outram")
+plotK(kbb_massage_ka, main = "Massage - Kallang")
+par(mfrow = c(1, 1))  
+```
+
+# fitness
+
+Downtown Core: The contour lines rise steeply and darken at larger spatial and temporal distances, indicating that clustering is not only strong in the short term (centres opening close in both time and space) but also sustained over longer periods and wider spatial ranges. This reflects persistent demand from a dense working population, producing both immediate bursts and long-term accumulation of fitness businesses.
+
+Geylang: The contours are flatter and lighter, showing clustering that is present but weaker. Clustering occurs mainly at short spatial and temporal scales, suggesting more localized bursts of activity. Over longer periods, the clustering effect is less pronounced, pointing to a community-driven but less synchronized growth pattern.
+
+Comparison: While both areas demonstrate spatio-temporal clustering, Downtown Core shows both short-term bursts and long-term sustained clustering, whereas Geylang’s clustering is more localized and concentrated within shorter time spans.
+
+```{r}
+par(mfrow = c(1, 2))   
+plotK(kbb_fitness_dc, main = "Fitness - Downtown Core")
+plotK(kbb_fitness_ge, main = "Fitness - Geylang")
+par(mfrow = c(1, 1))  
+```
+:::
+
 # 10 Conclusion
 
+1.  To avoid homogeneous competition, the Massage industry in Outram and Kallang shows high-density agglomeration with service models dominated by foot reflexology and traditional massage, leading to rent escalation and neighborhood disturbance risks. It is recommended to establish capacity caps along metro stations and main streets, introduce minimum spacing and street-level upper limits, and encourage upgrading from single-function massage outlets to “wellness complexes” that integrate physiotherapy and sports rehabilitation. Such integration with fitness centers and clinics can create complementary service ecosystems, simultaneously enhancing convenience for residents while alleviating the crowding-out effect of single-industry clustering.
 
+2.  Regarding healthcare provision, although Clinics are distributed island-wide, their concentration is stronger in the east and central zones (such as Novena and Geylang), while the northwestern and northern peripheries remain relatively sparse. To close this gap, healthcare and other essential public services should expand coverage by leveraging transport hubs as anchors for new medical clusters. In areas such as Woodlands and Jurong West, the addition of family clinics and extended-hours outpatient facilities can improve accessibility and reduce the need for cross-district travel, particularly during night-time hours.
+
+3.  The Fitness industry exhibits intense clustering in Downtown Core, characterized by short-term bursts and long-term persistence. This produces pressure on transport systems and public spaces during peak commuting periods, while excessive competition among enterprises further intensifies the issue. To address this, demand should be gradually dispersed toward communities through improved connectivity and expansion of chain outlets beyond the CBD. Outside the CBD, where density is low and distribution is fragmented, the “15-minute fitness circle” should be promoted by introducing small-scale gyms centered on residential neighborhoods, combined with park greenways and walking networks. This would provide affordable, community-level fitness opportunities and prevent excessive reliance on the CBD.
+
+4.  At the regulatory and planning level, spatio-temporal point pattern (STPP) analysis reveals simultaneous “opening pulses” in several districts within the same month. It is recommended to pilot “quarterly rolling quotas with time-window approvals” in Outram, Kallang, and Downtown Core, with thresholds calibrated against noise, fire safety, pedestrian capacity, and waste management. In hotspot streets, a “pre-assessment before expansion” trial permit system should be applied, linking licensing directly to compliance scores. Establishments with low compliance should only receive short-term permits and be required to implement corrective measures. This would curb unrestrained expansion and mitigate the risk of adverse selection in the business ecosystem.
 
 # 11 Reference
 
