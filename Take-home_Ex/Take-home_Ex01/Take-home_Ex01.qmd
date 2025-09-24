@@ -62,8 +62,8 @@ In this exercise, the focus is on new business entities established in Singapore
 | lwgeom | Geometry operations, fixing invalid shapes (wraps GEOS). |
 
 ```{r}
-pacman::p_load(sf, spNetwork, spatstat,tmap, tidyverse, httr, rvest, terra, lwgeom, stpp, dplyr, lubridate, spatstat.geom, sf, spatstat, sparr, 
-               tmap, stpp, tidyverse, magick, fields)
+pacman::p_load(tidyverse,sf,lwgeom,terra,tmap,httr,
+               rvest,lubridate,spatstat.geom,spatstat.explore,stpp)
 ```
 
 # 1.4 The Data
