@@ -1,0 +1,16 @@
+---
+title: "Hands-on_Ex06"
+author: "Li Yuquan"
+description: ""
+date: "September 27, 2025"
+date-modified: "September 27, 2025"
+format: html
+editor: visual
+execute: 
+  eval: true
+  echo: true
+  warning: false
+  freeze: true
+
+---
+

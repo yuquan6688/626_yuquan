@@ -19,7 +19,13 @@ website:
           - text: "Hands-on Exercise 3"
             href: "Hands-on_Ex/Hands-on_Ex03/Hands-on_Ex03.html"
           - text: "Hands-on Exercise 4"
-            href: "Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04.html"            
+            href: "Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04.html"   
+          - text: "Hands-on Exercise 5a"
+            href: "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05a.html" 
+          - text: "Hands-on Exercise 5b"
+            href: "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05b.html" 
+          - text: "Hands-on Exercise 6"
+            href: "Hands-on_Ex/Hands-on_Ex06/Hands-on_Ex06.html"
 
       - text: "In-Class Exercise"
         menu:
@@ -29,10 +35,9 @@ website:
             href: "In-class_Ex/In-class_Ex03/In-class_Ex3b.html"
           - text: "In-Class Exercise 4"
             href: "In-class_Ex/In-class_Ex04/In-class_Ex04.html"
-          - text: "In-Class Exercise 5a"
-            href: "In-class_Ex/In-class_Ex05/In-class_Ex05a.html"            
-          - text: "In-Class Exercise 5b"
-            href: "In-class_Ex/In-class_Ex05/In-class_Ex05b.html"            
+          - text: "In-Class Exercise 5"
+            href: "In-class_Ex/In-class_Ex05/In-class_Ex05.html"            
+          
             
             
       - text: "Take-home Exercise"
