@@ -1,0 +1,132 @@
+---
+title: "In-class_Ex06"
+author: "Li Yuquan"
+description: ""
+date: "October 4, 2025"
+date-modified: "October 4, 2025"
+format: html
+editor: visual
+execute: 
+  eval: true
+  echo: true
+  warning: false
+  freeze: true
+---
+
+
+# Take Home Exercise 2 Kick Starter
+
+## Loading the R package
+
+```{r}
+pacman::p_load(tidyverse, sf, sfdep, tmap, knitr)
+
+pacman::p_load(sf, terra, spatstat, 
+               tmap, rvest, tidyverse)
+```
+
+## Importing Data
+
+```{r}
+mpsz_sf <- st_read("data/geospatial/MasterPlan2019SubzoneBoundaryNoSeaKML.kml") %>% 
+  st_zm(drop = TRUE, what = "ZM") %>% st_transform(crs = 3414)
+
+write_rds(mpsz_sf, 
+          "data/rds/mpsz_sf.rds")
+```
+
+```{r}
+mpsz = read_rds("data/rds/mpsz_sf.rds")
+
+BusStop = st_read(dsn = "data/LTADataMall/",
+                  layer = "BusStop") %>%
+  st_transform(crs = 3414)
+
+odbus <- read_csv("data/LTADataMall/origin_destination_bus_202508.csv")
+```
+## Extracting Bus Stops within Singapore
+
+```{r}
+BusStop_in_SG <- st_join(
+  BusStop, mpsz,
+  join = st_within,
+  left = FALSE
+)
+```
+
+## Visualize
+
+```{r}
+tm_shape(mpsz) +
+  tm_polygons() +
+tm_shape(BusStop_in_SG) +
+  tm_dots()
+```
+
+## Deriving Analytical Hexagon
+
+```{r}
+hexagon <- st_make_grid(mpsz,
+                        cellsize = 700,
+                        what = "polygon",
+                        square = FALSE) %>%
+  st_sf()
+```
+
+## Fitering hexagons with bus stops
+
+```{r}
+hexagon$n_collisions =
+  lengths(st_intersects(
+    hexagon, BusStop_in_SG))
+
+hexagon <- filter(hexagon, n_collisions > 0)
+```
+
+##Assigning ids to each hexagon
+
+```{r}
+hexagon <- hexagon %>%
+  select(, -n_collisions)
+
+hexagon$HEX_ID <- sprintf(
+  "H%04d", seq_len(nrow(hexagon))
+) %>% 
+  as.factor()
+
+kable(head(hexagon))
+```
+
+## Preparing Trip Generation Data
+
+### Cleaning the data
+
+```{r}
+trips <- odbus %>%
+  select(c(ORIGIN_PT_CODE, DAY_TYPE, TIME_PER_HOUR, TOTAL_TRIPS)) %>%
+  rename(BUS_STOP_N = ORIGIN_PT_CODE) %>%
+  rename(HOUR_OF_DAY = TIME_PER_HOUR) %>%
+  rename(TRIPS = TOTAL_TRIPS)
+
+trips$BUS_STOP_N <- as.factor(trips$BUS_STOP_N)
+
+kable(head(trips))
+```
+
+### Combine
+
+```{r}
+bs_hex <- st_intersection(
+  BusStop, hexagon) %>%
+  st_drop_geometry() %>%
+  select(c(BUS_STOP_N, HEX_ID))
+
+kable(head(bs_hex))
+```
+
+### Adding HEX_ID into bus trips data
+
+```{r}
+trips <- inner_join(trips, bs_hex)
+kable(head(trips))
+```
