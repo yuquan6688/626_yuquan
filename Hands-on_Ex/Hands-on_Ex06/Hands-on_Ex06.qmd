@@ -388,7 +388,7 @@ head(shan_ict, 10)
 
 In general, multiple variables will be used in cluster analysis. It is not unusual their values range are different. In order to avoid the cluster analysis result is baised to clustering variables with large values, it is useful to standardise the input variables before performing cluster analysis.
 
-## 7.3 **Min-Max standardisation** 
+## 7.3 **Min-Max standardisation**
 
 In the code chunk below, *normalize()* of [*heatmaply*](https://cran.r-project.org/web/packages/heatmaply/index.html) package is used to stadardisation the clustering variables by using Min-Max method. The *summary()* is then used to display the summary statistics of the standardised clustering variables.
 
@@ -808,7 +808,7 @@ plot(clust6,
      add=TRUE)
 ```
 
-## 8.6 **Visualising the clusters in choropleth map **
+## 8.6 **Visualising the clusters in choropleth map** 
 
 The code chunk below is used to plot the newly derived clusters by using SKATER method.
 
@@ -913,7 +913,7 @@ qtm(shan_sf_Gcluster, "CLUSTER")
 
 # 10 **Visual Interpretation of Clusters**
 
-## 10.1  **Visualising individual clustering variable**
+## 10.1 **Visualising individual clustering variable**
 
 Code chunk below is used to reveal the distribution of a clustering variable (i.e RADIO_PR) by cluster.
 

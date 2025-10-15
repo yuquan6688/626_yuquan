@@ -177,6 +177,8 @@ Next, [`st_weights()`](https://sfdep.josiahparry.com/reference/st_weights) is 
 
 -   allow_zero: If TRUE, assigns zero as lagged value to zone without neighbors.
 
+
+
 ```{r}
 wm_q <- hunan %>%
   mutate(nb = st_contiguity(geometry),
