@@ -276,7 +276,7 @@ Lastly, we want to reveal the geospatial distribution condominium resale prices 
 First, we will turn on the interactive mode of tmap by using the code chunk below.
 
 ```{r}
-tmap_mode("view")
+tmap_mode("plot")
 tm_shape(mpsz_svy21)+
   tm_polygons() +
 tm_shape(condo_resale.sf) +  
@@ -545,7 +545,7 @@ Next, we will use tmap package to display the distribution of the residuals on a
 The code churn below will turn on the interactive mode of tmap.
 
 ```{r}
-tmap_mode("view")
+tmap_mode("plot")
 tm_shape(mpsz_svy21) +
   tm_polygons(fill_alpha = 0.4) +
 tm_shape(condo_resale.sf) +  
@@ -745,7 +745,7 @@ summary(gwr.adaptive$SDF$yhat)
 The code chunks below is used to create an interactive point symbol map.
 
 ```{r}
-tmap_mode("view")
+tmap_mode("plot")
 ```
 
 ```{r}
@@ -767,7 +767,7 @@ tmap_mode("plot")
 The code chunks below is used to create an interactive point symbol map.
 
 ```{r}
-tmap_mode("view")
+tmap_mode("plot")
 ```
 
 ```{r}
