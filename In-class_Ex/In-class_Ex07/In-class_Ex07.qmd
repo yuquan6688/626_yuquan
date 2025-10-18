@@ -1,0 +1,340 @@
+---
+title: "In-class_Ex07"
+author: "Li Yuquan"
+description: ""
+date: "October 18, 2025"
+date-modified: "October 18, 2025"
+format: html
+editor: visual
+execute: 
+  eval: true
+  echo: true
+  warning: false
+  freeze: true
+---
+
+# 1 Overview
+
+Geographically weighted regression (GWR) is a spatial statistical technique that takes non-stationary variables into consideration (e.g., climate; demographic factors; physical environment characteristics) and models the local relationships between these independent variables and an outcome of interest (also known as dependent variable). In this hands-on exercise, you will learn how to build hedonic pricing models by using GWR methods. The dependent variable is the resale prices of condominium in 2015. The independent variables are divided into either structural and locational.
+
+# 2 The Data
+
+Two data sets will be used in this model building exercise, they are:
+
+-   URA Master Plan subzone boundary in shapefile format (i.e. *MP14_SUBZONE_WEB_PL*)
+
+-   condo_resale_2015 in csv format (i.e. *condo_resale_2015.csv*)
+
+# 3 Getting Started
+
+Before we get started, it is important for us to install the necessary R packages into R and launch these R packages into R environment.
+
+The R packages needed for this exercise are as follows:
+
+-   R package for building OLS and performing diagnostics tests
+
+    -   [**olsrr**](https://olsrr.rsquaredacademy.com/)
+
+-   R package for calibrating geographical weighted family of models
+
+    -   [**GWmodel**](https://cran.r-project.org/web/packages/GWmodel/index.html)
+
+-   R package for multivariate data visualisation and analysis
+
+    -   [**corrplot**](https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html)
+
+-   Spatial data handling
+
+    -   **sf**
+
+-   Attribute data handling
+
+    -   **tidyverse**, especially **readr**, **ggplot2** and **dplyr**
+
+-   Choropleth mapping
+
+    -   **tmap**
+
+The code chunks below installs and launches these R packages into R environment.
+
+```{r}
+pacman::p_load(olsrr, corrplot, ggpubr, 
+               sf, sfdep, GWmodel, tmap, 
+               tidyverse, gtsummary,
+               performance, RColorBrewer)
+```
+
+# 4 A short note about GWmodel
+
+GWmodel package provides a collection of localised spatial statistical methods, namely: GW summary statistics, GW principal components analysis, GW discriminant analysis and various forms of GW regression; some of which are provided in basic and robust (outlier resistant) forms. Commonly, outputs or parameters of the GWmodel are mapped to provide a useful exploratory tool, which can often precede (and direct) a more traditional or sophisticated statistical analysis.
+
+# 5 Geospatial Data Wrangling
+
+## 5.1 data import
+
+The geospatial data used in this hands-on exercise is called MP14_SUBZONE_WEB_PL. It is in ESRI shapefile format. The shapefile consists of URA Master Plan 2014’s planning subzone boundaries. Polygon features are used to represent these geographic boundaries. The GIS data is in svy21 projected coordinates systems.
+
+The code chunk below is used to import MP_SUBZONE_WEB_PL shapefile by using st_read() of sf packages.
+
+```{r}
+mpsz = st_read(dsn = "data/geospatial", 
+               layer = "MP14_SUBZONE_WEB_PL")
+```
+
+The report above shows that the R object used to contain the imported MP14_SUBZONE_WEB_PL shapefile is called mpsz and it is a simple feature object. The geometry type is multipolygon. it is also important to note that mpsz simple feature object does not have EPSG information.
+
+## 5.2 Updating CRS information
+
+```{r}
+mpsz_svy21 <- st_transform(mpsz, 3414)
+```
+
+```{r}
+st_crs(mpsz_svy21)
+```
+
+Next, I will reveal the extent of mpsz_svy21 by using st_bbox() of sf package.
+
+```{r}
+st_bbox(mpsz_svy21)
+```
+
+# 6 Aspatial Data Wrangling
+
+## 6.1 Importing the aspatial data
+
+The condo_resale_2015 is in csv file format. The codes chunk below uses read_csv() function of readr package to import condo_resale_2015 into R as a tibble data frame called condo_resale.
+
+```{r}
+condo_resale = read_csv(
+  "data/aspatial/Condo_resale_2015.csv")
+```
+
+After importing the data file into R, it is important for us to examine if the data file has been imported correctly.
+
+The codes chunks below uses glimpse() to display the data structure of will do the job.
+
+```{r}
+glimpse(condo_resale)
+```
+
+```{r}
+head(condo_resale$LONGITUDE)
+
+head(condo_resale$LATITUDE)
+```
+
+```{r}
+summary(condo_resale)
+```
+
+## 6.2 Converting aspatial data frame into a sf object
+
+Currently, the condo_resale tibble data frame is aspatial. We will convert it to a sf object. The code chunk below converts condo_resale data frame into a simple feature data frame by using st_as_sf() of sf packages.
+
+```{r}
+condo_resale.sf <- st_as_sf(condo_resale,
+                            coords = c("LONGITUDE", "LATITUDE"),
+                            crs=4326) %>%
+  st_transform(crs=3414)
+```
+
+Next, head() is used to list the content of condo_resale.sf object.
+
+```{r}
+head(condo_resale.sf)
+```
+
+
+
+# 9 Building Hedonic Pricing Models using GWmodel
+
+In this section, I will going to learn how to modelling hedonic pricing using both the fixed and adaptive bandwidth schemes
+
+## 9.1 Building Fixed Bandwidth GWR Model
+
+### 9.1.1 Computing fixed bandwith
+
+In the code chunk below bw.gwr() of GWModel package is used to determine the optimal fixed bandwidth to use in the model. Notice that the argument adaptive is set to FALSE indicates that we are interested to compute the fixed bandwidth.
+
+There are two possible approaches can be uused to determine the stopping rule, they are: CV cross-validation approach and AIC corrected (AICc) approach. We define the stopping rule using approach argeement.
+
+```{r}
+bw.fixed <- bw.gwr(
+  formula = SELLING_PRICE ~ AREA_SQM + AGE  + 
+    PROX_CBD + PROX_CHILDCARE + PROX_ELDERLYCARE    +
+    PROX_URA_GROWTH_AREA + PROX_MRT + PROX_PARK + 
+    PROX_PRIMARY_SCH + PROX_SHOPPING_MALL   + 
+    PROX_BUS_STOP   + NO_Of_UNITS + FAMILY_FRIENDLY + 
+    FREEHOLD, 
+  data=condo_resale.sf, 
+  approach="AIC", 
+  kernel="gaussian", 
+  adaptive=FALSE, 
+  longlat=FALSE)
+```
+
+### 9.1.2 GWModel method - fixed bandwith
+
+Now we can use the code chunk below to calibrate the gwr model using fixed bandwidth and gaussian kernel.
+
+```{r}
+gwr.fixed <- gwr.basic(
+  formula = SELLING_PRICE ~ AREA_SQM + AGE  + 
+    PROX_CBD + PROX_CHILDCARE + PROX_ELDERLYCARE    +
+    PROX_URA_GROWTH_AREA + PROX_MRT + PROX_PARK +
+    PROX_PRIMARY_SCH + PROX_SHOPPING_MALL   + 
+    PROX_BUS_STOP   + NO_Of_UNITS + FAMILY_FRIENDLY + 
+    FREEHOLD, 
+  data=condo_resale.sf, 
+  bw=bw.fixed, 
+  kernel = 'gaussian', 
+  longlat = FALSE)
+```
+
+```{r}
+gwr.fixed
+```
+Using GWR, we compared bandwidths chosen by AICc versus LOOCV. Conceptually, AICc optimizes model fit while penalizing complexity (better for inference/interpretation), whereas CV minimizes out-of-sample error (better for prediction), often yielding a slightly larger, smoother bandwidth. In our runs, both methods effectively selected the same bandwidth, so diagnostics (AICc, RSS, R²) were nearly identical—evidence that the data’s optimal smoothing level is stable. GWR substantially outperformed global OLS, indicating strong spatial non-stationarity (notably for AREA_SQM, distance to CBD/MRT, parks, and FREEHOLD). Given our objective, we would report the AICc-based model in the main text and include CV results for robustness. Note the non-normal residuals; a log transformation of price can further stabilize inference.
+
+
+
+
+## 9.2 Building Adaptive Bandwidth GWR Model
+
+In this section, I will calibrate the gwr-based hedonic pricing model by using adaptive bandwidth approach.
+
+### 9.2.1 Computing the adaptive bandwidth
+
+Similar to the earlier section, we will first use bw.gwr() to determine the recommended data point to use.
+
+The code chunk used look very similar to the one used to compute the fixed bandwidth except the adaptive argument has changed to TRUE.
+
+```{r}
+bw.adaptive <- bw.gwr(
+  formula = SELLING_PRICE ~ AREA_SQM + AGE  + 
+    PROX_CBD + PROX_CHILDCARE + PROX_ELDERLYCARE    +
+    PROX_URA_GROWTH_AREA + PROX_MRT + PROX_PARK +
+    PROX_PRIMARY_SCH + PROX_SHOPPING_MALL   + 
+    PROX_BUS_STOP   + NO_Of_UNITS + 
+    FAMILY_FRIENDLY + FREEHOLD, 
+  data=condo_resale.sf, 
+  approach="CV", 
+  kernel="gaussian", 
+  adaptive=TRUE, 
+  longlat=FALSE)
+```
+
+The result shows that the 30 is the recommended data points to be used.
+
+### 9.2.2 Constructing the adaptive bandwidth gwr model
+
+Now, we can go ahead to calibrate the gwr-based hedonic pricing model by using adaptive bandwidth and gaussian kernel as shown in the code chunk below.
+
+```{r}
+gwr.adaptive <- gwr.basic(
+  formula = SELLING_PRICE ~ AREA_SQM + AGE + 
+    PROX_CBD + PROX_CHILDCARE + PROX_ELDERLYCARE +
+    PROX_URA_GROWTH_AREA + PROX_MRT + PROX_PARK +
+    PROX_PRIMARY_SCH + PROX_SHOPPING_MALL + PROX_BUS_STOP +
+    NO_Of_UNITS + FAMILY_FRIENDLY + FREEHOLD,
+  data=condo_resale.sf, 
+  bw=bw.adaptive, 
+  kernel = 'gaussian', 
+  adaptive=TRUE, 
+  longlat = FALSE)
+```
+
+```{r}
+gwr.adaptive
+```
+
+The report shows that the AICc the adaptive distance gwr is 41982.22 which is even smaller than the AICc of the fixed distance gwr of 42263.61.
+
+## 9.3 Visualising GWR Output
+
+In addition to regression residuals, the output feature class table includes fields for observed and predicted y values, condition number (cond), Local R2, residuals, and explanatory variable coefficients and standard errors:
+
+-   Condition Number: this diagnostic evaluates local collinearity. In the presence of strong local collinearity, results become unstable. Results associated with condition numbers larger than 30, may be unreliable.
+
+-   Local R2: these values range between 0.0 and 1.0 and indicate how well the local regression model fits observed y values. Very low values indicate the local model is performing poorly. Mapping the Local R2 values to see where GWR predicts well and where it predicts poorly may provide clues about important variables that may be missing from the regression model.
+
+-   Predicted: these are the estimated (or fitted) y values 3. computed by GWR.
+
+-   Residuals: to obtain the residual values, the fitted y values are subtracted from the observed y values. Standardized residuals have a mean of zero and a standard deviation of 1. A cold-to-hot rendered map of standardized residuals can be produce by using these values.
+
+-   Coefficient Standard Error: these values measure the reliability of each coefficient estimate. Confidence in those estimates are higher when standard errors are small in relation to the actual coefficient values. Large standard errors may indicate problems with local collinearity.
+
+They are all stored in a SpatialPointsDataFrame or SpatialPolygonsDataFrame object integrated with fit.points, GWR coefficient estimates, y value, predicted values, coefficient standard errors and t-values in its “data” slot in an object called **SDF** of the output list.
+
+## 9.4 Converting SDF into sf data.frame
+
+To visualise the fields in SDF, we need to first covert it into sf data.frame by using the code chunk below.
+
+```{r}
+condo_resale.sf.adaptive <-
+  st_as_sf(gwr.adaptive$SDF) %>%
+  st_transform(crs=3414)
+```
+
+Next, glimpse() is used to display the content of condo_resale.sf.adaptive sf data frame.
+
+```{r}
+glimpse(condo_resale.sf.adaptive)
+```
+
+```{r}
+summary(gwr.adaptive$SDF$yhat)
+```
+
+## 9.5 Visualising local R2
+
+The code chunks below is used to create an interactive point symbol map.
+
+```{r}
+tmap_mode("plot")
+```
+
+```{r}
+glimpse(mpsz)
+        
+```
+
+
+```{r}
+mpsz_f <- mpsz %>%
+  filter(PLN_AREA_N == "QUEENSTOWN")
+
+```
+
+```{r}
+tm_shape(mpsz_f)+
+  tm_polygons(fill_alpha = 0.1) +
+tm_shape(condo_resale.sf.adaptive) +  
+  tm_dots(col = "Local_R2",
+          border.col = "gray60",
+          border.lwd = 1) +
+  tm_view(set.zoom.limits = c(11,14))
+```
+
+
+
+In the Queenstown planning area, the spatial pattern of local R² values reveals clear internal variation in how well the GWR model explains housing prices. The central and northern parts of Queenstown—especially around Commonwealth and Mei Ling Street—display darker shades of blue, indicating higher local R² values between 0.85 and 0.95. In these zones, the model fits particularly well, suggesting that property prices are strongly and consistently influenced by factors such as unit size, building age, proximity to MRT stations, and accessibility to parks. This high explanatory power also reflects the homogeneity of housing types in mature estates and the stable price structure shaped by established amenities.
+
+In contrast, the southern and southeastern portions of Queenstown, near the waterfront and bordering Telok Blangah, show lighter blue tones corresponding to lower local R² values between 0.65 and 0.80. Here, the GWR model captures less of the local variation in prices, which may stem from mixed land uses, ongoing redevelopment, and a wider range of property types and tenures. These areas likely contain more complex pricing dynamics influenced by unobserved factors such as sea views, industrial adjacency, or redevelopment potential.
+
+Overall, this north-to-south gradient in local R² illustrates that even within a single planning area, the strength of spatial relationships between housing prices and key explanatory variables is not uniform. The GWR model performs best in established residential clusters with stable market conditions, while areas experiencing transformation or heterogeneity require additional spatial or non-structural factors to fully explain price variation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
