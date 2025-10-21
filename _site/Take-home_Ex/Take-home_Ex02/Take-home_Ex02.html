@@ -315,7 +315,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">October 20, 2025</p>
+      <p class="date-modified">October 21, 2025</p>
     </div>
   </div>
     
@@ -360,7 +360,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p>Kendall — Used to perform Kendall’s rank correlation and trend tests for non-parametric statistical analysis.</p></li>
 </ul>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>( tmap, knitr, tidyverse, sf, sfdep, kableExtra, DT, Kendall)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 </section>
 <section id="data-importing-and-wrangling" class="level1">
@@ -377,9 +380,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>BusStop <span class="ot">=</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/LTADataMall/"</span>, </span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">layer =</span> <span class="st">"BusStop"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">3414</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Reading layer `BusStop' from data source 
   `/Users/liyuquan/yuquan6688/626_yuquan/Take-home_Ex/Take-home_Ex02/data/LTADataMall' 
@@ -390,7 +396,10 @@ Dimension:     XY
 Bounding box:  xmin: 3970.122 ymin: 26482.1 xmax: 48285.52 ymax: 52983.82
 Projected CRS: SVY21</code></pre>
 </div>
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(BusStop)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 5,172
 Columns: 3
@@ -402,9 +411,12 @@ $ geometry   &lt;POINT [m]&gt; POINT (35565.66 41659.52), POINT (21439.91 31253.
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>mpsz <span class="ot">=</span> <span class="fu">read_rds</span>(<span class="st">"data/rds/mpsz_cl.rds"</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(mpsz)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 327
 Columns: 5
@@ -418,9 +430,12 @@ $ geometry   &lt;MULTIPOLYGON [m]&gt; MULTIPOLYGON (((25910.34 29..., MULTIPOLYG
 </div>
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>odbus <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/LTADataMall/origin_destination_bus_202508.csv"</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(odbus)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 5,876,969
 Columns: 7
@@ -441,18 +456,24 @@ $ TOTAL_TRIPS         &lt;dbl&gt; 3, 31, 3, 10, 4, 1, 10, 4, 21, 17, 1, 512, 1, 
 <h2 class="anchored" data-anchor-id="extracting-bus-stops-located-within-singapore">3.2 Extracting Bus Stops located within Singapore</h2>
 <p>This step filters and retains only the bus stops that are spatially located within the administrative boundaries of Singapore by performing a spatial join between the BusStop and mpsz datasets using the st_within() function.</p>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>BusStop_in_SG <span class="ot">&lt;-</span> <span class="fu">st_join</span>(</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  BusStop, mpsz, </span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">join =</span> st_within, </span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">left =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <section id="visualize" class="level3">
 <h3 class="anchored" data-anchor-id="visualize">3.2.1 Visualize</h3>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mpsz) <span class="sc">+</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>() <span class="sc">+</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(BusStop_in_SG) <span class="sc">+</span></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_dots</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -467,29 +488,37 @@ $ TOTAL_TRIPS         &lt;dbl&gt; 3, 31, 3, 10, 4, 1, 10, 4, 21, 17, 1, 512, 1, 
 <h2 class="anchored" data-anchor-id="deriving-analytical-hexagon">3.3 Deriving Analytical Hexagon</h2>
 <p>A regular hexagonal grid is generated across the entire Singapore map with a 750-meter cell size using st_make_grid(). This creates a consistent spatial unit for aggregating and analyzing trip data.</p>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>hexagon <span class="ot">&lt;-</span> <span class="fu">st_make_grid</span>(mpsz, </span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>                        <span class="at">cellsize =</span> <span class="dv">750</span>,</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">what =</span> <span class="st">"polygon"</span>,</span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">square =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_sf</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 </section>
 <section id="selecting-hexagons-with-bus-stops" class="level2">
 <h2 class="anchored" data-anchor-id="selecting-hexagons-with-bus-stops">3.4 Selecting hexagons with bus stops</h2>
 <p>Each hexagon is checked for intersecting bus stops, and only those containing at least one bus stop are retained. This ensures that subsequent analyses focus only on areas with actual transport activity.</p>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>hexagon<span class="sc">$</span>busstop_count <span class="ot">=</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lengths</span>(<span class="fu">st_intersects</span>(</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    hexagon, BusStop_in_SG))</span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>hexagon <span class="ot">&lt;-</span> <span class="fu">filter</span>(</span>
 <span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  hexagon, busstop_count <span class="sc">&gt;</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 </section>
 <section id="assigning-ids-to-each-hexagon" class="level2">
 <h2 class="anchored" data-anchor-id="assigning-ids-to-each-hexagon">3.5 Assigning ids to each hexagon</h2>
 <p>A unique HEX_ID is assigned to every selected hexagon using a formatted sequential identifier (e.g., H0001, H0002). This serves as a spatial key for joining and aggregating data.</p>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>hexagon <span class="ot">&lt;-</span> hexagon <span class="sc">%&gt;%</span> </span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(, <span class="sc">-</span>busstop_count)</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -497,53 +526,68 @@ $ TOTAL_TRIPS         &lt;dbl&gt; 3, 31, 3, 10, 4, 1, 10, 4, 21, 17, 1, 512, 1, 
 <span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"H%04d"</span>, <span class="fu">seq_len</span>(</span>
 <span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">nrow</span>(hexagon))) <span class="sc">%&gt;%</span> </span>
 <span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.factor</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 </section>
 <section id="preparing-trip-generation-data" class="level2">
 <h2 class="anchored" data-anchor-id="preparing-trip-generation-data">3.6 Preparing Trip Generation Data</h2>
 <p>Relevant columns (ORIGIN_PT_CODE, DAY_TYPE, TIME_PER_HOUR, and TOTAL_TRIPS) are selected and renamed for clarity. The dataset is then formatted to represent trip generation by bus stop, day type, and hour.</p>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>trips <span class="ot">&lt;-</span> odbus <span class="sc">%&gt;%</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">c</span>(ORIGIN_PT_CODE, DAY_TYPE, TIME_PER_HOUR, TOTAL_TRIPS)) <span class="sc">%&gt;%</span></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">BUS_STOP_N =</span> ORIGIN_PT_CODE) <span class="sc">%&gt;%</span></span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">HOUR_OF_DAY =</span> TIME_PER_HOUR) <span class="sc">%&gt;%</span></span>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">TRIPS =</span> TOTAL_TRIPS)</span>
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>trips<span class="sc">$</span>BUS_STOP_N <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(trips<span class="sc">$</span>BUS_STOP_N)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 </section>
 <section id="populating-hexagon-ids-into-busstop-data-frame" class="level2">
 <h2 class="anchored" data-anchor-id="populating-hexagon-ids-into-busstop-data-frame">3.7 Populating Hexagon IDs into BusStop data frame</h2>
 <p>A spatial intersection is performed between the BusStop and hexagon layers to assign each bus stop its corresponding HEX_ID, linking individual stops to their hexagonal zones.</p>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>bs_hex <span class="ot">&lt;-</span> <span class="fu">st_intersection</span>(</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  BusStop, hexagon) <span class="sc">%&gt;%</span></span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">c</span>(BUS_STOP_N, HEX_ID))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 </section>
 <section id="adding-hex_id-into-bus-trips-data" class="level2">
 <h2 class="anchored" data-anchor-id="adding-hex_id-into-bus-trips-data">3.8 Adding HEX_ID into bus trips data</h2>
 <p>The trip dataset is merged with the BusStop–Hexagon mapping using an inner join, enabling each trip record to be associated with its respective hexagonal area.</p>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>trips <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(trips, bs_hex)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 </section>
 <section id="aggregating-trips-based-on-hex_id" class="level2">
 <h2 class="anchored" data-anchor-id="aggregating-trips-based-on-hex_id">3.9 Aggregating TRIPS based on HEX_ID</h2>
 <p>Trips are grouped and summed by HEX_ID, DAY_TYPE, and HOUR_OF_DAY to obtain total trip volumes for each spatial unit and time period, forming the basis for subsequent temporal and spatial analyses.</p>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>trips <span class="ot">&lt;-</span> trips <span class="sc">%&gt;%</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    HEX_ID,</span>
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    DAY_TYPE,</span>
 <span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    HOUR_OF_DAY) <span class="sc">%&gt;%</span></span>
 <span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">TRIPS =</span> <span class="fu">sum</span>(TRIPS))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 </section>
 <section id="peak-hour-period-setting" class="level2">
 <h2 class="anchored" data-anchor-id="peak-hour-period-setting">3.10 Peak hour period setting</h2>
 <p>Weekday morning trips between 6 AM and 9 AM are filtered and aggregated to identify peak-hour travel demand. The resulting dataset, weekday_morning_peak, combines trip counts with their corresponding hexagonal geometries for spatial analysis.</p>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>weekday_morning_peak <span class="ot">&lt;-</span> trips <span class="sc">%&gt;%</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(DAY_TYPE <span class="sc">==</span> <span class="st">"WEEKDAY"</span>, HOUR_OF_DAY <span class="sc">%in%</span> <span class="dv">6</span><span class="sc">:</span><span class="dv">9</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(HEX_ID) <span class="sc">%&gt;%</span></span>
@@ -564,24 +608,30 @@ $ TOTAL_TRIPS         &lt;dbl&gt; 3, 31, 3, 10, 4, 1, 10, 4, 21, 17, 1, 512, 1, 
 <span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">TRIPS =</span> <span class="fu">sum</span>(TRIPS), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(hexagon, <span class="at">by =</span> <span class="st">"HEX_ID"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 </section>
 </section>
 <section id="overview-for-total-trips" class="level1">
 <h1>4 Overview for total trips</h1>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>all_trips <span class="ot">&lt;-</span> <span class="fu">c</span>(weekday_morning_peak<span class="sc">$</span>TRIPS,</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>               weekday_afternoon_peak<span class="sc">$</span>TRIPS,</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>               weekend_period<span class="sc">$</span>TRIPS)</span>
 <span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>common_breaks <span class="ot">&lt;-</span> classInt<span class="sc">::</span><span class="fu">classIntervals</span>(all_trips, <span class="at">n =</span> <span class="dv">5</span>, <span class="at">style =</span> <span class="st">"quantile"</span>)<span class="sc">$</span>brks</span>
 <span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>common_breaks[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">floor</span>(<span class="fu">min</span>(all_trips, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">weekday morning peak</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">weekday afternoon peak</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false">weekend</a></li></ul>
 <div class="tab-content">
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Morning</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mpsz) <span class="sc">+</span></span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">col =</span> <span class="st">"white"</span>, <span class="at">border.col =</span> <span class="st">"grey80"</span>) <span class="sc">+</span></span>
@@ -602,6 +652,7 @@ $ TOTAL_TRIPS         &lt;dbl&gt; 3, 31, 3, 10, 4, 1, 10, 4, 21, 17, 1, 512, 1, 
 <span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_title</span>(<span class="st">"Weekday Morning Peak - Distribution Trips"</span>) <span class="sc">+</span></span>
 <span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_compass</span>(<span class="at">position =</span> <span class="fu">tm_pos_in</span>(<span class="st">"left"</span>, <span class="st">"top"</span>)) <span class="sc">+</span></span>
 <span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_scale_bar</span>(<span class="at">position =</span> <span class="fu">tm_pos_in</span>(<span class="st">"left"</span>, <span class="st">"bottom"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -613,6 +664,8 @@ $ TOTAL_TRIPS         &lt;dbl&gt; 3, 31, 3, 10, 4, 1, 10, 4, 21, 17, 1, 512, 1, 
 </div>
 <div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Afternoon</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mpsz) <span class="sc">+</span></span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">col =</span> <span class="st">"white"</span>, <span class="at">border.col =</span> <span class="st">"grey80"</span>) <span class="sc">+</span></span>
@@ -633,6 +686,7 @@ $ TOTAL_TRIPS         &lt;dbl&gt; 3, 31, 3, 10, 4, 1, 10, 4, 21, 17, 1, 512, 1, 
 <span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_title</span>(<span class="st">"Weekday Afternoon Peak - Distribution Trips"</span>) <span class="sc">+</span></span>
 <span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_compass</span>(<span class="at">position =</span> <span class="fu">tm_pos_in</span>(<span class="st">"left"</span>, <span class="st">"top"</span>)) <span class="sc">+</span></span>
 <span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_scale_bar</span>(<span class="at">position =</span> <span class="fu">tm_pos_in</span>(<span class="st">"left"</span>, <span class="st">"bottom"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -644,6 +698,8 @@ $ TOTAL_TRIPS         &lt;dbl&gt; 3, 31, 3, 10, 4, 1, 10, 4, 21, 17, 1, 512, 1, 
 </div>
 <div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Weekend/Holiday</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mpsz) <span class="sc">+</span></span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">col =</span> <span class="st">"white"</span>, <span class="at">border.col =</span> <span class="st">"grey80"</span>) <span class="sc">+</span></span>
@@ -664,6 +720,7 @@ $ TOTAL_TRIPS         &lt;dbl&gt; 3, 31, 3, 10, 4, 1, 10, 4, 21, 17, 1, 512, 1, 
 <span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_title</span>(<span class="st">"Weekend/Holiday Period - Distribution Trips"</span>) <span class="sc">+</span></span>
 <span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_compass</span>(<span class="at">position =</span> <span class="fu">tm_pos_in</span>(<span class="st">"left"</span>, <span class="st">"top"</span>)) <span class="sc">+</span></span>
 <span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_scale_bar</span>(<span class="at">position =</span> <span class="fu">tm_pos_in</span>(<span class="st">"left"</span>, <span class="st">"bottom"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -685,6 +742,8 @@ $ TOTAL_TRIPS         &lt;dbl&gt; 3, 31, 3, 10, 4, 1, 10, 4, 21, 17, 1, 512, 1, 
 <div class="tab-content">
 <div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>critical_dist_m <span class="ot">&lt;-</span> <span class="fu">critical_threshold</span>(<span class="fu">st_geometry</span>(weekday_morning_peak))</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>nb_m <span class="ot">&lt;-</span> <span class="fu">st_dist_band</span>(</span>
@@ -704,6 +763,7 @@ $ TOTAL_TRIPS         &lt;dbl&gt; 3, 31, 3, 10, 4, 1, 10, 4, 21, 17, 1, 512, 1, 
 <span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(local_moran)</span>
 <span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(lisa_week_morning)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 805
 Columns: 15
@@ -727,6 +787,8 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 </div>
 <div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>critical_dist_a <span class="ot">&lt;-</span> <span class="fu">critical_threshold</span>(<span class="fu">st_geometry</span>(weekday_afternoon_peak))</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>nb_a <span class="ot">&lt;-</span> <span class="fu">st_dist_band</span>(</span>
@@ -746,6 +808,7 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(local_moran)</span>
 <span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(lisa_week_afternoon)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 806
 Columns: 15
@@ -769,6 +832,8 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 </div>
 <div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>critical_dist_w <span class="ot">&lt;-</span> <span class="fu">critical_threshold</span>(<span class="fu">st_geometry</span>(weekend_period))</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>nb_w <span class="ot">&lt;-</span> <span class="fu">st_dist_band</span>(</span>
@@ -788,6 +853,7 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(local_moran)</span>
 <span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(lisa_weekend)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 812
 Columns: 15
@@ -819,6 +885,8 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <div class="tab-content">
 <div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>ii_map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(mpsz) <span class="sc">+</span></span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">col =</span> <span class="st">"white"</span>, <span class="at">border.col =</span> <span class="st">"grey85"</span>) <span class="sc">+</span></span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -871,6 +939,7 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <span id="cb30-50"><a href="#cb30-50" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb30-51"><a href="#cb30-51" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb30-52"><a href="#cb30-52" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(ii_map, p_ii_map, <span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">asp =</span> <span class="fl">0.9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -882,6 +951,8 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 </div>
 <div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>ii_map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(mpsz) <span class="sc">+</span></span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">col =</span> <span class="st">"white"</span>, <span class="at">border.col =</span> <span class="st">"grey85"</span>) <span class="sc">+</span></span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -934,6 +1005,7 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <span id="cb31-50"><a href="#cb31-50" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb31-51"><a href="#cb31-51" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb31-52"><a href="#cb31-52" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(ii_map, p_ii_map, <span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">asp =</span> <span class="fl">0.9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -945,6 +1017,8 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 </div>
 <div id="tabset-4-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-3-tab">
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>ii_map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(mpsz) <span class="sc">+</span></span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">col =</span> <span class="st">"white"</span>, <span class="at">border.col =</span> <span class="st">"grey85"</span>) <span class="sc">+</span></span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -997,6 +1071,7 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <span id="cb32-50"><a href="#cb32-50" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb32-51"><a href="#cb32-51" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb32-52"><a href="#cb32-52" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(ii_map, p_ii_map, <span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">asp =</span> <span class="fl">0.9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1016,6 +1091,8 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <div class="tab-content">
 <div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># weekday morning peak</span></span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>lisa_week_morning <span class="ot">&lt;-</span> lisa_week_morning <span class="sc">%&gt;%</span></span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">lag_TRIPS =</span> <span class="fu">st_lag</span>(TRIPS, nb_m, wt_m), <span class="at">.before =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
@@ -1038,6 +1115,7 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Standardised Spatial Lag of TRIPS"</span>,</span>
 <span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Standardised Moran Scatterplot with LISA Quadrants - Weekday Morning Peak"</span>) <span class="sc">+</span></span>
 <span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1049,6 +1127,8 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 </div>
 <div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># weekday afternoon peak</span></span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>lisa_week_afternoon <span class="ot">&lt;-</span> lisa_week_afternoon <span class="sc">%&gt;%</span></span>
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">lag_TRIPS =</span> <span class="fu">st_lag</span>(TRIPS, nb_a, wt_a), <span class="at">.before =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
@@ -1071,6 +1151,7 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Standardised Spatial Lag of TRIPS"</span>,</span>
 <span id="cb34-21"><a href="#cb34-21" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Standardised Moran Scatterplot with LISA Quadrants - Weekday Afternoon Peak"</span>) <span class="sc">+</span></span>
 <span id="cb34-22"><a href="#cb34-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1082,6 +1163,8 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 </div>
 <div id="tabset-5-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-3-tab">
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># weekend / holiday</span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>lisa_weekend <span class="ot">&lt;-</span> lisa_weekend <span class="sc">%&gt;%</span></span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">lag_TRIPS =</span> <span class="fu">st_lag</span>(TRIPS, nb_w, wt_w), <span class="at">.before =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
@@ -1104,6 +1187,7 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <span id="cb35-20"><a href="#cb35-20" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Standardised Spatial Lag of TRIPS"</span>,</span>
 <span id="cb35-21"><a href="#cb35-21" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Standardised Moran Scatterplot with LISA Quadrants - Weekend/Holiday Period"</span>) <span class="sc">+</span></span>
 <span id="cb35-22"><a href="#cb35-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1123,34 +1207,31 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <div class="tab-content">
 <div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>lisa_week_sig <span class="ot">&lt;-</span> lisa_week_morning <span class="sc">%&gt;%</span></span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(p_ii <span class="sc">&lt;</span> <span class="fl">0.05</span>)</span>
 <span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mpsz) <span class="sc">+</span></span>
 <span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">col =</span> <span class="st">"grey90"</span>, <span class="at">border.col =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
-<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(lisa_week_morning) <span class="sc">+</span></span>
-<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">fill =</span> <span class="st">"TRIPS"</span>,</span>
-<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill.scale =</span> <span class="fu">tm_scale_continuous</span>(<span class="at">values =</span> <span class="st">"greys"</span>),</span>
-<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill.legend =</span> <span class="fu">tm_legend</span>(</span>
-<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>                <span class="at">title =</span> <span class="st">"Total TRIPS"</span>,</span>
-<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>                <span class="at">position =</span> <span class="fu">tm_pos_in</span>(<span class="st">"right"</span>, <span class="st">"bottom"</span>)</span>
-<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>              )) <span class="sc">+</span></span>
-<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">col =</span> <span class="st">"grey40"</span>, <span class="at">lwd =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(lisa_week_sig) <span class="sc">+</span></span>
-<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">fill =</span> <span class="st">"mean"</span>,</span>
-<span id="cb36-18"><a href="#cb36-18" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill.scale =</span> <span class="fu">tm_scale_categorical</span>(<span class="at">values =</span> <span class="fu">c</span>(</span>
-<span id="cb36-19"><a href="#cb36-19" aria-hidden="true" tabindex="-1"></a>                <span class="st">"High-High"</span> <span class="ot">=</span> <span class="st">"red"</span>,</span>
-<span id="cb36-20"><a href="#cb36-20" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Low-Low"</span> <span class="ot">=</span> <span class="st">"blue"</span>,</span>
-<span id="cb36-21"><a href="#cb36-21" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Low-High"</span> <span class="ot">=</span> <span class="st">"lightblue"</span>,</span>
-<span id="cb36-22"><a href="#cb36-22" aria-hidden="true" tabindex="-1"></a>                <span class="st">"High-Low"</span> <span class="ot">=</span> <span class="st">"pink"</span>)),</span>
-<span id="cb36-23"><a href="#cb36-23" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill.legend =</span> <span class="fu">tm_legend</span>(</span>
-<span id="cb36-24"><a href="#cb36-24" aria-hidden="true" tabindex="-1"></a>                <span class="at">title =</span> <span class="st">"LISA Quadrants (p &lt; 0.05)"</span>,</span>
-<span id="cb36-25"><a href="#cb36-25" aria-hidden="true" tabindex="-1"></a>                <span class="at">position =</span> <span class="fu">tm_pos_in</span>(<span class="st">"left"</span>, <span class="st">"bottom"</span>)</span>
-<span id="cb36-26"><a href="#cb36-26" aria-hidden="true" tabindex="-1"></a>              )) <span class="sc">+</span></span>
-<span id="cb36-27"><a href="#cb36-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">col =</span> <span class="st">"black"</span>, <span class="at">lwd =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb36-28"><a href="#cb36-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_title</span>(<span class="st">"LISA Map - Weekday Morning Peak"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(lisa_week_sig) <span class="sc">+</span></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(</span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"mean"</span>,</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill.scale =</span> <span class="fu">tm_scale_categorical</span>(<span class="at">values =</span> <span class="fu">c</span>(</span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>      <span class="st">"High-High"</span> <span class="ot">=</span> <span class="st">"#E41A1C"</span>,</span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Low-Low"</span>   <span class="ot">=</span> <span class="st">"#377EB8"</span>,</span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Low-High"</span>  <span class="ot">=</span> <span class="st">"#9ECAE1"</span>,</span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>      <span class="st">"High-Low"</span>  <span class="ot">=</span> <span class="st">"#FCAE91"</span></span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>    )),</span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill.legend =</span> <span class="fu">tm_legend</span>(</span>
+<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">"LISA Quadrants (p &lt; 0.05)"</span>,</span>
+<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">position =</span> <span class="fu">tm_pos_in</span>(<span class="st">"left"</span>, <span class="st">"bottom"</span>)</span>
+<span id="cb36-18"><a href="#cb36-18" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb36-19"><a href="#cb36-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb36-20"><a href="#cb36-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">col =</span> <span class="st">"grey50"</span>, <span class="at">lwd =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb36-21"><a href="#cb36-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">bg.color =</span> <span class="st">"white"</span>, <span class="at">frame =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb36-22"><a href="#cb36-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_title</span>(<span class="st">"LISA Map – Weekday Morning Peak"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1162,35 +1243,31 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 </div>
 <div id="tabset-6-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-2-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Weekday Afternoon Peak</span></span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>lisa_week_a_sig <span class="ot">&lt;-</span> lisa_week_afternoon <span class="sc">%&gt;%</span></span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(p_ii <span class="sc">&lt;</span> <span class="fl">0.05</span>)</span>
-<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mpsz) <span class="sc">+</span></span>
-<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">col =</span> <span class="st">"grey90"</span>, <span class="at">border.col =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
-<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(lisa_week_afternoon) <span class="sc">+</span></span>
-<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">fill =</span> <span class="st">"TRIPS"</span>,</span>
-<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill.scale =</span> <span class="fu">tm_scale_continuous</span>(<span class="at">values =</span> <span class="st">"greys"</span>),</span>
-<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill.legend =</span> <span class="fu">tm_legend</span>(</span>
-<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a>                <span class="at">title =</span> <span class="st">"Total TRIPS"</span>,</span>
-<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a>                <span class="at">position =</span> <span class="fu">tm_pos_in</span>(<span class="st">"right"</span>, <span class="st">"bottom"</span>)</span>
-<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a>              )) <span class="sc">+</span></span>
-<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">col =</span> <span class="st">"grey40"</span>, <span class="at">lwd =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(lisa_week_a_sig) <span class="sc">+</span></span>
-<span id="cb37-18"><a href="#cb37-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">fill =</span> <span class="st">"mean"</span>,</span>
-<span id="cb37-19"><a href="#cb37-19" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill.scale =</span> <span class="fu">tm_scale_categorical</span>(<span class="at">values =</span> <span class="fu">c</span>(</span>
-<span id="cb37-20"><a href="#cb37-20" aria-hidden="true" tabindex="-1"></a>                <span class="st">"High-High"</span> <span class="ot">=</span> <span class="st">"red"</span>,</span>
-<span id="cb37-21"><a href="#cb37-21" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Low-Low"</span> <span class="ot">=</span> <span class="st">"blue"</span>,</span>
-<span id="cb37-22"><a href="#cb37-22" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Low-High"</span> <span class="ot">=</span> <span class="st">"lightblue"</span>,</span>
-<span id="cb37-23"><a href="#cb37-23" aria-hidden="true" tabindex="-1"></a>                <span class="st">"High-Low"</span> <span class="ot">=</span> <span class="st">"pink"</span>)),</span>
-<span id="cb37-24"><a href="#cb37-24" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill.legend =</span> <span class="fu">tm_legend</span>(</span>
-<span id="cb37-25"><a href="#cb37-25" aria-hidden="true" tabindex="-1"></a>                <span class="at">title =</span> <span class="st">"LISA Quadrants (p &lt; 0.05)"</span>,</span>
-<span id="cb37-26"><a href="#cb37-26" aria-hidden="true" tabindex="-1"></a>                <span class="at">position =</span> <span class="fu">tm_pos_in</span>(<span class="st">"left"</span>, <span class="st">"bottom"</span>)</span>
-<span id="cb37-27"><a href="#cb37-27" aria-hidden="true" tabindex="-1"></a>              )) <span class="sc">+</span></span>
-<span id="cb37-28"><a href="#cb37-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">col =</span> <span class="st">"black"</span>, <span class="at">lwd =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb37-29"><a href="#cb37-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_title</span>(<span class="st">"LISA Map - Weekday Afternoon Peak"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>lisa_week_a_sig <span class="ot">&lt;-</span> lisa_week_afternoon <span class="sc">%&gt;%</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(p_ii <span class="sc">&lt;</span> <span class="fl">0.05</span>)</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mpsz) <span class="sc">+</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">col =</span> <span class="st">"grey90"</span>, <span class="at">border.col =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(lisa_week_a_sig) <span class="sc">+</span></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(</span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"mean"</span>,</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill.scale =</span> <span class="fu">tm_scale_categorical</span>(<span class="at">values =</span> <span class="fu">c</span>(</span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>      <span class="st">"High-High"</span> <span class="ot">=</span> <span class="st">"#E41A1C"</span>,</span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Low-Low"</span>   <span class="ot">=</span> <span class="st">"#377EB8"</span>,</span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Low-High"</span>  <span class="ot">=</span> <span class="st">"#9ECAE1"</span>,</span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a>      <span class="st">"High-Low"</span>  <span class="ot">=</span> <span class="st">"#FCAE91"</span></span>
+<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a>    )),</span>
+<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill.legend =</span> <span class="fu">tm_legend</span>(</span>
+<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">"LISA Quadrants (p &lt; 0.05)"</span>,</span>
+<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">position =</span> <span class="fu">tm_pos_in</span>(<span class="st">"left"</span>, <span class="st">"bottom"</span>)</span>
+<span id="cb37-18"><a href="#cb37-18" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb37-19"><a href="#cb37-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb37-20"><a href="#cb37-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">col =</span> <span class="st">"grey50"</span>, <span class="at">lwd =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb37-21"><a href="#cb37-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">bg.color =</span> <span class="st">"white"</span>, <span class="at">frame =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb37-22"><a href="#cb37-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_title</span>(<span class="st">"LISA Map – Weekday Afternoon Peak"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1202,35 +1279,31 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 </div>
 <div id="tabset-6-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-3-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Weekend / Holiday</span></span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>lisa_weekend_sig <span class="ot">&lt;-</span> lisa_weekend <span class="sc">%&gt;%</span></span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(p_ii <span class="sc">&lt;</span> <span class="fl">0.05</span>)</span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mpsz) <span class="sc">+</span></span>
-<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">col =</span> <span class="st">"grey90"</span>, <span class="at">border.col =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
-<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(lisa_weekend) <span class="sc">+</span></span>
-<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">fill =</span> <span class="st">"TRIPS"</span>,</span>
-<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill.scale =</span> <span class="fu">tm_scale_continuous</span>(<span class="at">values =</span> <span class="st">"greys"</span>),</span>
-<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill.legend =</span> <span class="fu">tm_legend</span>(</span>
-<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>                <span class="at">title =</span> <span class="st">"Total TRIPS"</span>,</span>
-<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>                <span class="at">position =</span> <span class="fu">tm_pos_in</span>(<span class="st">"right"</span>, <span class="st">"bottom"</span>)</span>
-<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>              )) <span class="sc">+</span></span>
-<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">col =</span> <span class="st">"grey40"</span>, <span class="at">lwd =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(lisa_weekend_sig) <span class="sc">+</span></span>
-<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">fill =</span> <span class="st">"mean"</span>,</span>
-<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill.scale =</span> <span class="fu">tm_scale_categorical</span>(<span class="at">values =</span> <span class="fu">c</span>(</span>
-<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a>                <span class="st">"High-High"</span> <span class="ot">=</span> <span class="st">"red"</span>,</span>
-<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Low-Low"</span> <span class="ot">=</span> <span class="st">"blue"</span>,</span>
-<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Low-High"</span> <span class="ot">=</span> <span class="st">"lightblue"</span>,</span>
-<span id="cb38-23"><a href="#cb38-23" aria-hidden="true" tabindex="-1"></a>                <span class="st">"High-Low"</span> <span class="ot">=</span> <span class="st">"pink"</span>)),</span>
-<span id="cb38-24"><a href="#cb38-24" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill.legend =</span> <span class="fu">tm_legend</span>(</span>
-<span id="cb38-25"><a href="#cb38-25" aria-hidden="true" tabindex="-1"></a>                <span class="at">title =</span> <span class="st">"LISA Quadrants (p &lt; 0.05)"</span>,</span>
-<span id="cb38-26"><a href="#cb38-26" aria-hidden="true" tabindex="-1"></a>                <span class="at">position =</span> <span class="fu">tm_pos_in</span>(<span class="st">"left"</span>, <span class="st">"bottom"</span>)</span>
-<span id="cb38-27"><a href="#cb38-27" aria-hidden="true" tabindex="-1"></a>              )) <span class="sc">+</span></span>
-<span id="cb38-28"><a href="#cb38-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">col =</span> <span class="st">"black"</span>, <span class="at">lwd =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb38-29"><a href="#cb38-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_title</span>(<span class="st">"LISA Map - Weekend/Holiday"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>lisa_weekend_sig <span class="ot">&lt;-</span> lisa_weekend <span class="sc">%&gt;%</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(p_ii <span class="sc">&lt;</span> <span class="fl">0.05</span>)</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mpsz) <span class="sc">+</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">col =</span> <span class="st">"grey90"</span>, <span class="at">border.col =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(lisa_weekend_sig) <span class="sc">+</span></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"mean"</span>,</span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill.scale =</span> <span class="fu">tm_scale_categorical</span>(<span class="at">values =</span> <span class="fu">c</span>(</span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>      <span class="st">"High-High"</span> <span class="ot">=</span> <span class="st">"#E41A1C"</span>,</span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Low-Low"</span>   <span class="ot">=</span> <span class="st">"#377EB8"</span>,</span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Low-High"</span>  <span class="ot">=</span> <span class="st">"#9ECAE1"</span>,</span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>      <span class="st">"High-Low"</span>  <span class="ot">=</span> <span class="st">"#FCAE91"</span></span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>    )),</span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill.legend =</span> <span class="fu">tm_legend</span>(</span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">"LISA Quadrants (p &lt; 0.05)"</span>,</span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">position =</span> <span class="fu">tm_pos_in</span>(<span class="st">"left"</span>, <span class="st">"bottom"</span>)</span>
+<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">col =</span> <span class="st">"grey50"</span>, <span class="at">lwd =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">bg.color =</span> <span class="st">"white"</span>, <span class="at">frame =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_title</span>(<span class="st">"LISA Map – Weekend/Holiday Period"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1253,6 +1326,8 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <div class="tab-content">
 <div id="tabset-7-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-7-1-tab">
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>ct_m <span class="ot">&lt;-</span> <span class="fu">critical_threshold</span>(<span class="fu">st_geometry</span>(weekday_morning_peak))</span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>weekday_morning_fdw <span class="ot">&lt;-</span> weekday_morning_peak <span class="sc">%&gt;%</span></span>
@@ -1321,6 +1396,7 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <span id="cb39-66"><a href="#cb39-66" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb39-67"><a href="#cb39-67" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb39-68"><a href="#cb39-68" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(Gi_star_map, p_values_map, <span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">asp =</span> <span class="fl">0.95</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1332,6 +1408,8 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 </div>
 <div id="tabset-7-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-2-tab">
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>ct_a <span class="ot">&lt;-</span> <span class="fu">critical_threshold</span>(<span class="fu">st_geometry</span>(weekday_afternoon_peak))</span>
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>weekday_afternoon_fdw <span class="ot">&lt;-</span> weekday_afternoon_peak <span class="sc">%&gt;%</span></span>
@@ -1375,6 +1453,7 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <span id="cb40-41"><a href="#cb40-41" aria-hidden="true" tabindex="-1"></a>            <span class="at">main.title.size =</span> <span class="fl">1.1</span>, <span class="at">main.title.color =</span> <span class="st">"grey20"</span>)</span>
 <span id="cb40-42"><a href="#cb40-42" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb40-43"><a href="#cb40-43" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(Gi_star_map_a, p_values_map_a, <span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">asp =</span> <span class="fl">0.95</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1386,6 +1465,8 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 </div>
 <div id="tabset-7-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-3-tab">
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>ct_w <span class="ot">&lt;-</span> <span class="fu">critical_threshold</span>(<span class="fu">st_geometry</span>(weekend_period))</span>
 <span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>weekend_fdw <span class="ot">&lt;-</span> weekend_period <span class="sc">%&gt;%</span></span>
@@ -1429,6 +1510,7 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <span id="cb41-41"><a href="#cb41-41" aria-hidden="true" tabindex="-1"></a>            <span class="at">main.title.size =</span> <span class="fl">1.1</span>, <span class="at">main.title.color =</span> <span class="st">"grey20"</span>)</span>
 <span id="cb41-42"><a href="#cb41-42" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb41-43"><a href="#cb41-43" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(Gi_star_map_w, p_values_map_w, <span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">asp =</span> <span class="fl">0.95</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1448,6 +1530,8 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <div class="tab-content">
 <div id="tabset-8-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-8-1-tab">
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>HCSA_fdw_m <span class="ot">&lt;-</span> HCSA_fdw_m <span class="sc">%&gt;%</span></span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">HCSA_cluster =</span> <span class="fu">case_when</span>(</span>
 <span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>    p_sim <span class="sc">&gt;</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="st">"Insignificant"</span>,</span>
@@ -1490,6 +1574,7 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <span id="cb42-40"><a href="#cb42-40" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb42-41"><a href="#cb42-41" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb42-42"><a href="#cb42-42" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(Gi_star_map, HCSA_map_m, <span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">asp =</span> <span class="fl">0.95</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1501,6 +1586,8 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 </div>
 <div id="tabset-8-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-2-tab">
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Weekday afternoon peak ---</span></span>
 <span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>HCSA_fdw_a <span class="ot">&lt;-</span> HCSA_fdw_a <span class="sc">%&gt;%</span></span>
 <span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
@@ -1542,6 +1629,7 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <span id="cb43-39"><a href="#cb43-39" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb43-40"><a href="#cb43-40" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb43-41"><a href="#cb43-41" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(Gi_star_map_a, HCSA_map_a, <span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">asp =</span> <span class="fl">0.95</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1553,6 +1641,8 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 </div>
 <div id="tabset-8-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-3-tab">
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>HCSA_fdw_w <span class="ot">&lt;-</span> HCSA_fdw_w <span class="sc">%&gt;%</span></span>
 <span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">HCSA_cluster =</span> <span class="fu">case_when</span>(</span>
 <span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>    p_sim <span class="sc">&gt;</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="st">"Insignificant"</span>,</span>
@@ -1595,6 +1685,7 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <span id="cb44-40"><a href="#cb44-40" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb44-41"><a href="#cb44-41" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb44-42"><a href="#cb44-42" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(Gi_star_map_w, HCSA_map_w, <span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">asp =</span> <span class="fl">0.95</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1614,6 +1705,8 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <div class="tab-content">
 <div id="tabset-9-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-9-1-tab">
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>hex_ids <span class="ot">&lt;-</span> hexagon<span class="sc">$</span>HEX_ID</span>
 <span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>trips_week_morning_hourly <span class="ot">&lt;-</span> trips <span class="sc">%&gt;%</span></span>
@@ -1634,9 +1727,12 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <span id="cb45-18"><a href="#cb45-18" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb45-19"><a href="#cb45-19" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb45-20"><a href="#cb45-20" aria-hidden="true" tabindex="-1"></a><span class="fu">is_spacetime_cube</span>(TRIPS_week_morning_st)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] TRUE</code></pre>
 </div>
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>TRIPS_week_morning_nb <span class="ot">&lt;-</span> TRIPS_week_morning_st <span class="sc">%&gt;%</span></span>
 <span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">activate</span>(<span class="st">"geometry"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
@@ -1653,10 +1749,13 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <span id="cb47-14"><a href="#cb47-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">gi_star =</span> <span class="fu">local_gstar_perm</span>(TRIPS, nb_m, wt_m, <span class="at">nsim =</span> <span class="dv">99</span>)) <span class="sc">%&gt;%</span></span>
 <span id="cb47-15"><a href="#cb47-15" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">unnest</span>(gi_star) <span class="sc">%&gt;%</span></span>
 <span id="cb47-16"><a href="#cb47-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 </div>
 <div id="tabset-9-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-9-2-tab">
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>hex_ids <span class="ot">&lt;-</span> hexagon<span class="sc">$</span>HEX_ID</span>
 <span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>trips_week_afternoon_hourly <span class="ot">&lt;-</span> trips <span class="sc">%&gt;%</span></span>
@@ -1677,9 +1776,12 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <span id="cb48-18"><a href="#cb48-18" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb48-19"><a href="#cb48-19" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb48-20"><a href="#cb48-20" aria-hidden="true" tabindex="-1"></a><span class="fu">is_spacetime_cube</span>(TRIPS_week_afternoon_st)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] TRUE</code></pre>
 </div>
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>TRIPS_week_afternoon_nb <span class="ot">&lt;-</span> TRIPS_week_afternoon_st <span class="sc">%&gt;%</span></span>
 <span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">activate</span>(<span class="st">"geometry"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
@@ -1696,10 +1798,13 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">gi_star =</span> <span class="fu">local_gstar_perm</span>(TRIPS, nb_a, wt_a, <span class="at">nsim =</span> <span class="dv">99</span>)) <span class="sc">%&gt;%</span></span>
 <span id="cb50-15"><a href="#cb50-15" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">unnest</span>(gi_star) <span class="sc">%&gt;%</span></span>
 <span id="cb50-16"><a href="#cb50-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 </div>
 <div id="tabset-9-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-9-3-tab">
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>hex_ids <span class="ot">&lt;-</span> hexagon<span class="sc">$</span>HEX_ID</span>
 <span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>trips_weekend_hourly <span class="ot">&lt;-</span> trips <span class="sc">%&gt;%</span></span>
@@ -1720,9 +1825,12 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <span id="cb51-18"><a href="#cb51-18" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb51-19"><a href="#cb51-19" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb51-20"><a href="#cb51-20" aria-hidden="true" tabindex="-1"></a><span class="fu">is_spacetime_cube</span>(TRIPS_weekend_st)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] TRUE</code></pre>
 </div>
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>TRIPS_weekend_nb <span class="ot">&lt;-</span> TRIPS_weekend_st <span class="sc">%&gt;%</span></span>
 <span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">activate</span>(<span class="st">"geometry"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
@@ -1739,6 +1847,7 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <span id="cb53-14"><a href="#cb53-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">gi_star =</span> <span class="fu">local_gstar_perm</span>(TRIPS, nb_w, wt_w, <span class="at">nsim =</span> <span class="dv">99</span>)) <span class="sc">%&gt;%</span></span>
 <span id="cb53-15"><a href="#cb53-15" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">unnest</span>(gi_star) <span class="sc">%&gt;%</span></span>
 <span id="cb53-16"><a href="#cb53-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 </div>
 </div>
@@ -1751,6 +1860,8 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <div class="tab-content">
 <div id="tabset-10-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-10-1-tab">
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>mk_week_morning <span class="ot">&lt;-</span> gi_week_morning <span class="sc">%&gt;%</span></span>
 <span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(HEX_ID) <span class="sc">%&gt;%</span></span>
@@ -1767,6 +1878,7 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <span id="cb54-14"><a href="#cb54-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb54-15"><a href="#cb54-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Top 10 trending hexagons by p-value and tau magnitude</span></span>
 <span id="cb54-16"><a href="#cb54-16" aria-hidden="true" tabindex="-1"></a>mk_week_morning_ranked <span class="sc">%&gt;%</span> <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 10 × 6
    HEX_ID   tau p_value     S     D  varS
@@ -1784,6 +1896,8 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 </div>
 </div>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>hex_trend <span class="ot">&lt;-</span> gi_week_morning <span class="sc">%&gt;%</span></span>
 <span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(HEX_ID <span class="sc">==</span> <span class="st">"H0002"</span>) <span class="sc">%&gt;%</span></span>
@@ -1798,6 +1912,7 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <span id="cb56-12"><a href="#cb56-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Gi*"</span></span>
 <span id="cb56-13"><a href="#cb56-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
 <span id="cb56-14"><a href="#cb56-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1809,6 +1924,8 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 </div>
 <div id="tabset-10-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-10-2-tab">
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>mk_week_afternoon <span class="ot">&lt;-</span> gi_week_afternoon <span class="sc">%&gt;%</span></span>
 <span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(HEX_ID) <span class="sc">%&gt;%</span></span>
@@ -1824,6 +1941,7 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <span id="cb57-13"><a href="#cb57-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(p_value, <span class="fu">desc</span>(<span class="fu">abs</span>(tau)))</span>
 <span id="cb57-14"><a href="#cb57-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb57-15"><a href="#cb57-15" aria-hidden="true" tabindex="-1"></a>mk_week_afternoon_ranked <span class="sc">%&gt;%</span> <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 10 × 6
    HEX_ID   tau p_value     S     D  varS
@@ -1841,6 +1959,8 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 </div>
 </div>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>hex_trend_afternoon <span class="ot">&lt;-</span> gi_week_afternoon <span class="sc">%&gt;%</span></span>
 <span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(HEX_ID <span class="sc">==</span> <span class="st">"H0087"</span>) <span class="sc">%&gt;%</span></span>
@@ -1855,6 +1975,7 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <span id="cb59-12"><a href="#cb59-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Gi*"</span></span>
 <span id="cb59-13"><a href="#cb59-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
 <span id="cb59-14"><a href="#cb59-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1866,6 +1987,8 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 </div>
 <div id="tabset-10-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-10-3-tab">
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>mk_weekend <span class="ot">&lt;-</span> gi_weekend <span class="sc">%&gt;%</span></span>
 <span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(HEX_ID) <span class="sc">%&gt;%</span></span>
@@ -1881,6 +2004,7 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <span id="cb60-13"><a href="#cb60-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(p_value, <span class="fu">desc</span>(<span class="fu">abs</span>(tau)))</span>
 <span id="cb60-14"><a href="#cb60-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb60-15"><a href="#cb60-15" aria-hidden="true" tabindex="-1"></a>mk_weekend_ranked <span class="sc">%&gt;%</span> <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 10 × 6
    HEX_ID   tau   p_value     S     D  varS
@@ -1898,6 +2022,8 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 </div>
 </div>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>hex_trend_weekend <span class="ot">&lt;-</span> gi_weekend <span class="sc">%&gt;%</span></span>
 <span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(HEX_ID <span class="sc">==</span> <span class="st">"H0138"</span>) <span class="sc">%&gt;%</span></span>
@@ -1912,6 +2038,7 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <span id="cb62-12"><a href="#cb62-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Gi*"</span></span>
 <span id="cb62-13"><a href="#cb62-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
 <span id="cb62-14"><a href="#cb62-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1927,6 +2054,8 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <section id="performing-emerging-hotspot-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="performing-emerging-hotspot-analysis">6.5 Performing Emerging Hotspot Analysis</h2>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
 <span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>ehsa_weekend <span class="ot">&lt;-</span> <span class="fu">emerging_hotspot_analysis</span>(</span>
 <span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x        =</span> TRIPS_weekend_nb,</span>
@@ -1942,8 +2071,11 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <span id="cb63-13"><a href="#cb63-13" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(ehsa_weekend, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"HEX_ID"</span> <span class="ot">=</span> <span class="st">"location"</span>)) <span class="sc">%&gt;%</span></span>
 <span id="cb63-14"><a href="#cb63-14" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(p_value <span class="sc">&lt;</span> <span class="fl">0.05</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb63-15"><a href="#cb63-15" aria-hidden="true" tabindex="-1"></a>  sf<span class="sc">::</span><span class="fu">st_as_sf</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>ehsa_levels <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
 <span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"consecutive coldspot"</span>, <span class="st">"consecutive hotspot"</span>,</span>
 <span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"new coldspot"</span>, <span class="st">"new hotspot"</span>,</span>
@@ -1966,14 +2098,17 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <span id="cb64-20"><a href="#cb64-20" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb64-21"><a href="#cb64-21" aria-hidden="true" tabindex="-1"></a>ehsa_weekend<span class="sc">$</span>classification    <span class="ot">&lt;-</span> <span class="fu">factor</span>(ehsa_weekend<span class="sc">$</span>classification,    <span class="at">levels =</span> ehsa_levels)</span>
 <span id="cb64-22"><a href="#cb64-22" aria-hidden="true" tabindex="-1"></a>ehsa_weekend_sf<span class="sc">$</span>classification <span class="ot">&lt;-</span> <span class="fu">factor</span>(ehsa_weekend_sf<span class="sc">$</span>classification, <span class="at">levels =</span> ehsa_levels)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> ehsa_weekend, </span>
 <span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> classification, <span class="at">fill =</span> classification)) <span class="sc">+</span></span>
-<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">color =</span> <span class="st">"black"</span>, <span class="at">alpha =</span> <span class="fl">0.85</span>) <span class="sc">+</span></span>
-<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> ehsa_colors, <span class="at">drop =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">color =</span> <span class="st">"black"</span>, <span class="at">alpha =</span> <span class="fl">0.9</span>) <span class="sc">+</span></span>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_grey</span>(<span class="at">start =</span> <span class="fl">0.9</span>, <span class="at">end =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
 <span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb65-6"><a href="#cb65-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Distribution of EHSA Classes – Weekend/Holiday (11–20h)"</span>,</span>
+<span id="cb65-6"><a href="#cb65-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Distribution of EHSA Classes – Weekend/Holiday"</span>,</span>
 <span id="cb65-7"><a href="#cb65-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"EHSA Classification"</span>, </span>
 <span id="cb65-8"><a href="#cb65-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Number of Hexagons"</span></span>
 <span id="cb65-9"><a href="#cb65-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
@@ -1982,6 +2117,7 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <span id="cb65-12"><a href="#cb65-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>),</span>
 <span id="cb65-13"><a href="#cb65-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title  =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">14</span>)</span>
 <span id="cb65-14"><a href="#cb65-14" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1991,6 +2127,8 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 </div>
 </div>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mpsz) <span class="sc">+</span> <span class="fu">tm_polygons</span>(<span class="at">col =</span> <span class="st">"grey90"</span>, <span class="at">border.col =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
 <span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(ehsa_weekend_sf) <span class="sc">+</span></span>
 <span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(</span>
@@ -2001,8 +2139,9 @@ $ geometry     &lt;POLYGON [m]&gt; POLYGON ((4167.538 27510.65..., POLYGON ((416
 <span id="cb66-8"><a href="#cb66-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">position =</span> <span class="fu">tm_pos_in</span>(<span class="st">"right"</span>, <span class="st">"bottom"</span>))</span>
 <span id="cb66-9"><a href="#cb66-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
 <span id="cb66-10"><a href="#cb66-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">col =</span> <span class="st">"grey50"</span>, <span class="at">lwd =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb66-11"><a href="#cb66-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_title</span>(<span class="st">"Emerging Hot Spot Analysis (EHSA) – Weekend/Holiday (11–20h)"</span>) <span class="sc">+</span></span>
+<span id="cb66-11"><a href="#cb66-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_title</span>(<span class="st">"Emerging Hot Spot Analysis (EHSA) – Weekend/Holiday"</span>) <span class="sc">+</span></span>
 <span id="cb66-12"><a href="#cb66-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">bg.color =</span> <span class="st">"white"</span>, <span class="at">frame =</span> <span class="cn">FALSE</span>, <span class="at">legend.outside =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">

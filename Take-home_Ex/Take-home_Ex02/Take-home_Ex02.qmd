@@ -4,7 +4,9 @@ author: "Li Yuquan"
 description: ""
 date: "October 5, 2025"
 date-modified: "last-modified"
-format: html
+format:
+  html:
+    code-fold: true
 editor: visual
 execute: 
   eval: true
@@ -247,9 +249,7 @@ common_breaks[1] <- floor(min(all_trips, na.rm = TRUE))
 
 ```
 
-
-:::panel-tabset
-
+::: panel-tabset
 # weekday morning peak
 
 ```{r}
@@ -324,17 +324,13 @@ tm_shape(mpsz) +
   tm_compass(position = tm_pos_in("left", "top")) +
   tm_scale_bar(position = tm_pos_in("left", "bottom"))
 ```
-
-
 :::
-
 
 # 5 Local Indicators of Spatial Association(LISA)
 
 ## 5.1 Compute Local Moran's I
 
-:::panel-tabset
-
+::: panel-tabset
 # weekday morning peak
 
 ```{r}
@@ -406,13 +402,11 @@ lisa_weekend <- weekend_period %>%
 
 glimpse(lisa_weekend)
 ```
-
-
 :::
 
 ## 5.2 Local Moran’s I values and p-values
-:::panel-tabset
 
+::: panel-tabset
 # weekday morning peak
 
 ```{r}
@@ -583,14 +577,11 @@ p_ii_map <- tm_shape(mpsz) +
 
 tmap_arrange(ii_map, p_ii_map, ncol = 2, asp = 0.9)
 ```
-
-
 :::
 
 ## 5.3 Moran scatterplot with standardised variable
 
-:::panel-tabset
-
+::: panel-tabset
 # weekday morning peak
 
 ```{r}
@@ -671,15 +662,11 @@ ggplot(data = lisa_weekend,
        title = "Standardised Moran Scatterplot with LISA Quadrants - Weekend/Holiday Period") +
   theme_minimal()
 ```
-
-
 :::
-
 
 ## 5.5 LISA Map
 
-:::panel-tabset
-
+::: panel-tabset
 # weekday morning peak
 
 ```{r}
@@ -688,108 +675,85 @@ lisa_week_sig <- lisa_week_morning %>%
 
 tm_shape(mpsz) +
   tm_polygons(col = "grey90", border.col = "white") +
-
-  tm_shape(lisa_week_morning) +
-  tm_polygons(fill = "TRIPS",
-              fill.scale = tm_scale_continuous(values = "greys"),
-              fill.legend = tm_legend(
-                title = "Total TRIPS",
-                position = tm_pos_in("right", "bottom")
-              )) +
-  tm_borders(col = "grey40", lwd = 0.5) +
-
   tm_shape(lisa_week_sig) +
-  tm_polygons(fill = "mean",
-              fill.scale = tm_scale_categorical(values = c(
-                "High-High" = "red",
-                "Low-Low" = "blue",
-                "Low-High" = "lightblue",
-                "High-Low" = "pink")),
-              fill.legend = tm_legend(
-                title = "LISA Quadrants (p < 0.05)",
-                position = tm_pos_in("left", "bottom")
-              )) +
-  tm_borders(col = "black", lwd = 0.5) +
-  tm_title("LISA Map - Weekday Morning Peak")
+  tm_polygons(
+    fill = "mean",
+    fill.scale = tm_scale_categorical(values = c(
+      "High-High" = "#E41A1C",
+      "Low-Low"   = "#377EB8",
+      "Low-High"  = "#9ECAE1",
+      "High-Low"  = "#FCAE91"
+    )),
+    fill.legend = tm_legend(
+      title = "LISA Quadrants (p < 0.05)",
+      position = tm_pos_in("left", "bottom")
+    )
+  ) +
+  tm_borders(col = "grey50", lwd = 0.4) +
+  tm_layout(bg.color = "white", frame = FALSE) +
+  tm_title("LISA Map – Weekday Morning Peak")
 ```
 
 # weekday afternoon peak
 
 ```{r}
-# Weekday Afternoon Peak
 lisa_week_a_sig <- lisa_week_afternoon %>%
   filter(p_ii < 0.05)
 
 tm_shape(mpsz) +
   tm_polygons(col = "grey90", border.col = "white") +
-
-  tm_shape(lisa_week_afternoon) +
-  tm_polygons(fill = "TRIPS",
-              fill.scale = tm_scale_continuous(values = "greys"),
-              fill.legend = tm_legend(
-                title = "Total TRIPS",
-                position = tm_pos_in("right", "bottom")
-              )) +
-  tm_borders(col = "grey40", lwd = 0.5) +
-
   tm_shape(lisa_week_a_sig) +
-  tm_polygons(fill = "mean",
-              fill.scale = tm_scale_categorical(values = c(
-                "High-High" = "red",
-                "Low-Low" = "blue",
-                "Low-High" = "lightblue",
-                "High-Low" = "pink")),
-              fill.legend = tm_legend(
-                title = "LISA Quadrants (p < 0.05)",
-                position = tm_pos_in("left", "bottom")
-              )) +
-  tm_borders(col = "black", lwd = 0.5) +
-  tm_title("LISA Map - Weekday Afternoon Peak")
+  tm_polygons(
+    fill = "mean",
+    fill.scale = tm_scale_categorical(values = c(
+      "High-High" = "#E41A1C",
+      "Low-Low"   = "#377EB8",
+      "Low-High"  = "#9ECAE1",
+      "High-Low"  = "#FCAE91"
+    )),
+    fill.legend = tm_legend(
+      title = "LISA Quadrants (p < 0.05)",
+      position = tm_pos_in("left", "bottom")
+    )
+  ) +
+  tm_borders(col = "grey50", lwd = 0.4) +
+  tm_layout(bg.color = "white", frame = FALSE) +
+  tm_title("LISA Map – Weekday Afternoon Peak")
 ```
 
 # weekend
 
 ```{r}
-# Weekend / Holiday
 lisa_weekend_sig <- lisa_weekend %>%
   filter(p_ii < 0.05)
 
 tm_shape(mpsz) +
   tm_polygons(col = "grey90", border.col = "white") +
-
-  tm_shape(lisa_weekend) +
-  tm_polygons(fill = "TRIPS",
-              fill.scale = tm_scale_continuous(values = "greys"),
-              fill.legend = tm_legend(
-                title = "Total TRIPS",
-                position = tm_pos_in("right", "bottom")
-              )) +
-  tm_borders(col = "grey40", lwd = 0.5) +
-
   tm_shape(lisa_weekend_sig) +
-  tm_polygons(fill = "mean",
-              fill.scale = tm_scale_categorical(values = c(
-                "High-High" = "red",
-                "Low-Low" = "blue",
-                "Low-High" = "lightblue",
-                "High-Low" = "pink")),
-              fill.legend = tm_legend(
-                title = "LISA Quadrants (p < 0.05)",
-                position = tm_pos_in("left", "bottom")
-              )) +
-  tm_borders(col = "black", lwd = 0.5) +
-  tm_title("LISA Map - Weekend/Holiday")
+  tm_polygons(
+    fill = "mean",
+    fill.scale = tm_scale_categorical(values = c(
+      "High-High" = "#E41A1C",
+      "Low-Low"   = "#377EB8",
+      "Low-High"  = "#9ECAE1",
+      "High-Low"  = "#FCAE91"
+    )),
+    fill.legend = tm_legend(
+      title = "LISA Quadrants (p < 0.05)",
+      position = tm_pos_in("left", "bottom")
+    )
+  ) +
+  tm_borders(col = "grey50", lwd = 0.4) +
+  tm_layout(bg.color = "white", frame = FALSE) +
+  tm_title("LISA Map – Weekend/Holiday Period")
 ```
-
-
 :::
 
 # 6 Hot Spots and Cold Spots Analysis (HCSA)
 
-## 6.1 Gi* values and p-values
+## 6.1 Gi\* values and p-values
 
-:::panel-tabset
-
+::: panel-tabset
 # weekday morning peak
 
 ```{r}
@@ -958,14 +922,11 @@ p_values_map_w <- tm_shape(mpsz) +
 
 tmap_arrange(Gi_star_map_w, p_values_map_w, ncol = 2, asp = 0.95)
 ```
-
-
 :::
 
 ## 6.2 HCSA Map
 
-:::panel-tabset
-
+::: panel-tabset
 # weekday morning peak
 
 ```{r}
@@ -1105,15 +1066,11 @@ HCSA_map_w <- tm_shape(mpsz) +
 
 tmap_arrange(Gi_star_map_w, HCSA_map_w, ncol = 2, asp = 0.95)
 ```
-
-
 :::
-
 
 ## 6.3 Emerging Hot Spot Analysis (EHSA)
 
-:::panel-tabset
-
+::: panel-tabset
 # weekday morning peak
 
 ```{r}
@@ -1239,14 +1196,11 @@ gi_weekend <- TRIPS_weekend_nb %>%
   tidyr::unnest(gi_star) %>%
   ungroup()
 ```
-
-
 :::
 
 ## 6.4 Mann-Kendall Test
 
-:::panel-tabset
-
+::: panel-tabset
 # weekday morning peak
 
 ```{r}
@@ -1286,7 +1240,6 @@ ggplot(data = hex_trend, aes(x = HOUR_OF_DAY, y = gi_star)) +
   theme_light()
 ```
 
-
 # weekday afternoon peak
 
 ```{r}
@@ -1324,7 +1277,6 @@ ggplot(hex_trend_afternoon, aes(x = HOUR_OF_DAY, y = gi_star)) +
   theme_light()
 ```
 
-
 # weekend
 
 ```{r}
@@ -1361,15 +1313,7 @@ ggplot(hex_trend_weekend, aes(x = HOUR_OF_DAY, y = gi_star)) +
   ) +
   theme_light()
 ```
-
-
 :::
-
-
-
-
-
-
 
 ## 6.5 Performing Emerging Hotspot Analysis
 
@@ -1419,10 +1363,10 @@ ehsa_weekend_sf$classification <- factor(ehsa_weekend_sf$classification, levels 
 ```{r}
 ggplot(data = ehsa_weekend, 
        aes(x = classification, fill = classification)) +
-  geom_bar(color = "black", alpha = 0.85) +
-  scale_fill_manual(values = ehsa_colors, drop = FALSE) +
+  geom_bar(color = "black", alpha = 0.9) +
+  scale_fill_grey(start = 0.9, end = 0.3) +
   labs(
-    title = "Distribution of EHSA Classes – Weekend/Holiday (11–20h)",
+    title = "Distribution of EHSA Classes – Weekend/Holiday",
     x = "EHSA Classification", 
     y = "Number of Hexagons"
   ) +
@@ -1444,6 +1388,6 @@ tm_shape(mpsz) + tm_polygons(col = "grey90", border.col = "white") +
       position = tm_pos_in("right", "bottom"))
   ) +
   tm_borders(col = "grey50", lwd = 0.5) +
-  tm_title("Emerging Hot Spot Analysis (EHSA) – Weekend/Holiday (11–20h)") +
+  tm_title("Emerging Hot Spot Analysis (EHSA) – Weekend/Holiday") +
   tm_layout(bg.color = "white", frame = FALSE, legend.outside = TRUE)
 ```
