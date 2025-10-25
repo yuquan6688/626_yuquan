@@ -1,0 +1,15 @@
+{
+  "hash": "e9ac11ea511f0b85f9977f41b3ba1398",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"In-class_Ex08b\"\nauthor: \"Li Yuquan\"\ndescription: \"\"\ndate: \"October 25, 2025\"\ndate-modified: \"October 25, 2025\"\nformat: html\neditor: visual\nexecute: \n  eval: true\n  echo: true\n  warning: false\n  freeze: true\n---\n\n::: {.cell}\n\n```{.r .cell-code}\npacman::p_load(\n  sf, spdep, GWmodel, SpatialML,\n  tmap, rsample, Metrics, tidyverse,\n  knitr, kableExtra, spatialRF,\n  randomForestExplainer)\n```\n:::\n\n::: {.cell}\n\n```{.r .cell-code}\nmdata <- read_rds(\"data/rawdata/mdata.rds\")\n```\n:::\n\n::: {.cell}\n\n```{.r .cell-code}\nset.seed(1234)\n\nHDB_sample <- mdata %>%\n  sample_n(1500)\n```\n:::\n\n::: {.cell}\n\n```{.r .cell-code}\nHDB_sample <- HDB_sample %>%\n  st_jitter(amount = 1)\n```\n:::\n\n::: {.cell}\n\n```{.r .cell-code}\nset.seed(1234)\nresale_split <- initial_split(HDB_sample, \n                              prop = 6.67/10)\n\ntrain_data <- training(resale_split)\ntest_data  <- testing(resale_split)\n```\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

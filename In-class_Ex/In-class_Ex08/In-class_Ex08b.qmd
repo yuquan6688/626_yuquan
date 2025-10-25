@@ -1,0 +1,47 @@
+---
+title: "In-class_Ex08b"
+author: "Li Yuquan"
+description: ""
+date: "October 25, 2025"
+date-modified: "October 25, 2025"
+format: html
+editor: visual
+execute: 
+  eval: true
+  echo: true
+  warning: false
+  freeze: true
+---
+```{r}
+pacman::p_load(
+  sf, spdep, GWmodel, SpatialML,
+  tmap, rsample, Metrics, tidyverse,
+  knitr, kableExtra, spatialRF,
+  randomForestExplainer)
+```
+
+```{r}
+mdata <- read_rds("data/rawdata/mdata.rds")
+```
+
+```{r}
+set.seed(1234)
+
+HDB_sample <- mdata %>%
+  sample_n(1500)
+```
+
+```{r}
+HDB_sample <- HDB_sample %>%
+  st_jitter(amount = 1)
+```
+
+```{r}
+set.seed(1234)
+resale_split <- initial_split(HDB_sample, 
+                              prop = 6.67/10)
+
+train_data <- training(resale_split)
+test_data  <- testing(resale_split)
+```
+

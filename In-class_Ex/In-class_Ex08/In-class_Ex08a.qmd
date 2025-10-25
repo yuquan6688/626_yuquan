@@ -1,0 +1,96 @@
+---
+title: "In-class_Ex08a"
+author: "Li Yuquan"
+description: ""
+date: "October 25, 2025"
+date-modified: "October 25, 2025"
+format: html
+editor: visual
+execute: 
+  eval: true
+  echo: true
+  warning: false
+  freeze: true
+---
+
+# Loading R packages
+
+```{r}
+pacman::p_load(httr, tidyverse, sf, tmap, jsonlite, progress)
+```
+
+# Import data and prepare
+
+```{r}
+HDBresale <- read_csv(
+  "data/rawdata/HDBresale.csv"
+) %>%
+  filter(flat_type == "4 ROOM") %>%
+  filter(month >= "2025-09" & month < "2025-10")
+```
+
+```{r}
+glimpse(HDBresale)
+```
+
+```{r}
+HDBresale$street_name <- gsub(
+  "ST\\.", "SAINT",
+  HDBresale$street_name)
+```
+
+```{r}
+geocode <- function(block, streetname) {
+  base_url <- "https://onemap.gov.sg/api/common/elastic/search"
+  address <- paste(block, streetname, sep = " ")
+  query <- list(
+    "searchVal" = address,
+    "returnGeom" = "Y",
+    "getAddrDetails" = "N",
+    "pageNum" = "1"
+  )
+  
+  res <- GET(base_url, query = query)
+  restext <- content(res, as = "text")
+  
+  output <- fromJSON(restext) %>%
+    as.data.frame() %>%
+    select(results.LATITUDE, results.LONGITUDE)
+  
+  return(output)
+}
+```
+
+```{r}
+HDBresale$LATITUDE <- 0
+HDBresale$LONGITUDE <- 0
+
+for (i in 1:nrow(HDBresale)) {
+  temp_output <- geocode(HDBresale[i, 4], HDBresale[i, 5])
+  
+  HDBresale$LATITUDE[i]  <- temp_output$results.LATITUDE
+  HDBresale$LONGITUDE[i] <- temp_output$results.LONGITUDE
+}
+```
+
+```{r}
+HDBresale_sf <- HDBresale %>%
+  st_as_sf(
+    coords = c("LONGITUDE", "LATITUDE"), 
+    crs = 4326) %>%
+  st_transform(crs = 3414)
+```
+
+```{r}
+preschool <- st_read("data/rawdata/PreSchoolsLocation.kml") %>% st_transform(crs = 3414)
+```
+
+```{r}
+within_350m <- st_is_within_distance(
+  HDBresale_sf, preschool, dist = 350)
+
+HDBresale_sf <- HDBresale_sf %>%
+  mutate(prischool_350m = map_int(within_350m, length))
+```
+
+
