@@ -1,0 +1,93 @@
+---
+title: "In class Ex 9"
+author: "Li Yuquan"
+description: ""
+date: "November 8, 2025"
+date-modified: "November 8, 2025"
+format: html
+editor: visual
+execute: 
+  eval: true
+  echo: true
+  warning: false
+  freeze: true
+---
+
+```{r}
+pacman::p_load(tmap, SpatialAcc, sf, 
+               ggstatsplot, reshape2,
+               tidyverse)
+```
+
+```{r}
+mpsz <- st_read(dsn = "data/geospatial", layer = "MP14_SUBZONE_NO_SEA_PL")
+hexagons <- st_read(dsn = "data/geospatial", layer = "hexagons") 
+eldercare <- st_read(dsn = "data/geospatial", layer = "ELDERCARE") 
+
+mpsz <- st_transform(mpsz, 3414)
+eldercare <- st_transform(eldercare, 3414)
+hexagons <- st_transform(hexagons, 3414)
+
+```
+
+```{r}
+eldercare <- eldercare %>%
+  select(fid, ADDRESSPOS) %>%
+  mutate(capacity = 100)
+
+hexagons <- hexagons %>%
+  select(fid) %>%
+  mutate(demand = 100)
+```
+
+```{r}
+ODMatrix <- read_csv("data/aspatial/OD_Matrix.csv")
+distmat <- ODMatrix %>%
+  select(origin_id, destination_id, total_cost) %>%
+  spread(destination_id, total_cost) %>%
+  select(-origin_id)
+distmat_km <- as.matrix(distmat / 1000)
+```
+
+```{r}
+powers <- c(0.5, 1, 1.5, 2, 2.5)
+
+results <- list()
+for (p in powers) {
+  acc <- data.frame(ac(hexagons$demand,
+                       eldercare$capacity,
+                       distmat_km,
+                       power = p,
+                       family = "Hansen"))
+  colnames(acc) <- "accHansen"
+  acc <- as_tibble(acc)
+  hex_res <- bind_cols(hexagons, acc)
+  hex_res$power <- p
+  results[[as.character(p)]] <- hex_res
+}
+
+hexagon_Hansen_all <- bind_rows(results)
+```
+
+```{r}
+mapex <- st_bbox(hexagons)
+```
+
+This figure shows the Hansen accessibility to eldercare facilities in Singapore under different power values. When the power is low , the effect of distance is weak, and accessibility values are more evenly distributed across the island. As the power increases (1.5 - 2.5), the impact of distance becomes stronger—areas closer to eldercare facilities show much higher accessibility, while distant areas experience a sharp decline. Higher power values therefore highlight stronger spatial inequality in service accessibility.
+
+```{r, fig.height= 10, fig.width= 10}
+tm_shape(hexagon_Hansen_all, bbox = mapex) +
+  tm_facets(by = "power", ncol = 3) +
+  tm_polygons(fill = "accHansen",
+              fill.scale = tm_scale_intervals(
+                style = "quantile",
+                n = 10,
+                values = "brewer.blues")) +
+  tm_shape(eldercare) +
+  tm_dots(size = 0.3, fill = "red", col = "black") +
+  tm_title("Accessibility to eldercare (Hansen, different power values)") +
+  tm_layout(frame = TRUE) +
+  tm_compass(type = "8star", size = 2) +
+  tm_scalebar() +
+  tm_grid(alpha = 0.2)
+```
