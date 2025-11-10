@@ -34,7 +34,7 @@ The model should integrate appropriate geospatial analytical techniques to accou
 ## 1.3 Data Resources
 
 | Dataset Name | File / Object Name | Source |
-|------------------------|-----------------------------|-------------------|
+|------------------------|------------------------|------------------------|
 | Master Plan 2019 Subzone Boundary | `mpsz_cl.rds` | [data.gov.sg – Master Plan 2019 Subzone Boundary (No Sea)](https://data.gov.sg/datasets?query=Master+Plan+subzone+boundary&page=1&resultId=d_8594ae9ff96d0c708bc2af633048edfb) |
 | HDB Resale Transactions | `HDBresale.csv` | [data.gov.sg – HDB Resale Flat Prices](https://data.gov.sg/datasets?query=hdb+resale&page=1&resultId=d_8b84c4ee58e3cfc0ece0d773c8ca6abc) |
 | Preschools | `PreSchoolsLocation.kml` | [data.gov.sg – Preschool Locations](https://data.gov.sg/datasets?query=preschool) |
@@ -59,7 +59,7 @@ The model should integrate appropriate geospatial analytical techniques to accou
 # Packages
 
 | Package | Purpose |
-|-------------------------|-----------------------------------------------|
+|------------------------------------|------------------------------------|
 | **sf** | Manage and manipulate spatial vector data (simple features). |
 | **sp** | Support legacy spatial objects needed for certain spatial tests. |
 | **spdep** | Compute spatial weights and Moran’s I for spatial autocorrelation. |
@@ -87,7 +87,7 @@ pacman::p_load(sf, sp, spdep, olsrr,
                Metrics, 
                tidyverse, httr, 
                jsonlite,  
-               ggpubr, stringr,
+               ggpubr, stringr,randomForest,
                patchwork,
                ggstatsplot,
                GWmodel)
@@ -964,7 +964,7 @@ HDBresale <- HDBresale %>%
 
 ## 5.1 Overview for data
 
-This dataset contains 14,737 observations of resale transactions for 4 room HDB flats from July 2024 to September 2025. The resale prices range from 300,000 Singapore dollars to 1,518,000  Singapore dollars, with an average floor area of 94.83 square meters and an average building age of 23 years.
+This dataset contains 14,737 observations of resale transactions for 4 room HDB flats from July 2024 to September 2025. The resale prices range from 300,000 Singapore dollars to 1,518,000 Singapore dollars, with an average floor area of 94.83 square meters and an average building age of 23 years.
 
 ```{r}
 glimpse(HDBresale)
@@ -1343,6 +1343,40 @@ gwrf_importance <- gwRF_adaptive$Global.Model$variable.importance
 sort(gwrf_importance, decreasing = TRUE)
 ```
 
+# 8.5 RF Model
+
+This step trains a Random Forest regression model with 500 trees to predict HDB resale prices based on structural and locational factors, such as distance to amenities and housing attributes, while also computing variable importance to identify key predictors influencing price.
+
+```{r}
+set.seed(020608)
+
+rf_model <- randomForest(
+  resale_price ~ 
+    dist_cbd +
+    dist_eldercare +
+    dist_hawker +
+    dist_mrt +
+    dist_park +
+    dist_good_primary +
+    dist_supermarket + 
+    n_kindergartens_350m +
+    dist_mall +
+    n_childcare_350m +
+    n_bus_350m +
+    n_schools_1km +
+    floor_area_sqm +
+    storey_mean +
+    remaining_lease_mths,
+  data  = hdb_train_nogeo,
+  ntree = 500,
+  importance = TRUE
+)
+
+```
+
+
+
+
 # 9 Model evaluation
 
 ## 9.1 Test Data Preparation
@@ -1371,6 +1405,8 @@ For MLR, predictions are computed based on the global regression equation derive
 
 For gwRF, predictions are spatially adjusted using each observation’s coordinates (X, Y) with local and global weighting parameters (local.w=1, global.w=0), allowing the model to account for spatial heterogeneity and produce location-specific price estimates.
 
+For the Random Forest (RF) model, predictions are generated using the ensemble of 500 decision trees trained on the full set of structural and locational features, enabling the model to capture complex nonlinear relationships between predictors and resale prices without considering spatial weighting.
+
 ### 9.2.1 MLR
 
 ```{r}
@@ -1389,58 +1425,119 @@ hdb_resale_test$pre_gwRF <- predict.grf(gwRF_adaptive,
                                             global.w=0)
 ```
 
+### 9.2.3 RF
+```{r}
+hdb_resale_test$pre_RF <- predict(
+  rf_model,
+  newdata = hdb_test_nogeo
+)
+```
+
+
 ## 9.3 Model Performance Comparison (RMSE)
 
-This step evaluates and compares the predictive performance of the Multiple Linear Regression (MLR) and Geographically Weighted Random Forest (gwRF) models using the Root Mean Square Error (RMSE) metric. Lower values indicate higher prediction accuracy.
+This step evaluates and compares the predictive performance of the Multiple Linear Regression (MLR), Random Forest (RF), and Geographically Weighted Random Forest (gwRF) models using the Root Mean Square Error (RMSE) metric, where lower values indicate higher prediction accuracy.
 
-The results show that the MLR model (RMSE = 78,240.61) outperforms the gwRF model (RMSE = 146,312.22) on the test dataset.
+The results show that the RF model (RMSE = 35,045.70) achieves the highest prediction accuracy, followed by the MLR model (RMSE = 78,240.33), while the gwRF model (RMSE = 146,312.27) performs the worst on the test dataset.
 
-This suggests that, in this case, the simpler global linear model provides more stable and accurate predictions than the spatially adaptive gwRF, possibly because the spatial heterogeneity in the dataset is not strong enough to justify the additional model complexity of gwRF.
+This indicates that the nonlinear ensemble approach of the Random Forest captures complex relationships between housing features and prices more effectively than the linear MLR and spatially adaptive gwRF models, suggesting that spatial heterogeneity in this dataset is relatively weak and can be adequately explained by global nonlinear patterns.
 
 ```{r}
-MLR_RMSE <- rmse(hdb_resale_test$resale_price, hdb_resale_test$pre_MLR)
+MLR_RMSE  <- rmse(hdb_resale_test$resale_price, hdb_resale_test$pre_MLR)
+RF_RMSE   <- rmse(hdb_resale_test$resale_price, hdb_resale_test$pre_RF)
 gwRF_RMSE <- rmse(hdb_resale_test$resale_price, hdb_resale_test$pre_gwRF)
 
 RMSE_results <- data.frame(
-  Model = c("Multiple Linear Regression", "Geographically Weighted Random Forest"),
-  RMSE = c(MLR_RMSE, gwRF_RMSE)
+  Model = c("Multiple Linear Regression",
+            "Random Forest",
+            "Geographically Weighted Random Forest"),
+  RMSE  = c(MLR_RMSE,
+         RF_RMSE,
+            gwRF_RMSE)
 )
 
-knitr::kable(RMSE_results, caption = "RMSE Comparison of Model Predictions")
+knitr::kable(RMSE_results, caption = "RMSE Comparison of Four Model Predictions")
 ```
+
+```{r, fig.height=5, fig.width=7}
+
+RMSE_results <- data.frame(
+  Model = c("Multiple Linear Regression",
+            "Random Forest",
+            "Geographically Weighted Random Forest"),
+  RMSE  = c(MLR_RMSE,
+            RF_RMSE,
+            gwRF_RMSE)
+)
+
+ggplot(RMSE_results, aes(x = reorder(Model, RMSE), y = RMSE, fill = Model)) +
+  geom_bar(stat = "identity", width = 0.6, color = "black") +
+  geom_text(aes(label = round(RMSE, 0)), vjust = -0.5, size = 4) +
+  scale_fill_manual(values = c("#1b9e77", "#7570b3", "#d95f02")) + 
+  labs(
+    title = "RMSE Comparison of Model Predictions",
+    x = "Model",
+    y = "Root Mean Square Error (S$)"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(hjust = 0.5, face = "bold")
+  )
+```
+
 
 ## 9.4 Visualization of Prediction Results
 
-The Multiple Linear Regression (MLR) model shows a tighter clustering of predicted values along the diagonal, indicating higher prediction accuracy. In contrast, the Geographically Weighted Random Forest (gwRF) model exhibits a wider spread, especially at higher price levels, consistent with the RMSE results that favor the MLR model.
+The Multiple Linear Regression (MLR) model shows a moderately tight clustering of predicted values along the diagonal, indicating decent overall accuracy but some underestimation at higher price levels.
+
+In contrast, the Random Forest (RF) model demonstrates the strongest performance, with predictions aligning very closely with the 45° diagonal line and minimal dispersion, reflecting its ability to capture nonlinear relationships and complex feature interactions effectively.
+
+Meanwhile, the Geographically Weighted Random Forest (gwRF) model displays a much wider spread of points and systematic underestimation at higher prices, consistent with its higher RMSE, suggesting that the added spatial weighting did not improve prediction accuracy in this dataset.
+
 
 ```{r}
 plot_MLR <- ggplot(data = hdb_resale_test,
                    aes(x = pre_MLR,
                        y = resale_price)) +
-  geom_point() + 
-  ggtitle("MLR")
+  geom_point(alpha = 0.6) + 
+  ggtitle("MLR") +
+  xlab("Predicted Price") +
+  ylab("Actual Price")
+
+plot_RF <- ggplot(data = hdb_resale_test,
+                  aes(x = pre_RF,
+                      y = resale_price)) +
+  geom_point(alpha = 0.6) + 
+  ggtitle("Random Forest") +
+  xlab("Predicted Price") +
+  ylab("Actual Price")
 
 plot_gwRF <- ggplot(data = hdb_resale_test,
                     aes(x = pre_gwRF,
                         y = resale_price)) +
-  geom_point() + 
-  ggtitle("GWRF")
+  geom_point(alpha = 0.6) + 
+  ggtitle("gwRF") +
+  xlab("Predicted Price") +
+  ylab("Actual Price")
 
-ggarrange(plot_MLR, plot_gwRF, ncol = 2)
+ggarrange(plot_MLR,  plot_RF, plot_gwRF, ncol = 2, nrow = 2)
 ```
 
 ## 9.5 Spatial Error Analysis
 
-This section calculates and visualizes the spatial distribution of prediction errors for both models. Two new variables are created—error_vs_MLR and error_vs_GWRF—representing the difference between actual and predicted resale prices for the MLR and GWRF models, respectively. These residuals are then mapped using tmap, allowing direct visual comparison across Singapore.
+This section calculates and visualizes the spatial distribution of prediction errors for the Multiple Linear Regression (MLR), Random Forest (RF), and Geographically Weighted Random Forest (gwRF) models. Three new variables—error_vs_MLR, error_vs_RF, and error_vs_GWRF—represent the differences between actual and predicted resale prices for each model, respectively. These residuals are then mapped using tmap, allowing direct spatial comparison of model performance across Singapore.
 
-From the visualization, the MLR model exhibits smaller and more evenly distributed errors across the island, suggesting relatively stable and unbiased predictions across different areas. In contrast, the GWRF model displays more spatially clustered errors, with certain regions (especially in the central and eastern zones) showing consistent overestimation or underestimation. This indicates that while the GWRF model captures local variations, it may overfit in some spatial clusters.
+From the visualization, the MLR model exhibits relatively small and evenly distributed errors across the island, indicating stable and unbiased predictions across most regions. The RF model further reduces spatial bias, showing compact error magnitudes with minimal clustering, particularly in the central and eastern regions, reflecting its strong overall predictive accuracy and robustness in capturing nonlinear patterns. In contrast, the gwRF model displays more spatially clustered errors, with distinct pockets of overestimation and underestimation—especially in the central and southeastern zones—suggesting potential overfitting to local variations.
 
-Overall, the MLR model demonstrates greater stability and predictive reliability, consistent with its lower RMSE score.
+Overall, while the gwRF model provides spatially adaptive insights into local price dynamics, the RF model achieves the most balanced and accurate predictions spatially, followed by the globally consistent MLR model. This pattern aligns with their RMSE results, reaffirming RF’s superior predictive reliability.
+
 
 ```{r}
 hdb_resale_test <- hdb_resale_test %>%
   mutate(
     error_vs_MLR  = resale_price - pre_MLR,
+    error_vs_RF   = resale_price - pre_RF,
     error_vs_GWRF = resale_price - pre_gwRF
   )
 ```
@@ -1448,6 +1545,7 @@ hdb_resale_test <- hdb_resale_test %>%
 ```{r, fig.height = 8, fig.width=12}
 # Base map
 common_breaks <- c(-Inf, seq(-400000, 400000, by = 200000), Inf)
+
 base_map <- tm_shape(mpsz) +
   tm_polygons("REGION_N", alpha = 0.4, border.col = "white") +
   tm_shape(hdb_resale_test)
@@ -1457,59 +1555,124 @@ map_error_vs_MLR <- base_map +
   tm_dots(
     col = "error_vs_MLR",
     breaks = common_breaks,
-    palette = "RdBu",
-    size = 0.1,
-    title = "Error (S$)"
+    palette = "-RdYlBu",      
+    size = 0.2,               
+    alpha = 0.9,              
+    title = "Error (S$)",
+    contrast = c(0.3, 1)     
   ) +
   tm_layout(
     main.title = "Multiple Linear Regression Errors",
     main.title.size = 0.8
   )
 
-# GWRF
+# RF
+map_error_vs_RF <- base_map +
+  tm_dots(
+    col = "error_vs_RF",
+    breaks = common_breaks,
+    palette = "-RdYlBu",
+    size = 0.2,
+    alpha = 0.9,
+    title = "Error (S$)",
+    contrast = c(0.3, 1)
+  ) +
+  tm_layout(
+    main.title = "Random Forest Errors",
+    main.title.size = 0.8
+  )
+
+# gwRF
 map_error_vs_GWRF <- base_map +
   tm_dots(
     col = "error_vs_GWRF",
     breaks = common_breaks,
-    palette = "RdBu",
-    size = 0.1,
-    title = "Error (S$)"
+    palette = "-RdYlBu",
+    size = 0.2,
+    alpha = 0.9,
+    title = "Error (S$)",
+    contrast = c(0.3, 1)
   ) +
   tm_layout(
     main.title = "Geographically Weighted Random Forest Errors",
     main.title.size = 0.8
   )
 
-tmap_arrange(map_error_vs_MLR, map_error_vs_GWRF, ncol = 2, sync = TRUE)
+tmap_arrange(
+  map_error_vs_MLR,
+  map_error_vs_RF,
+  map_error_vs_GWRF,
+  ncol = 3,
+  sync = TRUE
+)
 ```
 
 ## 9.6 Residual Distribution Analysis
 
-This section examines the residual distributions of both models to evaluate normality and potential bias.
+This section examines the residual distributions of the Multiple Linear Regression (MLR), Random Forest (RF), and Geographically Weighted Random Forest (gwRF) models to evaluate normality and potential bias.
 
-The histogram of MLR errors shows a roughly symmetric, bell-shaped distribution centered near zero, suggesting that the model’s residuals are balanced between over- and under-predictions. The QQ plot for MLR errors aligns closely with the 45° line, confirming that residuals approximately follow a normal distribution.
+The histogram of MLR errors shows a roughly symmetric, bell-shaped distribution centered near zero, suggesting that the residuals are balanced between over- and under-predictions. The QQ plot for MLR errors aligns relatively closely with the 45° line, indicating that residuals approximately follow a normal distribution with only mild deviations at the tails.
 
-In contrast, the GWRF residuals exhibit a noticeable right skew, with a long tail of large positive errors, indicating that the model tends to underestimate resale prices in certain cases. The QQ plot further supports this, as deviations from the theoretical line are more pronounced in the upper quantiles.
+The RF model exhibits an even tighter, more symmetric error distribution with a sharper peak around zero and thinner tails, reflecting smaller overall prediction errors and higher accuracy. Its QQ plot follows the theoretical line more closely than MLR, confirming that the residuals are more normally distributed and less biased.
 
-Overall, the MLR model produces more normally distributed and less biased residuals, reinforcing its greater stability and predictive reliability compared to the GWRF model.
+In contrast, the gwRF residuals display a strong right skew with a long positive tail, indicating a systematic underestimation of higher-priced units. The corresponding QQ plot shows pronounced deviations in the upper quantiles, reinforcing the presence of non-normality.
 
-```{r, fig.height = 8, fig.width=12}
-par(mfrow = c(2,2))
-hist(hdb_resale_test$error_vs_MLR, breaks = 30, main = "Histogram of MLR Errors", col = "lightblue")
-hist(hdb_resale_test$error_vs_GWRF, breaks = 30, main = "Histogram of GWRF Errors", col = "lightgreen")
-qqnorm(hdb_resale_test$error_vs_MLR, main = "QQ Plot: MLR Errors"); qqline(hdb_resale_test$error_vs_MLR)
-qqnorm(hdb_resale_test$error_vs_GWRF, main = "QQ Plot: GWRF Errors"); qqline(hdb_resale_test$error_vs_GWRF)
+Overall, the RF model produces the most normally distributed and least biased residuals, followed by MLR, while the gwRF model shows clear skewness and instability—consistent with the RMSE results indicating the superior predictive reliability of RF.
+
+```{r, fig.height = 8, fig.width=16}
+
+par(mfrow = c(2, 3))
+
+# Histograms
+hist(
+  hdb_resale_test$error_vs_MLR,
+  breaks = 30,
+  main   = "Histogram of MLR Errors",
+  xlab   = "Error (S$)",
+  col    = "lightblue"
+)
+
+hist(
+  hdb_resale_test$error_vs_RF,
+  breaks = 30,
+  main   = "Histogram of RF Errors",
+  xlab   = "Error (S$)",
+  col    = "lightgoldenrod"
+)
+
+hist(
+  hdb_resale_test$error_vs_GWRF,
+  breaks = 30,
+  main   = "Histogram of gwRF Errors",
+  xlab   = "Error (S$)",
+  col    = "lightgreen"
+)
+
+# QQ plots
+qqnorm(hdb_resale_test$error_vs_MLR,
+       main = "QQ Plot: MLR Errors")
+qqline(hdb_resale_test$error_vs_MLR)
+
+qqnorm(hdb_resale_test$error_vs_RF,
+       main = "QQ Plot: RF Errors")
+qqline(hdb_resale_test$error_vs_RF)
+
+qqnorm(hdb_resale_test$error_vs_GWRF,
+       main = "QQ Plot: gwRF Errors")
+qqline(hdb_resale_test$error_vs_GWRF)
 ```
 
 # 10 Conclusion
 
-This study analyzed the resale prices of 4-room HDB flats in Singapore between July 2024 and September 2025, using both Multiple Linear Regression (MLR) and Geographically Weighted Random Forest (gwRF) models. The analysis incorporated a range of structural factors (e.g., floor area, storey level, and remaining lease) and locational attributes (e.g., distance to the CBD, MRT stations, parks, and schools) to examine their effects on resale price variations.
+This study analyzed the resale prices of 4-room HDB flats in Singapore between July 2024 and September 2025 using Multiple Linear Regression (MLR), Random Forest (RF), and Geographically Weighted Random Forest (gwRF) models. The analysis incorporated a comprehensive set of structural factors (e.g., floor area, storey level, and remaining lease) and locational attributes (e.g., distance to the CBD, MRT stations, parks, and schools) to examine their effects on resale price variations.
 
-The MLR model demonstrated strong predictive performance, achieving an adjusted R² of 0.79 and a relatively low RMSE of approximately S$78,240. Diagnostic tests confirmed that the model satisfied key assumptions, including linearity, normality, and absence of severe multicollinearity. However, Moran’s I test revealed significant spatial autocorrelation in the residuals, suggesting that spatial heterogeneity remained unaccounted for in the global regression framework.
+The MLR model demonstrated strong predictive performance, achieving an adjusted R² of 0.79 and a relatively low RMSE of approximately S$78,240. Diagnostic tests confirmed that the model satisfied key assumptions, including linearity, normality, and absence of severe multicollinearity. However, Moran’s I test revealed significant spatial autocorrelation in the residuals, indicating that spatial heterogeneity was not fully captured in the global linear framework.
 
-To address this issue, a geographically weighted random forest (gwRF) model was implemented, integrating spatial weighting into the random forest algorithm to capture localized, nonlinear relationships. While gwRF provided a spatially adaptive understanding of price determinants, its prediction accuracy (RMSE ≈ S$146,312) was lower than that of the MLR model. Residual and error maps indicated that gwRF exhibited greater spatial clustering of prediction errors, implying potential overfitting in certain local contexts.
+To address this limitation, a Random Forest (RF) model was applied to capture nonlinear relationships and complex feature interactions without assuming spatial structure. The RF model achieved the highest predictive accuracy (RMSE ≈ S$35,046), outperforming both the MLR and gwRF models, and exhibited well-behaved residuals that were approximately normally distributed. This result highlights the model’s strong capacity to learn nonlinear dependencies between structural and locational factors.
 
-Overall, the results suggest that for 4-room HDB resale transactions during 2024–2025, the MLR model offers more stable and generalizable performance across Singapore. Nevertheless, the gwRF approach remains valuable for revealing spatial heterogeneity and local variations that linear models may overlook. Future research could enhance predictive power by extending the time frame, incorporating additional socioeconomic and environmental factors, or combining global and local modeling techniques to balance interpretability and spatial adaptivity.
+A geographically weighted random forest (gwRF) model was also implemented to account for spatial heterogeneity by introducing location-based weighting. While gwRF provided valuable insights into localized variations in price determinants, its prediction accuracy (RMSE ≈ S$146,312) was notably lower, and residual analysis suggested possible overfitting within certain local clusters.
+
+Overall, the results suggest that for 4-room HDB resale transactions during 2024–2025, the Random Forest model provides the most accurate and stable price predictions, the MLR model remains effective and interpretable for global analysis, and the gwRF approach adds value in revealing spatial heterogeneity across Singapore. Future research could enhance predictive performance by integrating socioeconomic, environmental, and temporal dynamics, or by developing hybrid frameworks that combine the interpretability of global models with the spatial adaptivity of localized approaches.
 
 # 11 References
 

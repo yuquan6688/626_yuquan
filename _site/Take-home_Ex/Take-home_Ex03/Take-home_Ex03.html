@@ -182,6 +182,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex07/Hands-on_Ex07.html">
  <span class="dropdown-text">Hands-on Exercise 7</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html">
+ <span class="dropdown-text">Hands-on Exercise 8</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex09/Hands-on_Ex09.html">
+ <span class="dropdown-text">Hands-on Exercise 9</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item dropdown ">
@@ -327,6 +335,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#model-calibration" id="toc-model-calibration" class="nav-link" data-scroll-target="#model-calibration">8.3 Model Calibration</a></li>
   <li><a href="#variable-importance-analysis" id="toc-variable-importance-analysis" class="nav-link" data-scroll-target="#variable-importance-analysis">8.4 Variable Importance Analysis</a></li>
   </ul></li>
+  <li><a href="#rf-model" id="toc-rf-model" class="nav-link" data-scroll-target="#rf-model">8.5 RF Model</a></li>
   <li><a href="#model-evaluation" id="toc-model-evaluation" class="nav-link" data-scroll-target="#model-evaluation">9 Model evaluation</a>
   <ul class="collapse">
   <li><a href="#test-data-preparation" id="toc-test-data-preparation" class="nav-link" data-scroll-target="#test-data-preparation">9.1 Test Data Preparation</a></li>
@@ -334,6 +343,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#mlr" id="toc-mlr" class="nav-link" data-scroll-target="#mlr">9.2.1 MLR</a></li>
   <li><a href="#gwrf" id="toc-gwrf" class="nav-link" data-scroll-target="#gwrf">9.2.2 gwRF</a></li>
+  <li><a href="#rf" id="toc-rf" class="nav-link" data-scroll-target="#rf">9.2.3 RF</a></li>
   </ul></li>
   <li><a href="#model-performance-comparison-rmse" id="toc-model-performance-comparison-rmse" class="nav-link" data-scroll-target="#model-performance-comparison-rmse">9.3 Model Performance Comparison (RMSE)</a></li>
   <li><a href="#visualization-of-prediction-results" id="toc-visualization-of-prediction-results" class="nav-link" data-scroll-target="#visualization-of-prediction-results">9.4 Visualization of Prediction Results</a></li>
@@ -374,7 +384,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">October 30, 2025</p>
+      <p class="date-modified">November 10, 2025</p>
     </div>
   </div>
     
@@ -505,8 +515,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <table class="caption-top table">
 <colgroup>
-<col style="width: 34%">
-<col style="width: 65%">
+<col style="width: 50%">
+<col style="width: 50%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -596,7 +606,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>               Metrics, </span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>               tidyverse, httr, </span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>               jsonlite,  </span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>               ggpubr, stringr,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>               ggpubr, stringr,randomForest,</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>               patchwork,</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>               ggstatsplot,</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>               GWmodel)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -2446,8 +2456,8 @@ $ n_schools_1km        &lt;int&gt; 4, 3, 7, 4, 6, 7, 4, 6, 5, 5, 6, 4, 5, 6, 5, 
 <span id="cb149-42"><a href="#cb149-42" aria-hidden="true" tabindex="-1"></a>EDA_Structural</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div class="plotly html-widget html-fill-item" id="htmlwidget-087e7c00eefbb0c9e063" style="width:100%;height:541px;"></div>
-<script type="application/json" data-for="htmlwidget-087e7c00eefbb0c9e063">{"x":{"data":[{"orientation":"v","width":[64105.263157894718,64105.263157894835,64105.263157894718,64105.263157894718,64105.263157894835,64105.263157894835,64105.263157894835,64105.263157894835,64105.263157894835,64105.263157894602,64105.263157894835,64105.263157894602,64105.263157894835,64105.263157894835,64105.263157894835,64105.263157894835,64105.263157894835,64105.263157894835,64105.263157894835,64105.263157894835],"base":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"x":[320526.31578947371,384631.57894736843,448736.8421052632,512842.10526315792,576947.36842105258,641052.63157894742,705157.89473684225,769263.15789473685,833368.42105263169,897473.68421052641,961578.94736842113,1025684.2105263158,1089789.4736842106,1153894.7368421054,1218000,1282105.2631578948,1346210.5263157897,1410315.7894736843,1474421.0526315789,1538526.3157894737],"y":[1,15,534,2593,3561,3231,1530,1004,577,412,473,344,218,115,69,18,19,20,2,1],"text":["count:    1<br />resale_price:  320526.3","count:   15<br />resale_price:  384631.6","count:  534<br />resale_price:  448736.8","count: 2593<br />resale_price:  512842.1","count: 3561<br />resale_price:  576947.4","count: 3231<br />resale_price:  641052.6","count: 1530<br />resale_price:  705157.9","count: 1004<br />resale_price:  769263.2","count:  577<br />resale_price:  833368.4","count:  412<br />resale_price:  897473.7","count:  473<br />resale_price:  961578.9","count:  344<br />resale_price: 1025684.2","count:  218<br />resale_price: 1089789.5","count:  115<br />resale_price: 1153894.7","count:   69<br />resale_price: 1218000.0","count:   18<br />resale_price: 1282105.3","count:   19<br />resale_price: 1346210.5","count:   20<br />resale_price: 1410315.8","count:    2<br />resale_price: 1474421.1","count:    1<br />resale_price: 1538526.3"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(173,216,230,1)","line":{"width":1.8897637795275593,"color":"rgba(0,0,0,1)"}},"showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":[3.2105263157894797,3.2105263157894797,3.2105263157894797,3.2105263157894797,3.2105263157894797,3.2105263157894797,3.2105263157894797,3.2105263157894797,3.2105263157894797,3.2105263157894797,3.2105263157894797,3.2105263157894797,3.2105263157894797,3.2105263157894797,3.2105263157894797,3.2105263157894797,3.2105263157894797,3.2105263157894797,3.2105263157894797,3.2105263157894797],"base":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"x":[73.842105263157904,77.05263157894737,80.26315789473685,83.473684210526329,86.684210526315795,89.89473684210526,93.10526315789474,96.31578947368422,99.526315789473699,102.73684210526316,105.94736842105263,109.15789473684211,112.36842105263159,115.57894736842107,118.78947368421055,122,125.21052631578948,128.42105263157896,131.63157894736844,134.84210526315792],"y":[24,18,27,1259,316,1807,6348,675,1058,1957,791,247,135,61,4,5,0,1,3,1],"text":["count:   24<br />floor_area_sqm:  73.84211","count:   18<br />floor_area_sqm:  77.05263","count:   27<br />floor_area_sqm:  80.26316","count: 1259<br />floor_area_sqm:  83.47368","count:  316<br />floor_area_sqm:  86.68421","count: 1807<br />floor_area_sqm:  89.89474","count: 6348<br />floor_area_sqm:  93.10526","count:  675<br />floor_area_sqm:  96.31579","count: 1058<br />floor_area_sqm:  99.52632","count: 1957<br />floor_area_sqm: 102.73684","count:  791<br />floor_area_sqm: 105.94737","count:  247<br />floor_area_sqm: 109.15789","count:  135<br />floor_area_sqm: 112.36842","count:   61<br />floor_area_sqm: 115.57895","count:    4<br />floor_area_sqm: 118.78947","count:    5<br />floor_area_sqm: 122.00000","count:    0<br />floor_area_sqm: 125.21053","count:    1<br />floor_area_sqm: 128.42105","count:    3<br />floor_area_sqm: 131.63158","count:    1<br />floor_area_sqm: 134.84211"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(144,238,144,1)","line":{"width":1.8897637795275593,"color":"rgba(0,0,0,1)"}},"showlegend":false,"xaxis":"x2","yaxis":"y3","hoverinfo":"text","frame":null},{"orientation":"v","width":[2.5263157894736841,2.526315789473685,2.5263157894736832,2.526315789473685,2.526315789473685,2.5263157894736814,2.526315789473685,2.526315789473685,2.526315789473685,2.526315789473685,2.526315789473685,2.526315789473685,2.526315789473685,2.526315789473685,2.526315789473685,2.526315789473685,2.526315789473685,2.526315789473685,2.526315789473685,2.526315789473685],"base":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"x":[2.5263157894736841,5.0526315789473681,7.5789473684210522,10.105263157894736,12.631578947368421,15.157894736842104,17.684210526315788,20.210526315789473,22.736842105263158,25.263157894736842,27.789473684210527,30.315789473684209,32.84210526315789,35.368421052631575,37.89473684210526,40.421052631578945,42.94736842105263,45.473684210526315,48,50.526315789473685],"y":[2479,3145,3014,2786,0,1564,751,305,178,181,123,0,76,66,43,18,4,0,1,3],"text":["count: 2479<br />storey_mean:  2.526316","count: 3145<br />storey_mean:  5.052632","count: 3014<br />storey_mean:  7.578947","count: 2786<br />storey_mean: 10.105263","count:    0<br />storey_mean: 12.631579","count: 1564<br />storey_mean: 15.157895","count:  751<br />storey_mean: 17.684211","count:  305<br />storey_mean: 20.210526","count:  178<br />storey_mean: 22.736842","count:  181<br />storey_mean: 25.263158","count:  123<br />storey_mean: 27.789474","count:    0<br />storey_mean: 30.315789","count:   76<br />storey_mean: 32.842105","count:   66<br />storey_mean: 35.368421","count:   43<br />storey_mean: 37.894737","count:   18<br />storey_mean: 40.421053","count:    4<br />storey_mean: 42.947368","count:    0<br />storey_mean: 45.473684","count:    1<br />storey_mean: 48.000000","count:    3<br />storey_mean: 50.526316"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(255,165,0,1)","line":{"width":1.8897637795275593,"color":"rgba(0,0,0,1)"}},"showlegend":false,"xaxis":"x3","yaxis":"y2","hoverinfo":"text","frame":null},{"orientation":"v","width":[34.684210526315837,34.684210526315837,34.684210526315837,34.684210526315837,34.684210526315837,34.684210526315837,34.684210526315837,34.684210526315837,34.684210526315837,34.684210526315837,34.684210526315837,34.684210526315837,34.684210526315837,34.684210526315837,34.684210526315837,34.684210526315837,34.684210526315837,34.684210526315837,34.684210526315837,34.684210526315837],"base":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"x":[485.57894736842104,520.26315789473688,554.94736842105272,589.63157894736844,624.31578947368416,659,693.68421052631584,728.36842105263167,763.05263157894728,797.73684210526312,832.42105263157896,867.1052631578948,901.78947368421063,936.47368421052624,971.15789473684208,1005.8421052631579,1040.5263157894738,1075.2105263157896,1109.8947368421052,1144.578947368421],"y":[2,14,35,207,441,398,916,1346,950,442,478,1305,958,653,315,398,952,1570,2083,1274],"text":["count:    2<br />remaining_lease_mths:  485.5789","count:   14<br />remaining_lease_mths:  520.2632","count:   35<br />remaining_lease_mths:  554.9474","count:  207<br />remaining_lease_mths:  589.6316","count:  441<br />remaining_lease_mths:  624.3158","count:  398<br />remaining_lease_mths:  659.0000","count:  916<br />remaining_lease_mths:  693.6842","count: 1346<br />remaining_lease_mths:  728.3684","count:  950<br />remaining_lease_mths:  763.0526","count:  442<br />remaining_lease_mths:  797.7368","count:  478<br />remaining_lease_mths:  832.4211","count: 1305<br />remaining_lease_mths:  867.1053","count:  958<br />remaining_lease_mths:  901.7895","count:  653<br />remaining_lease_mths:  936.4737","count:  315<br />remaining_lease_mths:  971.1579","count:  398<br />remaining_lease_mths: 1005.8421","count:  952<br />remaining_lease_mths: 1040.5263","count: 1570<br />remaining_lease_mths: 1075.2105","count: 2083<br />remaining_lease_mths: 1109.8947","count: 1274<br />remaining_lease_mths: 1144.5789"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(221,160,221,1)","line":{"width":1.8897637795275593,"color":"rgba(0,0,0,1)"}},"showlegend":false,"xaxis":"x4","yaxis":"y5","hoverinfo":"text","frame":null},{"orientation":"v","width":[2.8421052631578956,2.8421052631578938,2.8421052631578965,2.8421052631578938,2.8421052631578938,2.8421052631578974,2.8421052631578902,2.8421052631578902,2.8421052631578902,2.8421052631578902,2.8421052631578902,2.8421052631578902,2.8421052631578902,2.8421052631578902,2.8421052631578902,2.8421052631578902,2.8421052631578902,2.8421052631578902,2.8421052631578902,2.8421052631578902],"base":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"x":[2.8421052631578947,5.6842105263157894,8.526315789473685,11.368421052631579,14.210526315789473,17.05263157894737,19.894736842105267,22.736842105263158,25.578947368421055,28.421052631578945,31.263157894736842,34.10526315789474,36.94736842105263,39.78947368421052,42.631578947368418,45.473684210526315,48.315789473684205,51.157894736842103,54,56.84210526315789],"y":[293,2551,1019,1554,649,297,488,901,1210,785,420,399,1294,1639,295,327,430,161,22,3],"text":["count:  293<br />age_of_unit:  2.842105","count: 2551<br />age_of_unit:  5.684211","count: 1019<br />age_of_unit:  8.526316","count: 1554<br />age_of_unit: 11.368421","count:  649<br />age_of_unit: 14.210526","count:  297<br />age_of_unit: 17.052632","count:  488<br />age_of_unit: 19.894737","count:  901<br />age_of_unit: 22.736842","count: 1210<br />age_of_unit: 25.578947","count:  785<br />age_of_unit: 28.421053","count:  420<br />age_of_unit: 31.263158","count:  399<br />age_of_unit: 34.105263","count: 1294<br />age_of_unit: 36.947368","count: 1639<br />age_of_unit: 39.789474","count:  295<br />age_of_unit: 42.631579","count:  327<br />age_of_unit: 45.473684","count:  430<br />age_of_unit: 48.315789","count:  161<br />age_of_unit: 51.157895","count:   22<br />age_of_unit: 54.000000","count:    3<br />age_of_unit: 56.842105"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(250,128,114,1)","line":{"width":1.8897637795275593,"color":"rgba(0,0,0,1)"}},"showlegend":false,"xaxis":"x5","yaxis":"y4","hoverinfo":"text","frame":null}],"layout":{"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[224368.4210526316,1634684.210526316],"tickmode":"array","ticktext":["400000","800000","1200000","1600000"],"tickvals":[400000,800000,1200000,1600000],"categoryorder":"array","categoryarray":["400000","800000","1200000","1600000"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y","title":{"text":"resale_price","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"xaxis2":{"domain":[0,0.47999999999999998],"automargin":true,"type":"linear","autorange":false,"range":[69.026315789473685,139.65789473684214],"tickmode":"array","ticktext":["80","100","120"],"tickvals":[80,100,120],"categoryorder":"array","categoryarray":["80","100","120"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y3","title":{"text":"floor_area_sqm","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"xaxis3":{"domain":[0.52000000000000002,1],"automargin":true,"type":"linear","autorange":false,"range":[-1.2631578947368425,54.315789473684212],"tickmode":"array","ticktext":["0","10","20","30","40","50"],"tickvals":[0,10,20,30,40,50],"categoryorder":"array","categoryarray":["0","10","20","30","40","50"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y2","title":{"text":"storey_mean","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"xaxis4":{"domain":[0,0.47999999999999998],"automargin":true,"type":"linear","autorange":false,"range":[433.55263157894734,1196.6052631578948],"tickmode":"array","ticktext":["600","800","1000"],"tickvals":[600,800,1000],"categoryorder":"array","categoryarray":["600","800","1000"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y5","title":{"text":"remaining_lease_mths","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"xaxis5":{"domain":[0.52000000000000002,1],"automargin":true,"type":"linear","autorange":false,"range":[-1.4210526315789476,61.105263157894733],"tickmode":"array","ticktext":["0","20","40","60"],"tickvals":[0,20,40,60],"categoryorder":"array","categoryarray":["0","20","40","60"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y4","title":{"text":"age_of_unit","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis4":{"domain":[0,0.28333333333333338],"automargin":true,"type":"linear","autorange":false,"range":[-127.55000000000001,2678.5500000000002],"tickmode":"array","ticktext":["0","1000","2000"],"tickvals":[1.4210854715202004e-14,1000,2000.0000000000002],"categoryorder":"array","categoryarray":["0","1000","2000"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x5","title":{"text":"count","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis5":{"domain":[0,0.28333333333333338],"automargin":true,"type":"linear","autorange":false,"range":[-104.15000000000001,2187.1500000000001],"tickmode":"array","ticktext":["0","500","1000","1500","2000"],"tickvals":[0,500.00000000000011,1000.0000000000001,1500,2000],"categoryorder":"array","categoryarray":["0","500","1000","1500","2000"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x4","title":{"text":"count","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis2":{"domain":[0.38333333333333336,0.6166666666666667],"automargin":true,"type":"linear","autorange":false,"range":[-157.25,3302.25],"tickmode":"array","ticktext":["0","1000","2000","3000"],"tickvals":[0,1000,2000,3000],"categoryorder":"array","categoryarray":["0","1000","2000","3000"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x3","title":{"text":"count","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis3":{"domain":[0.38333333333333336,0.6166666666666667],"automargin":true,"type":"linear","autorange":false,"range":[-317.40000000000003,6665.3999999999996],"tickmode":"array","ticktext":["0","2000","4000","6000"],"tickvals":[0,2000,3999.9999999999995,6000],"categoryorder":"array","categoryarray":["0","2000","4000","6000"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x2","title":{"text":"count","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0.71666666666666679,1],"automargin":true,"type":"linear","autorange":false,"range":[-178.05000000000001,3739.0500000000002],"tickmode":"array","ticktext":["0","1000","2000","3000"],"tickvals":[0,1000,2000.0000000000002,3000],"categoryorder":"array","categoryarray":["0","1000","2000","3000"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":{"text":"count","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"annotations":[],"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0.71666666666666679,"y1":1},{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":0.47999999999999998,"y0":0.38333333333333336,"y1":0.6166666666666667},{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0.52000000000000002,"x1":1,"y0":0.38333333333333336,"y1":0.6166666666666667},{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":0.47999999999999998,"y0":0,"y1":0.28333333333333338},{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0.52000000000000002,"x1":1,"y0":0,"y1":0.28333333333333338}],"images":[],"margin":{"t":24.767123287671232,"r":7.3059360730593621,"b":38.721461187214615,"l":48.949771689497723},"font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"showlegend":false,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498}},"hovermode":"closest","barmode":"relative"},"attrs":{"996d2c12bedb":{"x":{},"type":"bar"},"996d23f93918":{"x":{},"type":"bar"},"996d5bf40f0d":{"x":{},"type":"bar"},"996d53c37c68":{"x":{},"type":"bar"},"996d5ed240f":{"x":{},"type":"bar"}},"source":"A","config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"subplot":true,"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-2702af5cbfd211210bb2" style="width:100%;height:541px;"></div>
+<script type="application/json" data-for="htmlwidget-2702af5cbfd211210bb2">{"x":{"data":[{"orientation":"v","width":[64105.263157894718,64105.263157894835,64105.263157894718,64105.263157894718,64105.263157894835,64105.263157894835,64105.263157894835,64105.263157894835,64105.263157894835,64105.263157894602,64105.263157894835,64105.263157894602,64105.263157894835,64105.263157894835,64105.263157894835,64105.263157894835,64105.263157894835,64105.263157894835,64105.263157894835,64105.263157894835],"base":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"x":[320526.31578947371,384631.57894736843,448736.8421052632,512842.10526315792,576947.36842105258,641052.63157894742,705157.89473684225,769263.15789473685,833368.42105263169,897473.68421052641,961578.94736842113,1025684.2105263158,1089789.4736842106,1153894.7368421054,1218000,1282105.2631578948,1346210.5263157897,1410315.7894736843,1474421.0526315789,1538526.3157894737],"y":[1,15,534,2593,3561,3231,1530,1004,577,412,473,344,218,115,69,18,19,20,2,1],"text":["count:    1<br />resale_price:  320526.3","count:   15<br />resale_price:  384631.6","count:  534<br />resale_price:  448736.8","count: 2593<br />resale_price:  512842.1","count: 3561<br />resale_price:  576947.4","count: 3231<br />resale_price:  641052.6","count: 1530<br />resale_price:  705157.9","count: 1004<br />resale_price:  769263.2","count:  577<br />resale_price:  833368.4","count:  412<br />resale_price:  897473.7","count:  473<br />resale_price:  961578.9","count:  344<br />resale_price: 1025684.2","count:  218<br />resale_price: 1089789.5","count:  115<br />resale_price: 1153894.7","count:   69<br />resale_price: 1218000.0","count:   18<br />resale_price: 1282105.3","count:   19<br />resale_price: 1346210.5","count:   20<br />resale_price: 1410315.8","count:    2<br />resale_price: 1474421.1","count:    1<br />resale_price: 1538526.3"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(173,216,230,1)","line":{"width":1.8897637795275593,"color":"rgba(0,0,0,1)"}},"showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":[3.2105263157894797,3.2105263157894797,3.2105263157894797,3.2105263157894797,3.2105263157894797,3.2105263157894797,3.2105263157894797,3.2105263157894797,3.2105263157894797,3.2105263157894797,3.2105263157894797,3.2105263157894797,3.2105263157894797,3.2105263157894797,3.2105263157894797,3.2105263157894797,3.2105263157894797,3.2105263157894797,3.2105263157894797,3.2105263157894797],"base":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"x":[73.842105263157904,77.05263157894737,80.26315789473685,83.473684210526329,86.684210526315795,89.89473684210526,93.10526315789474,96.31578947368422,99.526315789473699,102.73684210526316,105.94736842105263,109.15789473684211,112.36842105263159,115.57894736842107,118.78947368421055,122,125.21052631578948,128.42105263157896,131.63157894736844,134.84210526315792],"y":[24,18,27,1259,316,1807,6348,675,1058,1957,791,247,135,61,4,5,0,1,3,1],"text":["count:   24<br />floor_area_sqm:  73.84211","count:   18<br />floor_area_sqm:  77.05263","count:   27<br />floor_area_sqm:  80.26316","count: 1259<br />floor_area_sqm:  83.47368","count:  316<br />floor_area_sqm:  86.68421","count: 1807<br />floor_area_sqm:  89.89474","count: 6348<br />floor_area_sqm:  93.10526","count:  675<br />floor_area_sqm:  96.31579","count: 1058<br />floor_area_sqm:  99.52632","count: 1957<br />floor_area_sqm: 102.73684","count:  791<br />floor_area_sqm: 105.94737","count:  247<br />floor_area_sqm: 109.15789","count:  135<br />floor_area_sqm: 112.36842","count:   61<br />floor_area_sqm: 115.57895","count:    4<br />floor_area_sqm: 118.78947","count:    5<br />floor_area_sqm: 122.00000","count:    0<br />floor_area_sqm: 125.21053","count:    1<br />floor_area_sqm: 128.42105","count:    3<br />floor_area_sqm: 131.63158","count:    1<br />floor_area_sqm: 134.84211"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(144,238,144,1)","line":{"width":1.8897637795275593,"color":"rgba(0,0,0,1)"}},"showlegend":false,"xaxis":"x2","yaxis":"y3","hoverinfo":"text","frame":null},{"orientation":"v","width":[2.5263157894736841,2.526315789473685,2.5263157894736832,2.526315789473685,2.526315789473685,2.5263157894736814,2.526315789473685,2.526315789473685,2.526315789473685,2.526315789473685,2.526315789473685,2.526315789473685,2.526315789473685,2.526315789473685,2.526315789473685,2.526315789473685,2.526315789473685,2.526315789473685,2.526315789473685,2.526315789473685],"base":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"x":[2.5263157894736841,5.0526315789473681,7.5789473684210522,10.105263157894736,12.631578947368421,15.157894736842104,17.684210526315788,20.210526315789473,22.736842105263158,25.263157894736842,27.789473684210527,30.315789473684209,32.84210526315789,35.368421052631575,37.89473684210526,40.421052631578945,42.94736842105263,45.473684210526315,48,50.526315789473685],"y":[2479,3145,3014,2786,0,1564,751,305,178,181,123,0,76,66,43,18,4,0,1,3],"text":["count: 2479<br />storey_mean:  2.526316","count: 3145<br />storey_mean:  5.052632","count: 3014<br />storey_mean:  7.578947","count: 2786<br />storey_mean: 10.105263","count:    0<br />storey_mean: 12.631579","count: 1564<br />storey_mean: 15.157895","count:  751<br />storey_mean: 17.684211","count:  305<br />storey_mean: 20.210526","count:  178<br />storey_mean: 22.736842","count:  181<br />storey_mean: 25.263158","count:  123<br />storey_mean: 27.789474","count:    0<br />storey_mean: 30.315789","count:   76<br />storey_mean: 32.842105","count:   66<br />storey_mean: 35.368421","count:   43<br />storey_mean: 37.894737","count:   18<br />storey_mean: 40.421053","count:    4<br />storey_mean: 42.947368","count:    0<br />storey_mean: 45.473684","count:    1<br />storey_mean: 48.000000","count:    3<br />storey_mean: 50.526316"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(255,165,0,1)","line":{"width":1.8897637795275593,"color":"rgba(0,0,0,1)"}},"showlegend":false,"xaxis":"x3","yaxis":"y2","hoverinfo":"text","frame":null},{"orientation":"v","width":[34.684210526315837,34.684210526315837,34.684210526315837,34.684210526315837,34.684210526315837,34.684210526315837,34.684210526315837,34.684210526315837,34.684210526315837,34.684210526315837,34.684210526315837,34.684210526315837,34.684210526315837,34.684210526315837,34.684210526315837,34.684210526315837,34.684210526315837,34.684210526315837,34.684210526315837,34.684210526315837],"base":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"x":[485.57894736842104,520.26315789473688,554.94736842105272,589.63157894736844,624.31578947368416,659,693.68421052631584,728.36842105263167,763.05263157894728,797.73684210526312,832.42105263157896,867.1052631578948,901.78947368421063,936.47368421052624,971.15789473684208,1005.8421052631579,1040.5263157894738,1075.2105263157896,1109.8947368421052,1144.578947368421],"y":[2,14,35,207,441,398,916,1346,950,442,478,1305,958,653,315,398,952,1570,2083,1274],"text":["count:    2<br />remaining_lease_mths:  485.5789","count:   14<br />remaining_lease_mths:  520.2632","count:   35<br />remaining_lease_mths:  554.9474","count:  207<br />remaining_lease_mths:  589.6316","count:  441<br />remaining_lease_mths:  624.3158","count:  398<br />remaining_lease_mths:  659.0000","count:  916<br />remaining_lease_mths:  693.6842","count: 1346<br />remaining_lease_mths:  728.3684","count:  950<br />remaining_lease_mths:  763.0526","count:  442<br />remaining_lease_mths:  797.7368","count:  478<br />remaining_lease_mths:  832.4211","count: 1305<br />remaining_lease_mths:  867.1053","count:  958<br />remaining_lease_mths:  901.7895","count:  653<br />remaining_lease_mths:  936.4737","count:  315<br />remaining_lease_mths:  971.1579","count:  398<br />remaining_lease_mths: 1005.8421","count:  952<br />remaining_lease_mths: 1040.5263","count: 1570<br />remaining_lease_mths: 1075.2105","count: 2083<br />remaining_lease_mths: 1109.8947","count: 1274<br />remaining_lease_mths: 1144.5789"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(221,160,221,1)","line":{"width":1.8897637795275593,"color":"rgba(0,0,0,1)"}},"showlegend":false,"xaxis":"x4","yaxis":"y5","hoverinfo":"text","frame":null},{"orientation":"v","width":[2.8421052631578956,2.8421052631578938,2.8421052631578965,2.8421052631578938,2.8421052631578938,2.8421052631578974,2.8421052631578902,2.8421052631578902,2.8421052631578902,2.8421052631578902,2.8421052631578902,2.8421052631578902,2.8421052631578902,2.8421052631578902,2.8421052631578902,2.8421052631578902,2.8421052631578902,2.8421052631578902,2.8421052631578902,2.8421052631578902],"base":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"x":[2.8421052631578947,5.6842105263157894,8.526315789473685,11.368421052631579,14.210526315789473,17.05263157894737,19.894736842105267,22.736842105263158,25.578947368421055,28.421052631578945,31.263157894736842,34.10526315789474,36.94736842105263,39.78947368421052,42.631578947368418,45.473684210526315,48.315789473684205,51.157894736842103,54,56.84210526315789],"y":[293,2551,1019,1554,649,297,488,901,1210,785,420,399,1294,1639,295,327,430,161,22,3],"text":["count:  293<br />age_of_unit:  2.842105","count: 2551<br />age_of_unit:  5.684211","count: 1019<br />age_of_unit:  8.526316","count: 1554<br />age_of_unit: 11.368421","count:  649<br />age_of_unit: 14.210526","count:  297<br />age_of_unit: 17.052632","count:  488<br />age_of_unit: 19.894737","count:  901<br />age_of_unit: 22.736842","count: 1210<br />age_of_unit: 25.578947","count:  785<br />age_of_unit: 28.421053","count:  420<br />age_of_unit: 31.263158","count:  399<br />age_of_unit: 34.105263","count: 1294<br />age_of_unit: 36.947368","count: 1639<br />age_of_unit: 39.789474","count:  295<br />age_of_unit: 42.631579","count:  327<br />age_of_unit: 45.473684","count:  430<br />age_of_unit: 48.315789","count:  161<br />age_of_unit: 51.157895","count:   22<br />age_of_unit: 54.000000","count:    3<br />age_of_unit: 56.842105"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(250,128,114,1)","line":{"width":1.8897637795275593,"color":"rgba(0,0,0,1)"}},"showlegend":false,"xaxis":"x5","yaxis":"y4","hoverinfo":"text","frame":null}],"layout":{"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[224368.4210526316,1634684.210526316],"tickmode":"array","ticktext":["400000","800000","1200000","1600000"],"tickvals":[400000,800000,1200000,1600000],"categoryorder":"array","categoryarray":["400000","800000","1200000","1600000"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y","title":{"text":"resale_price","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"xaxis2":{"domain":[0,0.47999999999999998],"automargin":true,"type":"linear","autorange":false,"range":[69.026315789473685,139.65789473684214],"tickmode":"array","ticktext":["80","100","120"],"tickvals":[80,100,120],"categoryorder":"array","categoryarray":["80","100","120"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y3","title":{"text":"floor_area_sqm","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"xaxis3":{"domain":[0.52000000000000002,1],"automargin":true,"type":"linear","autorange":false,"range":[-1.2631578947368425,54.315789473684212],"tickmode":"array","ticktext":["0","10","20","30","40","50"],"tickvals":[0,10,20,30,40,50],"categoryorder":"array","categoryarray":["0","10","20","30","40","50"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y2","title":{"text":"storey_mean","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"xaxis4":{"domain":[0,0.47999999999999998],"automargin":true,"type":"linear","autorange":false,"range":[433.55263157894734,1196.6052631578948],"tickmode":"array","ticktext":["600","800","1000"],"tickvals":[600,800,1000],"categoryorder":"array","categoryarray":["600","800","1000"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y5","title":{"text":"remaining_lease_mths","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"xaxis5":{"domain":[0.52000000000000002,1],"automargin":true,"type":"linear","autorange":false,"range":[-1.4210526315789476,61.105263157894733],"tickmode":"array","ticktext":["0","20","40","60"],"tickvals":[0,20,40,60],"categoryorder":"array","categoryarray":["0","20","40","60"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y4","title":{"text":"age_of_unit","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis4":{"domain":[0,0.28333333333333338],"automargin":true,"type":"linear","autorange":false,"range":[-127.55000000000001,2678.5500000000002],"tickmode":"array","ticktext":["0","1000","2000"],"tickvals":[1.4210854715202004e-14,1000,2000.0000000000002],"categoryorder":"array","categoryarray":["0","1000","2000"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x5","title":{"text":"count","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis5":{"domain":[0,0.28333333333333338],"automargin":true,"type":"linear","autorange":false,"range":[-104.15000000000001,2187.1500000000001],"tickmode":"array","ticktext":["0","500","1000","1500","2000"],"tickvals":[0,500.00000000000011,1000.0000000000001,1500,2000],"categoryorder":"array","categoryarray":["0","500","1000","1500","2000"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x4","title":{"text":"count","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis2":{"domain":[0.38333333333333336,0.6166666666666667],"automargin":true,"type":"linear","autorange":false,"range":[-157.25,3302.25],"tickmode":"array","ticktext":["0","1000","2000","3000"],"tickvals":[0,1000,2000,3000],"categoryorder":"array","categoryarray":["0","1000","2000","3000"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x3","title":{"text":"count","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis3":{"domain":[0.38333333333333336,0.6166666666666667],"automargin":true,"type":"linear","autorange":false,"range":[-317.40000000000003,6665.3999999999996],"tickmode":"array","ticktext":["0","2000","4000","6000"],"tickvals":[0,2000,3999.9999999999995,6000],"categoryorder":"array","categoryarray":["0","2000","4000","6000"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x2","title":{"text":"count","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0.71666666666666679,1],"automargin":true,"type":"linear","autorange":false,"range":[-178.05000000000001,3739.0500000000002],"tickmode":"array","ticktext":["0","1000","2000","3000"],"tickvals":[0,1000,2000.0000000000002,3000],"categoryorder":"array","categoryarray":["0","1000","2000","3000"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":{"text":"count","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"annotations":[],"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0.71666666666666679,"y1":1},{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":0.47999999999999998,"y0":0.38333333333333336,"y1":0.6166666666666667},{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0.52000000000000002,"x1":1,"y0":0.38333333333333336,"y1":0.6166666666666667},{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":0.47999999999999998,"y0":0,"y1":0.28333333333333338},{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0.52000000000000002,"x1":1,"y0":0,"y1":0.28333333333333338}],"images":[],"margin":{"t":24.767123287671232,"r":7.3059360730593621,"b":38.721461187214615,"l":48.949771689497723},"font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"showlegend":false,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498}},"hovermode":"closest","barmode":"relative"},"attrs":{"1cb86ff19098":{"x":{},"type":"bar"},"1cb862277fd1":{"x":{},"type":"bar"},"1cb845ed3d0a":{"x":{},"type":"bar"},"1cb84217badc":{"x":{},"type":"bar"},"1cb83cddd7ce":{"x":{},"type":"bar"}},"source":"A","config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"subplot":true,"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </section>
@@ -2604,11 +2614,11 @@ $ n_schools_1km        &lt;int&gt; 4, 3, 7, 4, 6, 7, 4, 6, 5, 5, 6, 4, 5, 6, 5, 
 <div class="cell-output cell-output-stdout">
 <pre><code>                              Model Summary                                
 --------------------------------------------------------------------------
-R                           0.889       RMSE                    71077.798 
-R-Squared                   0.790       MSE                5052053362.460 
+R                           0.889       RMSE                    71077.539 
+R-Squared                   0.790       MSE                5052016620.924 
 Adj. R-Squared              0.790       Coef. Var                  10.826 
-Pred R-Squared              0.790       AIC                    294149.352 
-MAE                     54971.087       SBC                    294281.933 
+Pred R-Squared              0.790       AIC                    294149.267 
+MAE                     54970.898       SBC                    294281.848 
 --------------------------------------------------------------------------
  RMSE: Root Mean Square Error 
  MSE: Mean Square Error 
@@ -2621,8 +2631,8 @@ MAE                     54971.087       SBC                    294281.933
                     Sum of                                                      
                    Squares           DF       Mean Square       F          Sig. 
 --------------------------------------------------------------------------------
-Regression    2.222601e+14           16      1.389125e+13    2745.623    0.0000 
-Residual      5.900798e+13        11663    5059417240.293                       
+Regression    2.222605e+14           16      1.389128e+13    2745.649    0.0000 
+Residual      5.900755e+13        11663    5059380445.202                       
 Total         2.812681e+14        11679                                         
 --------------------------------------------------------------------------------
 
@@ -2630,23 +2640,23 @@ Total         2.812681e+14        11679
 -----------------------------------------------------------------------------------------------------------
                model         Beta    Std. Error    Std. Beta       t        Sig         lower        upper 
 -----------------------------------------------------------------------------------------------------------
-         (Intercept)    43112.204     11853.278                   3.637    0.000    19877.794    66346.614 
-            dist_cbd      -22.294         0.265       -0.626    -84.005    0.000      -22.814      -21.774 
-      dist_eldercare      -10.736         1.198       -0.044     -8.959    0.000      -13.085       -8.387 
-         dist_hawker      -25.855         1.544       -0.077    -16.748    0.000      -28.881      -22.828 
-            dist_mrt      -38.979         1.973       -0.096    -19.755    0.000      -42.847      -35.111 
-           dist_park      -16.931         1.823       -0.045     -9.290    0.000      -20.504      -13.359 
-   dist_good_primary        5.328         0.332        0.102     16.057    0.000        4.678        5.979 
-    dist_supermarket       17.853         4.225        0.020      4.226    0.000        9.571       26.135 
-         dist_clinic      -12.573         6.764       -0.009     -1.859    0.063      -25.832        0.686 
-n_kindergartens_350m     9247.471       737.858        0.062     12.533    0.000     7801.144    10693.797 
-           dist_mall      -11.603         1.945       -0.030     -5.966    0.000      -15.415       -7.790 
-    n_childcare_350m    -2584.762       353.867       -0.039     -7.304    0.000    -3278.400    -1891.123 
-          n_bus_350m      980.511       251.033        0.018      3.906    0.000      488.444     1472.578 
-       n_schools_1km    -1894.506       331.380       -0.029     -5.717    0.000    -2544.065    -1244.946 
-      floor_area_sqm     4905.579       106.081        0.209     46.244    0.000     4697.643     5113.516 
-         storey_mean     5923.680       114.575        0.242     51.701    0.000     5699.095     6148.266 
-remaining_lease_mths      469.052         4.447        0.511    105.484    0.000      460.336      477.768 
+         (Intercept)    43139.605     11853.513                   3.639    0.000    19904.735    66374.475 
+            dist_cbd      -22.293         0.265       -0.626    -83.995    0.000      -22.813      -21.773 
+      dist_eldercare      -10.738         1.198       -0.044     -8.961    0.000      -13.087       -8.389 
+         dist_hawker      -25.855         1.544       -0.077    -16.748    0.000      -28.881      -22.829 
+            dist_mrt      -38.982         1.973       -0.096    -19.757    0.000      -42.849      -35.114 
+           dist_park      -16.930         1.823       -0.045     -9.289    0.000      -20.503      -13.358 
+   dist_good_primary        5.328         0.332        0.102     16.055    0.000        4.677        5.978 
+    dist_supermarket       17.846         4.225        0.020      4.224    0.000        9.565       26.128 
+         dist_clinic      -12.583         6.764       -0.009     -1.860    0.063      -25.842        0.677 
+n_kindergartens_350m     9247.237       737.854        0.062     12.533    0.000     7800.919    10693.554 
+           dist_mall      -11.605         1.945       -0.030     -5.967    0.000      -15.418       -7.793 
+    n_childcare_350m    -2584.683       353.861       -0.039     -7.304    0.000    -3278.310    -1891.056 
+          n_bus_350m      980.355       251.031        0.018      3.905    0.000      488.293     1472.417 
+       n_schools_1km    -1896.977       331.381       -0.029     -5.724    0.000    -2546.539    -1247.415 
+      floor_area_sqm     4905.525       106.081        0.209     46.243    0.000     4697.589     5113.461 
+         storey_mean     5923.582       114.575        0.242     51.701    0.000     5698.996     6148.168 
+remaining_lease_mths      469.042         4.447        0.511    105.479    0.000      460.326      477.758 
 -----------------------------------------------------------------------------------------------------------</code></pre>
 </div>
 </div>
@@ -2679,11 +2689,11 @@ remaining_lease_mths      469.052         4.447        0.511    105.484    0.000
 <div class="cell-output cell-output-stdout">
 <pre><code>                              Model Summary                                
 --------------------------------------------------------------------------
-R                           0.889       RMSE                    71088.324 
-R-Squared                   0.790       MSE                5053549840.280 
+R                           0.889       RMSE                    71088.082 
+R-Squared                   0.790       MSE                5053515440.440 
 Adj. R-Squared              0.790       Coef. Var                  10.827 
-Pred R-Squared              0.790       AIC                    294150.811 
-MAE                     54979.701       SBC                    294276.027 
+Pred R-Squared              0.790       AIC                    294150.732 
+MAE                     54979.507       SBC                    294275.947 
 --------------------------------------------------------------------------
  RMSE: Root Mean Square Error 
  MSE: Mean Square Error 
@@ -2696,8 +2706,8 @@ MAE                     54979.701       SBC                    294276.027
                     Sum of                                                      
                    Squares           DF       Mean Square       F          Sig. 
 --------------------------------------------------------------------------------
-Regression    2.222426e+14           15      1.481617e+13    2927.819    0.0000 
-Residual      5.902546e+13        11664    5060482007.413                       
+Regression     2.22243e+14           15       1.48162e+13    2927.844    0.0000 
+Residual      5.902506e+13        11664    5060447560.386                       
 Total         2.812681e+14        11679                                         
 --------------------------------------------------------------------------------
 
@@ -2705,22 +2715,22 @@ Total         2.812681e+14        11679
 -----------------------------------------------------------------------------------------------------------
                model         Beta    Std. Error    Std. Beta       t        Sig         lower        upper 
 -----------------------------------------------------------------------------------------------------------
-         (Intercept)    41727.781     11831.098                   3.527    0.000    18536.849    64918.713 
-            dist_cbd      -22.322         0.265       -0.626    -84.235    0.000      -22.841      -21.802 
-      dist_eldercare      -10.829         1.197       -0.044     -9.044    0.000      -13.176       -8.482 
-         dist_hawker      -26.023         1.541       -0.077    -16.884    0.000      -29.044      -23.001 
-            dist_mrt      -39.186         1.970       -0.096    -19.890    0.000      -43.048      -35.324 
-           dist_park      -17.062         1.821       -0.045     -9.368    0.000      -20.633      -13.492 
-   dist_good_primary        5.328         0.332        0.102     16.054    0.000        4.677        5.979 
-    dist_supermarket       15.629         4.052        0.018      3.857    0.000        7.686       23.573 
-n_kindergartens_350m     9173.268       736.855        0.062     12.449    0.000     7728.909    10617.628 
-           dist_mall      -11.234         1.935       -0.029     -5.806    0.000      -15.027       -7.441 
-    n_childcare_350m    -2552.526       353.479       -0.038     -7.221    0.000    -3245.404    -1859.648 
-          n_bus_350m     1024.659       249.933        0.019      4.100    0.000      534.747     1514.570 
-       n_schools_1km    -1850.213       330.556       -0.028     -5.597    0.000    -2498.159    -1202.267 
-      floor_area_sqm     4889.516       105.740        0.209     46.241    0.000     4682.248     5096.783 
-         storey_mean     5918.250       114.550        0.242     51.665    0.000     5693.714     6142.786 
-remaining_lease_mths      470.267         4.399        0.512    106.908    0.000      461.645      478.889 
+         (Intercept)    41753.105     11831.302                   3.529    0.000    18561.772    64944.438 
+            dist_cbd      -22.321         0.265       -0.626    -84.226    0.000      -22.840      -21.801 
+      dist_eldercare      -10.831         1.197       -0.044     -9.045    0.000      -13.178       -8.484 
+         dist_hawker      -26.023         1.541       -0.077    -16.884    0.000      -29.044      -23.002 
+            dist_mrt      -39.189         1.970       -0.096    -19.892    0.000      -43.051      -35.327 
+           dist_park      -17.061         1.821       -0.045     -9.367    0.000      -20.631      -13.491 
+   dist_good_primary        5.327         0.332        0.102     16.052    0.000        4.677        5.978 
+    dist_supermarket       15.621         4.053        0.018      3.855    0.000        7.677       23.565 
+n_kindergartens_350m     9172.989       736.851        0.062     12.449    0.000     7728.637    10617.341 
+           dist_mall      -11.237         1.935       -0.029     -5.807    0.000      -15.029       -7.444 
+    n_childcare_350m    -2552.430       353.473       -0.038     -7.221    0.000    -3245.296    -1859.563 
+          n_bus_350m     1024.539       249.931        0.019      4.099    0.000      534.633     1514.445 
+       n_schools_1km    -1852.549       330.554       -0.029     -5.604    0.000    -2500.490    -1204.608 
+      floor_area_sqm     4889.451       105.739        0.209     46.241    0.000     4682.184     5096.718 
+         storey_mean     5918.151       114.550        0.242     51.664    0.000     5693.614     6142.687 
+remaining_lease_mths      470.258         4.399        0.512    106.904    0.000      461.636      478.881 
 -----------------------------------------------------------------------------------------------------------</code></pre>
 </div>
 </div>
@@ -2735,21 +2745,21 @@ remaining_lease_mths      470.267         4.399        0.512    106.908    0.000
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>              Variables Tolerance      VIF
-1              dist_cbd 0.3254261 3.072894
-2        dist_eldercare 0.7546566 1.325106
-3           dist_hawker 0.8555179 1.168883
-4              dist_mrt 0.7720865 1.295192
-5             dist_park 0.7724397 1.294599
-6     dist_good_primary 0.4441144 2.251672
-7      dist_supermarket 0.8529962 1.172338
-8  n_kindergartens_350m 0.7278925 1.373829
-9             dist_mall 0.7274050 1.374750
-10     n_childcare_350m 0.6480812 1.543017
-11           n_bus_350m 0.8484511 1.178618
-12        n_schools_1km 0.6940091 1.440903
-13       floor_area_sqm 0.8825572 1.133071
-14          storey_mean 0.8223972 1.215957
-15 remaining_lease_mths 0.7846993 1.274374</code></pre>
+1              dist_cbd 0.3253773 3.073355
+2        dist_eldercare 0.7546334 1.325147
+3           dist_hawker 0.8555156 1.168886
+4              dist_mrt 0.7721008 1.295168
+5             dist_park 0.7724499 1.294582
+6     dist_good_primary 0.4440990 2.251750
+7      dist_supermarket 0.8529593 1.172389
+8  n_kindergartens_350m 0.7278952 1.373824
+9             dist_mall 0.7274073 1.374746
+10     n_childcare_350m 0.6480971 1.542979
+11           n_bus_350m 0.8484633 1.178601
+12        n_schools_1km 0.6939077 1.441114
+13       floor_area_sqm 0.8825530 1.133076
+14          storey_mean 0.8223895 1.215969
+15 remaining_lease_mths 0.7846664 1.274427</code></pre>
 </div>
 </div>
 </section>
@@ -2846,7 +2856,7 @@ Moran I statistic standard deviate = 517.63, p-value &lt; 2.2e-16
 alternative hypothesis: greater
 sample estimates:
 Observed Moran I      Expectation         Variance 
-    3.472446e-01    -5.909821e-04     4.515621e-07 </code></pre>
+    3.472460e-01    -5.909879e-04     4.515615e-07 </code></pre>
 </div>
 </div>
 </section>
@@ -2979,6 +2989,38 @@ Observed Moran I      Expectation         Variance
 </div>
 </section>
 </section>
+<section id="rf-model" class="level1">
+<h1>8.5 RF Model</h1>
+<p>This step trains a Random Forest regression model with 500 trees to predict HDB resale prices based on structural and locational factors, such as distance to amenities and housing attributes, while also computing variable importance to identify key predictors influencing price.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb175"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb175-1"><a href="#cb175-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">020608</span>)</span>
+<span id="cb175-2"><a href="#cb175-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb175-3"><a href="#cb175-3" aria-hidden="true" tabindex="-1"></a>rf_model <span class="ot">&lt;-</span> <span class="fu">randomForest</span>(</span>
+<span id="cb175-4"><a href="#cb175-4" aria-hidden="true" tabindex="-1"></a>  resale_price <span class="sc">~</span> </span>
+<span id="cb175-5"><a href="#cb175-5" aria-hidden="true" tabindex="-1"></a>    dist_cbd <span class="sc">+</span></span>
+<span id="cb175-6"><a href="#cb175-6" aria-hidden="true" tabindex="-1"></a>    dist_eldercare <span class="sc">+</span></span>
+<span id="cb175-7"><a href="#cb175-7" aria-hidden="true" tabindex="-1"></a>    dist_hawker <span class="sc">+</span></span>
+<span id="cb175-8"><a href="#cb175-8" aria-hidden="true" tabindex="-1"></a>    dist_mrt <span class="sc">+</span></span>
+<span id="cb175-9"><a href="#cb175-9" aria-hidden="true" tabindex="-1"></a>    dist_park <span class="sc">+</span></span>
+<span id="cb175-10"><a href="#cb175-10" aria-hidden="true" tabindex="-1"></a>    dist_good_primary <span class="sc">+</span></span>
+<span id="cb175-11"><a href="#cb175-11" aria-hidden="true" tabindex="-1"></a>    dist_supermarket <span class="sc">+</span> </span>
+<span id="cb175-12"><a href="#cb175-12" aria-hidden="true" tabindex="-1"></a>    n_kindergartens_350m <span class="sc">+</span></span>
+<span id="cb175-13"><a href="#cb175-13" aria-hidden="true" tabindex="-1"></a>    dist_mall <span class="sc">+</span></span>
+<span id="cb175-14"><a href="#cb175-14" aria-hidden="true" tabindex="-1"></a>    n_childcare_350m <span class="sc">+</span></span>
+<span id="cb175-15"><a href="#cb175-15" aria-hidden="true" tabindex="-1"></a>    n_bus_350m <span class="sc">+</span></span>
+<span id="cb175-16"><a href="#cb175-16" aria-hidden="true" tabindex="-1"></a>    n_schools_1km <span class="sc">+</span></span>
+<span id="cb175-17"><a href="#cb175-17" aria-hidden="true" tabindex="-1"></a>    floor_area_sqm <span class="sc">+</span></span>
+<span id="cb175-18"><a href="#cb175-18" aria-hidden="true" tabindex="-1"></a>    storey_mean <span class="sc">+</span></span>
+<span id="cb175-19"><a href="#cb175-19" aria-hidden="true" tabindex="-1"></a>    remaining_lease_mths,</span>
+<span id="cb175-20"><a href="#cb175-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">data  =</span> hdb_train_nogeo,</span>
+<span id="cb175-21"><a href="#cb175-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">ntree =</span> <span class="dv">500</span>,</span>
+<span id="cb175-22"><a href="#cb175-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">importance =</span> <span class="cn">TRUE</span></span>
+<span id="cb175-23"><a href="#cb175-23" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
 <section id="model-evaluation" class="level1">
 <h1>9 Model evaluation</h1>
 <section id="test-data-preparation" class="level2">
@@ -2989,13 +3031,13 @@ Observed Moran I      Expectation         Variance
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb175"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb175-1"><a href="#cb175-1" aria-hidden="true" tabindex="-1"></a>coords_test <span class="ot">&lt;-</span> <span class="fu">st_coordinates</span>(hdb_resale_test)</span>
-<span id="cb175-2"><a href="#cb175-2" aria-hidden="true" tabindex="-1"></a>hdb_test_nogeo <span class="ot">&lt;-</span> hdb_resale_test <span class="sc">%&gt;%</span> </span>
-<span id="cb175-3"><a href="#cb175-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb175-4"><a href="#cb175-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb175-5"><a href="#cb175-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">X =</span> coords_test[, <span class="dv">1</span>],</span>
-<span id="cb175-6"><a href="#cb175-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">Y =</span> coords_test[, <span class="dv">2</span>]</span>
-<span id="cb175-7"><a href="#cb175-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb176"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb176-1"><a href="#cb176-1" aria-hidden="true" tabindex="-1"></a>coords_test <span class="ot">&lt;-</span> <span class="fu">st_coordinates</span>(hdb_resale_test)</span>
+<span id="cb176-2"><a href="#cb176-2" aria-hidden="true" tabindex="-1"></a>hdb_test_nogeo <span class="ot">&lt;-</span> hdb_resale_test <span class="sc">%&gt;%</span> </span>
+<span id="cb176-3"><a href="#cb176-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb176-4"><a href="#cb176-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb176-5"><a href="#cb176-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">X =</span> coords_test[, <span class="dv">1</span>],</span>
+<span id="cb176-6"><a href="#cb176-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">Y =</span> coords_test[, <span class="dv">2</span>]</span>
+<span id="cb176-7"><a href="#cb176-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -3004,13 +3046,14 @@ Observed Moran I      Expectation         Variance
 <p>This step generates predicted resale prices for the test dataset using both models — the Multiple Linear Regression (MLR) and the Geographically Weighted Random Forest (gwRF).</p>
 <p>For MLR, predictions are computed based on the global regression equation derived from the training data.</p>
 <p>For gwRF, predictions are spatially adjusted using each observation’s coordinates (X, Y) with local and global weighting parameters (local.w=1, global.w=0), allowing the model to account for spatial heterogeneity and produce location-specific price estimates.</p>
+<p>For the Random Forest (RF) model, predictions are generated using the ensemble of 500 decision trees trained on the full set of structural and locational features, enabling the model to capture complex nonlinear relationships between predictors and resale prices without considering spatial weighting.</p>
 <section id="mlr" class="level3">
 <h3 class="anchored" data-anchor-id="mlr">9.2.1 MLR</h3>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb176"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb176-1"><a href="#cb176-1" aria-hidden="true" tabindex="-1"></a>hdb_resale_test<span class="sc">$</span>pre_MLR <span class="ot">&lt;-</span> <span class="fu">predict</span>(<span class="at">object =</span> resale_mlr,</span>
-<span id="cb176-2"><a href="#cb176-2" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">newdata =</span> hdb_resale_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb177"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb177-1"><a href="#cb177-1" aria-hidden="true" tabindex="-1"></a>hdb_resale_test<span class="sc">$</span>pre_MLR <span class="ot">&lt;-</span> <span class="fu">predict</span>(<span class="at">object =</span> resale_mlr,</span>
+<span id="cb177-2"><a href="#cb177-2" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">newdata =</span> hdb_resale_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -3019,37 +3062,54 @@ Observed Moran I      Expectation         Variance
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb177"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb177-1"><a href="#cb177-1" aria-hidden="true" tabindex="-1"></a>hdb_resale_test<span class="sc">$</span>pre_gwRF <span class="ot">&lt;-</span> <span class="fu">predict.grf</span>(gwRF_adaptive,</span>
-<span id="cb177-2"><a href="#cb177-2" aria-hidden="true" tabindex="-1"></a>                                            hdb_test_nogeo, </span>
-<span id="cb177-3"><a href="#cb177-3" aria-hidden="true" tabindex="-1"></a>                                            <span class="at">x.var.name=</span><span class="st">"X"</span>,</span>
-<span id="cb177-4"><a href="#cb177-4" aria-hidden="true" tabindex="-1"></a>                                            <span class="at">y.var.name=</span><span class="st">"Y"</span>, </span>
-<span id="cb177-5"><a href="#cb177-5" aria-hidden="true" tabindex="-1"></a>                                            <span class="at">local.w=</span><span class="dv">1</span>,</span>
-<span id="cb177-6"><a href="#cb177-6" aria-hidden="true" tabindex="-1"></a>                                            <span class="at">global.w=</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb178"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb178-1"><a href="#cb178-1" aria-hidden="true" tabindex="-1"></a>hdb_resale_test<span class="sc">$</span>pre_gwRF <span class="ot">&lt;-</span> <span class="fu">predict.grf</span>(gwRF_adaptive,</span>
+<span id="cb178-2"><a href="#cb178-2" aria-hidden="true" tabindex="-1"></a>                                            hdb_test_nogeo, </span>
+<span id="cb178-3"><a href="#cb178-3" aria-hidden="true" tabindex="-1"></a>                                            <span class="at">x.var.name=</span><span class="st">"X"</span>,</span>
+<span id="cb178-4"><a href="#cb178-4" aria-hidden="true" tabindex="-1"></a>                                            <span class="at">y.var.name=</span><span class="st">"Y"</span>, </span>
+<span id="cb178-5"><a href="#cb178-5" aria-hidden="true" tabindex="-1"></a>                                            <span class="at">local.w=</span><span class="dv">1</span>,</span>
+<span id="cb178-6"><a href="#cb178-6" aria-hidden="true" tabindex="-1"></a>                                            <span class="at">global.w=</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="rf" class="level3">
+<h3 class="anchored" data-anchor-id="rf">9.2.3 RF</h3>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb179"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb179-1"><a href="#cb179-1" aria-hidden="true" tabindex="-1"></a>hdb_resale_test<span class="sc">$</span>pre_RF <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
+<span id="cb179-2"><a href="#cb179-2" aria-hidden="true" tabindex="-1"></a>  rf_model,</span>
+<span id="cb179-3"><a href="#cb179-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> hdb_test_nogeo</span>
+<span id="cb179-4"><a href="#cb179-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
 </section>
 <section id="model-performance-comparison-rmse" class="level2">
 <h2 class="anchored" data-anchor-id="model-performance-comparison-rmse">9.3 Model Performance Comparison (RMSE)</h2>
-<p>This step evaluates and compares the predictive performance of the Multiple Linear Regression (MLR) and Geographically Weighted Random Forest (gwRF) models using the Root Mean Square Error (RMSE) metric. Lower values indicate higher prediction accuracy.</p>
-<p>The results show that the MLR model (RMSE = 78,240.61) outperforms the gwRF model (RMSE = 146,312.22) on the test dataset.</p>
-<p>This suggests that, in this case, the simpler global linear model provides more stable and accurate predictions than the spatially adaptive gwRF, possibly because the spatial heterogeneity in the dataset is not strong enough to justify the additional model complexity of gwRF.</p>
+<p>This step evaluates and compares the predictive performance of the Multiple Linear Regression (MLR), Random Forest (RF), and Geographically Weighted Random Forest (gwRF) models using the Root Mean Square Error (RMSE) metric, where lower values indicate higher prediction accuracy.</p>
+<p>The results show that the RF model (RMSE = 35,045.70) achieves the highest prediction accuracy, followed by the MLR model (RMSE = 78,240.33), while the gwRF model (RMSE = 146,312.27) performs the worst on the test dataset.</p>
+<p>This indicates that the nonlinear ensemble approach of the Random Forest captures complex relationships between housing features and prices more effectively than the linear MLR and spatially adaptive gwRF models, suggesting that spatial heterogeneity in this dataset is relatively weak and can be adequately explained by global nonlinear patterns.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb178"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb178-1"><a href="#cb178-1" aria-hidden="true" tabindex="-1"></a>MLR_RMSE <span class="ot">&lt;-</span> <span class="fu">rmse</span>(hdb_resale_test<span class="sc">$</span>resale_price, hdb_resale_test<span class="sc">$</span>pre_MLR)</span>
-<span id="cb178-2"><a href="#cb178-2" aria-hidden="true" tabindex="-1"></a>gwRF_RMSE <span class="ot">&lt;-</span> <span class="fu">rmse</span>(hdb_resale_test<span class="sc">$</span>resale_price, hdb_resale_test<span class="sc">$</span>pre_gwRF)</span>
-<span id="cb178-3"><a href="#cb178-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb178-4"><a href="#cb178-4" aria-hidden="true" tabindex="-1"></a>RMSE_results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb178-5"><a href="#cb178-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Model =</span> <span class="fu">c</span>(<span class="st">"Multiple Linear Regression"</span>, <span class="st">"Geographically Weighted Random Forest"</span>),</span>
-<span id="cb178-6"><a href="#cb178-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">RMSE =</span> <span class="fu">c</span>(MLR_RMSE, gwRF_RMSE)</span>
-<span id="cb178-7"><a href="#cb178-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb178-8"><a href="#cb178-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb178-9"><a href="#cb178-9" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(RMSE_results, <span class="at">caption =</span> <span class="st">"RMSE Comparison of Model Predictions"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb180"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb180-1"><a href="#cb180-1" aria-hidden="true" tabindex="-1"></a>MLR_RMSE  <span class="ot">&lt;-</span> <span class="fu">rmse</span>(hdb_resale_test<span class="sc">$</span>resale_price, hdb_resale_test<span class="sc">$</span>pre_MLR)</span>
+<span id="cb180-2"><a href="#cb180-2" aria-hidden="true" tabindex="-1"></a>RF_RMSE   <span class="ot">&lt;-</span> <span class="fu">rmse</span>(hdb_resale_test<span class="sc">$</span>resale_price, hdb_resale_test<span class="sc">$</span>pre_RF)</span>
+<span id="cb180-3"><a href="#cb180-3" aria-hidden="true" tabindex="-1"></a>gwRF_RMSE <span class="ot">&lt;-</span> <span class="fu">rmse</span>(hdb_resale_test<span class="sc">$</span>resale_price, hdb_resale_test<span class="sc">$</span>pre_gwRF)</span>
+<span id="cb180-4"><a href="#cb180-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb180-5"><a href="#cb180-5" aria-hidden="true" tabindex="-1"></a>RMSE_results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb180-6"><a href="#cb180-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Model =</span> <span class="fu">c</span>(<span class="st">"Multiple Linear Regression"</span>,</span>
+<span id="cb180-7"><a href="#cb180-7" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Random Forest"</span>,</span>
+<span id="cb180-8"><a href="#cb180-8" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Geographically Weighted Random Forest"</span>),</span>
+<span id="cb180-9"><a href="#cb180-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">RMSE  =</span> <span class="fu">c</span>(MLR_RMSE,</span>
+<span id="cb180-10"><a href="#cb180-10" aria-hidden="true" tabindex="-1"></a>         RF_RMSE,</span>
+<span id="cb180-11"><a href="#cb180-11" aria-hidden="true" tabindex="-1"></a>            gwRF_RMSE)</span>
+<span id="cb180-12"><a href="#cb180-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb180-13"><a href="#cb180-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb180-14"><a href="#cb180-14" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(RMSE_results, <span class="at">caption =</span> <span class="st">"RMSE Comparison of Four Model Predictions"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
-<caption>RMSE Comparison of Model Predictions</caption>
+<caption>RMSE Comparison of Four Model Predictions</caption>
 <thead>
 <tr class="header">
 <th style="text-align: left;">Model</th>
@@ -3059,41 +3119,94 @@ Observed Moran I      Expectation         Variance
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Multiple Linear Regression</td>
-<td style="text-align: right;">78240.61</td>
+<td style="text-align: right;">78240.33</td>
 </tr>
 <tr class="even">
+<td style="text-align: left;">Random Forest</td>
+<td style="text-align: right;">35045.70</td>
+</tr>
+<tr class="odd">
 <td style="text-align: left;">Geographically Weighted Random Forest</td>
-<td style="text-align: right;">146312.22</td>
+<td style="text-align: right;">146312.27</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
-</section>
-<section id="visualization-of-prediction-results" class="level2">
-<h2 class="anchored" data-anchor-id="visualization-of-prediction-results">9.4 Visualization of Prediction Results</h2>
-<p>The Multiple Linear Regression (MLR) model shows a tighter clustering of predicted values along the diagonal, indicating higher prediction accuracy. In contrast, the Geographically Weighted Random Forest (gwRF) model exhibits a wider spread, especially at higher price levels, consistent with the RMSE results that favor the MLR model.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb179"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb179-1"><a href="#cb179-1" aria-hidden="true" tabindex="-1"></a>plot_MLR <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> hdb_resale_test,</span>
-<span id="cb179-2"><a href="#cb179-2" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">aes</span>(<span class="at">x =</span> pre_MLR,</span>
-<span id="cb179-3"><a href="#cb179-3" aria-hidden="true" tabindex="-1"></a>                       <span class="at">y =</span> resale_price)) <span class="sc">+</span></span>
-<span id="cb179-4"><a href="#cb179-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb179-5"><a href="#cb179-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"MLR"</span>)</span>
-<span id="cb179-6"><a href="#cb179-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb179-7"><a href="#cb179-7" aria-hidden="true" tabindex="-1"></a>plot_gwRF <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> hdb_resale_test,</span>
-<span id="cb179-8"><a href="#cb179-8" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">aes</span>(<span class="at">x =</span> pre_gwRF,</span>
-<span id="cb179-9"><a href="#cb179-9" aria-hidden="true" tabindex="-1"></a>                        <span class="at">y =</span> resale_price)) <span class="sc">+</span></span>
-<span id="cb179-10"><a href="#cb179-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb179-11"><a href="#cb179-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"GWRF"</span>)</span>
-<span id="cb179-12"><a href="#cb179-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb179-13"><a href="#cb179-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ggarrange</span>(plot_MLR, plot_gwRF, <span class="at">ncol =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb181"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb181-1"><a href="#cb181-1" aria-hidden="true" tabindex="-1"></a>RMSE_results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb181-2"><a href="#cb181-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">Model =</span> <span class="fu">c</span>(<span class="st">"Multiple Linear Regression"</span>,</span>
+<span id="cb181-3"><a href="#cb181-3" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Random Forest"</span>,</span>
+<span id="cb181-4"><a href="#cb181-4" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Geographically Weighted Random Forest"</span>),</span>
+<span id="cb181-5"><a href="#cb181-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">RMSE  =</span> <span class="fu">c</span>(MLR_RMSE,</span>
+<span id="cb181-6"><a href="#cb181-6" aria-hidden="true" tabindex="-1"></a>            RF_RMSE,</span>
+<span id="cb181-7"><a href="#cb181-7" aria-hidden="true" tabindex="-1"></a>            gwRF_RMSE)</span>
+<span id="cb181-8"><a href="#cb181-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb181-9"><a href="#cb181-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb181-10"><a href="#cb181-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(RMSE_results, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(Model, RMSE), <span class="at">y =</span> RMSE, <span class="at">fill =</span> Model)) <span class="sc">+</span></span>
+<span id="cb181-11"><a href="#cb181-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">width =</span> <span class="fl">0.6</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb181-12"><a href="#cb181-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(RMSE, <span class="dv">0</span>)), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb181-13"><a href="#cb181-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"#1b9e77"</span>, <span class="st">"#7570b3"</span>, <span class="st">"#d95f02"</span>)) <span class="sc">+</span> </span>
+<span id="cb181-14"><a href="#cb181-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb181-15"><a href="#cb181-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"RMSE Comparison of Model Predictions"</span>,</span>
+<span id="cb181-16"><a href="#cb181-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Model"</span>,</span>
+<span id="cb181-17"><a href="#cb181-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Root Mean Square Error (S$)"</span></span>
+<span id="cb181-18"><a href="#cb181-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb181-19"><a href="#cb181-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>) <span class="sc">+</span></span>
+<span id="cb181-20"><a href="#cb181-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb181-21"><a href="#cb181-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"none"</span>,</span>
+<span id="cb181-22"><a href="#cb181-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">face =</span> <span class="st">"bold"</span>)</span>
+<span id="cb181-23"><a href="#cb181-23" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Take-home_Ex03_files/figure-html/unnamed-chunk-107-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Take-home_Ex03_files/figure-html/unnamed-chunk-109-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="visualization-of-prediction-results" class="level2">
+<h2 class="anchored" data-anchor-id="visualization-of-prediction-results">9.4 Visualization of Prediction Results</h2>
+<p>The Multiple Linear Regression (MLR) model shows a moderately tight clustering of predicted values along the diagonal, indicating decent overall accuracy but some underestimation at higher price levels.</p>
+<p>In contrast, the Random Forest (RF) model demonstrates the strongest performance, with predictions aligning very closely with the 45° diagonal line and minimal dispersion, reflecting its ability to capture nonlinear relationships and complex feature interactions effectively.</p>
+<p>Meanwhile, the Geographically Weighted Random Forest (gwRF) model displays a much wider spread of points and systematic underestimation at higher prices, consistent with its higher RMSE, suggesting that the added spatial weighting did not improve prediction accuracy in this dataset.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb182"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb182-1"><a href="#cb182-1" aria-hidden="true" tabindex="-1"></a>plot_MLR <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> hdb_resale_test,</span>
+<span id="cb182-2"><a href="#cb182-2" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">aes</span>(<span class="at">x =</span> pre_MLR,</span>
+<span id="cb182-3"><a href="#cb182-3" aria-hidden="true" tabindex="-1"></a>                       <span class="at">y =</span> resale_price)) <span class="sc">+</span></span>
+<span id="cb182-4"><a href="#cb182-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span> </span>
+<span id="cb182-5"><a href="#cb182-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"MLR"</span>) <span class="sc">+</span></span>
+<span id="cb182-6"><a href="#cb182-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Predicted Price"</span>) <span class="sc">+</span></span>
+<span id="cb182-7"><a href="#cb182-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Actual Price"</span>)</span>
+<span id="cb182-8"><a href="#cb182-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb182-9"><a href="#cb182-9" aria-hidden="true" tabindex="-1"></a>plot_RF <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> hdb_resale_test,</span>
+<span id="cb182-10"><a href="#cb182-10" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">aes</span>(<span class="at">x =</span> pre_RF,</span>
+<span id="cb182-11"><a href="#cb182-11" aria-hidden="true" tabindex="-1"></a>                      <span class="at">y =</span> resale_price)) <span class="sc">+</span></span>
+<span id="cb182-12"><a href="#cb182-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span> </span>
+<span id="cb182-13"><a href="#cb182-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Random Forest"</span>) <span class="sc">+</span></span>
+<span id="cb182-14"><a href="#cb182-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Predicted Price"</span>) <span class="sc">+</span></span>
+<span id="cb182-15"><a href="#cb182-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Actual Price"</span>)</span>
+<span id="cb182-16"><a href="#cb182-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb182-17"><a href="#cb182-17" aria-hidden="true" tabindex="-1"></a>plot_gwRF <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> hdb_resale_test,</span>
+<span id="cb182-18"><a href="#cb182-18" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">aes</span>(<span class="at">x =</span> pre_gwRF,</span>
+<span id="cb182-19"><a href="#cb182-19" aria-hidden="true" tabindex="-1"></a>                        <span class="at">y =</span> resale_price)) <span class="sc">+</span></span>
+<span id="cb182-20"><a href="#cb182-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span> </span>
+<span id="cb182-21"><a href="#cb182-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"gwRF"</span>) <span class="sc">+</span></span>
+<span id="cb182-22"><a href="#cb182-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Predicted Price"</span>) <span class="sc">+</span></span>
+<span id="cb182-23"><a href="#cb182-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Actual Price"</span>)</span>
+<span id="cb182-24"><a href="#cb182-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb182-25"><a href="#cb182-25" aria-hidden="true" tabindex="-1"></a><span class="fu">ggarrange</span>(plot_MLR,  plot_RF, plot_gwRF, <span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">nrow =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex03_files/figure-html/unnamed-chunk-110-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -3101,62 +3214,90 @@ Observed Moran I      Expectation         Variance
 </section>
 <section id="spatial-error-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="spatial-error-analysis">9.5 Spatial Error Analysis</h2>
-<p>This section calculates and visualizes the spatial distribution of prediction errors for both models. Two new variables are created—error_vs_MLR and error_vs_GWRF—representing the difference between actual and predicted resale prices for the MLR and GWRF models, respectively. These residuals are then mapped using tmap, allowing direct visual comparison across Singapore.</p>
-<p>From the visualization, the MLR model exhibits smaller and more evenly distributed errors across the island, suggesting relatively stable and unbiased predictions across different areas. In contrast, the GWRF model displays more spatially clustered errors, with certain regions (especially in the central and eastern zones) showing consistent overestimation or underestimation. This indicates that while the GWRF model captures local variations, it may overfit in some spatial clusters.</p>
-<p>Overall, the MLR model demonstrates greater stability and predictive reliability, consistent with its lower RMSE score.</p>
+<p>This section calculates and visualizes the spatial distribution of prediction errors for the Multiple Linear Regression (MLR), Random Forest (RF), and Geographically Weighted Random Forest (gwRF) models. Three new variables—error_vs_MLR, error_vs_RF, and error_vs_GWRF—represent the differences between actual and predicted resale prices for each model, respectively. These residuals are then mapped using tmap, allowing direct spatial comparison of model performance across Singapore.</p>
+<p>From the visualization, the MLR model exhibits relatively small and evenly distributed errors across the island, indicating stable and unbiased predictions across most regions. The RF model further reduces spatial bias, showing compact error magnitudes with minimal clustering, particularly in the central and eastern regions, reflecting its strong overall predictive accuracy and robustness in capturing nonlinear patterns. In contrast, the gwRF model displays more spatially clustered errors, with distinct pockets of overestimation and underestimation—especially in the central and southeastern zones—suggesting potential overfitting to local variations.</p>
+<p>Overall, while the gwRF model provides spatially adaptive insights into local price dynamics, the RF model achieves the most balanced and accurate predictions spatially, followed by the globally consistent MLR model. This pattern aligns with their RMSE results, reaffirming RF’s superior predictive reliability.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb180"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb180-1"><a href="#cb180-1" aria-hidden="true" tabindex="-1"></a>hdb_resale_test <span class="ot">&lt;-</span> hdb_resale_test <span class="sc">%&gt;%</span></span>
-<span id="cb180-2"><a href="#cb180-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb180-3"><a href="#cb180-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">error_vs_MLR  =</span> resale_price <span class="sc">-</span> pre_MLR,</span>
-<span id="cb180-4"><a href="#cb180-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">error_vs_GWRF =</span> resale_price <span class="sc">-</span> pre_gwRF</span>
-<span id="cb180-5"><a href="#cb180-5" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb183"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb183-1"><a href="#cb183-1" aria-hidden="true" tabindex="-1"></a>hdb_resale_test <span class="ot">&lt;-</span> hdb_resale_test <span class="sc">%&gt;%</span></span>
+<span id="cb183-2"><a href="#cb183-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb183-3"><a href="#cb183-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">error_vs_MLR  =</span> resale_price <span class="sc">-</span> pre_MLR,</span>
+<span id="cb183-4"><a href="#cb183-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">error_vs_RF   =</span> resale_price <span class="sc">-</span> pre_RF,</span>
+<span id="cb183-5"><a href="#cb183-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">error_vs_GWRF =</span> resale_price <span class="sc">-</span> pre_gwRF</span>
+<span id="cb183-6"><a href="#cb183-6" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb181"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb181-1"><a href="#cb181-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Base map</span></span>
-<span id="cb181-2"><a href="#cb181-2" aria-hidden="true" tabindex="-1"></a>common_breaks <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="cn">Inf</span>, <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">400000</span>, <span class="dv">400000</span>, <span class="at">by =</span> <span class="dv">200000</span>), <span class="cn">Inf</span>)</span>
-<span id="cb181-3"><a href="#cb181-3" aria-hidden="true" tabindex="-1"></a>base_map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(mpsz) <span class="sc">+</span></span>
-<span id="cb181-4"><a href="#cb181-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="st">"REGION_N"</span>, <span class="at">alpha =</span> <span class="fl">0.4</span>, <span class="at">border.col =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
-<span id="cb181-5"><a href="#cb181-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(hdb_resale_test)</span>
-<span id="cb181-6"><a href="#cb181-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb181-7"><a href="#cb181-7" aria-hidden="true" tabindex="-1"></a><span class="co"># MLR</span></span>
-<span id="cb181-8"><a href="#cb181-8" aria-hidden="true" tabindex="-1"></a>map_error_vs_MLR <span class="ot">&lt;-</span> base_map <span class="sc">+</span></span>
-<span id="cb181-9"><a href="#cb181-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_dots</span>(</span>
-<span id="cb181-10"><a href="#cb181-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">col =</span> <span class="st">"error_vs_MLR"</span>,</span>
-<span id="cb181-11"><a href="#cb181-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">breaks =</span> common_breaks,</span>
-<span id="cb181-12"><a href="#cb181-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">palette =</span> <span class="st">"RdBu"</span>,</span>
-<span id="cb181-13"><a href="#cb181-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.1</span>,</span>
-<span id="cb181-14"><a href="#cb181-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Error (S$)"</span></span>
-<span id="cb181-15"><a href="#cb181-15" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb181-16"><a href="#cb181-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(</span>
-<span id="cb181-17"><a href="#cb181-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">main.title =</span> <span class="st">"Multiple Linear Regression Errors"</span>,</span>
-<span id="cb181-18"><a href="#cb181-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">main.title.size =</span> <span class="fl">0.8</span></span>
-<span id="cb181-19"><a href="#cb181-19" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb181-20"><a href="#cb181-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb181-21"><a href="#cb181-21" aria-hidden="true" tabindex="-1"></a><span class="co"># GWRF</span></span>
-<span id="cb181-22"><a href="#cb181-22" aria-hidden="true" tabindex="-1"></a>map_error_vs_GWRF <span class="ot">&lt;-</span> base_map <span class="sc">+</span></span>
-<span id="cb181-23"><a href="#cb181-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_dots</span>(</span>
-<span id="cb181-24"><a href="#cb181-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">col =</span> <span class="st">"error_vs_GWRF"</span>,</span>
-<span id="cb181-25"><a href="#cb181-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">breaks =</span> common_breaks,</span>
-<span id="cb181-26"><a href="#cb181-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">palette =</span> <span class="st">"RdBu"</span>,</span>
-<span id="cb181-27"><a href="#cb181-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.1</span>,</span>
-<span id="cb181-28"><a href="#cb181-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Error (S$)"</span></span>
-<span id="cb181-29"><a href="#cb181-29" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb181-30"><a href="#cb181-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(</span>
-<span id="cb181-31"><a href="#cb181-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">main.title =</span> <span class="st">"Geographically Weighted Random Forest Errors"</span>,</span>
-<span id="cb181-32"><a href="#cb181-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">main.title.size =</span> <span class="fl">0.8</span></span>
-<span id="cb181-33"><a href="#cb181-33" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb181-34"><a href="#cb181-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb181-35"><a href="#cb181-35" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(map_error_vs_MLR, map_error_vs_GWRF, <span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">sync =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb184"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb184-1"><a href="#cb184-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Base map</span></span>
+<span id="cb184-2"><a href="#cb184-2" aria-hidden="true" tabindex="-1"></a>common_breaks <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="cn">Inf</span>, <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">400000</span>, <span class="dv">400000</span>, <span class="at">by =</span> <span class="dv">200000</span>), <span class="cn">Inf</span>)</span>
+<span id="cb184-3"><a href="#cb184-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb184-4"><a href="#cb184-4" aria-hidden="true" tabindex="-1"></a>base_map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(mpsz) <span class="sc">+</span></span>
+<span id="cb184-5"><a href="#cb184-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="st">"REGION_N"</span>, <span class="at">alpha =</span> <span class="fl">0.4</span>, <span class="at">border.col =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb184-6"><a href="#cb184-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(hdb_resale_test)</span>
+<span id="cb184-7"><a href="#cb184-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb184-8"><a href="#cb184-8" aria-hidden="true" tabindex="-1"></a><span class="co"># MLR</span></span>
+<span id="cb184-9"><a href="#cb184-9" aria-hidden="true" tabindex="-1"></a>map_error_vs_MLR <span class="ot">&lt;-</span> base_map <span class="sc">+</span></span>
+<span id="cb184-10"><a href="#cb184-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_dots</span>(</span>
+<span id="cb184-11"><a href="#cb184-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">col =</span> <span class="st">"error_vs_MLR"</span>,</span>
+<span id="cb184-12"><a href="#cb184-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">breaks =</span> common_breaks,</span>
+<span id="cb184-13"><a href="#cb184-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">palette =</span> <span class="st">"-RdYlBu"</span>,      </span>
+<span id="cb184-14"><a href="#cb184-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.2</span>,               </span>
+<span id="cb184-15"><a href="#cb184-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.9</span>,              </span>
+<span id="cb184-16"><a href="#cb184-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Error (S$)"</span>,</span>
+<span id="cb184-17"><a href="#cb184-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">contrast =</span> <span class="fu">c</span>(<span class="fl">0.3</span>, <span class="dv">1</span>)     </span>
+<span id="cb184-18"><a href="#cb184-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb184-19"><a href="#cb184-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(</span>
+<span id="cb184-20"><a href="#cb184-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">main.title =</span> <span class="st">"Multiple Linear Regression Errors"</span>,</span>
+<span id="cb184-21"><a href="#cb184-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">main.title.size =</span> <span class="fl">0.8</span></span>
+<span id="cb184-22"><a href="#cb184-22" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb184-23"><a href="#cb184-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb184-24"><a href="#cb184-24" aria-hidden="true" tabindex="-1"></a><span class="co"># RF</span></span>
+<span id="cb184-25"><a href="#cb184-25" aria-hidden="true" tabindex="-1"></a>map_error_vs_RF <span class="ot">&lt;-</span> base_map <span class="sc">+</span></span>
+<span id="cb184-26"><a href="#cb184-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_dots</span>(</span>
+<span id="cb184-27"><a href="#cb184-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">col =</span> <span class="st">"error_vs_RF"</span>,</span>
+<span id="cb184-28"><a href="#cb184-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">breaks =</span> common_breaks,</span>
+<span id="cb184-29"><a href="#cb184-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">palette =</span> <span class="st">"-RdYlBu"</span>,</span>
+<span id="cb184-30"><a href="#cb184-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.2</span>,</span>
+<span id="cb184-31"><a href="#cb184-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.9</span>,</span>
+<span id="cb184-32"><a href="#cb184-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Error (S$)"</span>,</span>
+<span id="cb184-33"><a href="#cb184-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">contrast =</span> <span class="fu">c</span>(<span class="fl">0.3</span>, <span class="dv">1</span>)</span>
+<span id="cb184-34"><a href="#cb184-34" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb184-35"><a href="#cb184-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(</span>
+<span id="cb184-36"><a href="#cb184-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">main.title =</span> <span class="st">"Random Forest Errors"</span>,</span>
+<span id="cb184-37"><a href="#cb184-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">main.title.size =</span> <span class="fl">0.8</span></span>
+<span id="cb184-38"><a href="#cb184-38" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb184-39"><a href="#cb184-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb184-40"><a href="#cb184-40" aria-hidden="true" tabindex="-1"></a><span class="co"># gwRF</span></span>
+<span id="cb184-41"><a href="#cb184-41" aria-hidden="true" tabindex="-1"></a>map_error_vs_GWRF <span class="ot">&lt;-</span> base_map <span class="sc">+</span></span>
+<span id="cb184-42"><a href="#cb184-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_dots</span>(</span>
+<span id="cb184-43"><a href="#cb184-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">col =</span> <span class="st">"error_vs_GWRF"</span>,</span>
+<span id="cb184-44"><a href="#cb184-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">breaks =</span> common_breaks,</span>
+<span id="cb184-45"><a href="#cb184-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">palette =</span> <span class="st">"-RdYlBu"</span>,</span>
+<span id="cb184-46"><a href="#cb184-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.2</span>,</span>
+<span id="cb184-47"><a href="#cb184-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.9</span>,</span>
+<span id="cb184-48"><a href="#cb184-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Error (S$)"</span>,</span>
+<span id="cb184-49"><a href="#cb184-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">contrast =</span> <span class="fu">c</span>(<span class="fl">0.3</span>, <span class="dv">1</span>)</span>
+<span id="cb184-50"><a href="#cb184-50" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb184-51"><a href="#cb184-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(</span>
+<span id="cb184-52"><a href="#cb184-52" aria-hidden="true" tabindex="-1"></a>    <span class="at">main.title =</span> <span class="st">"Geographically Weighted Random Forest Errors"</span>,</span>
+<span id="cb184-53"><a href="#cb184-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">main.title.size =</span> <span class="fl">0.8</span></span>
+<span id="cb184-54"><a href="#cb184-54" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb184-55"><a href="#cb184-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb184-56"><a href="#cb184-56" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(</span>
+<span id="cb184-57"><a href="#cb184-57" aria-hidden="true" tabindex="-1"></a>  map_error_vs_MLR,</span>
+<span id="cb184-58"><a href="#cb184-58" aria-hidden="true" tabindex="-1"></a>  map_error_vs_RF,</span>
+<span id="cb184-59"><a href="#cb184-59" aria-hidden="true" tabindex="-1"></a>  map_error_vs_GWRF,</span>
+<span id="cb184-60"><a href="#cb184-60" aria-hidden="true" tabindex="-1"></a>  <span class="at">ncol =</span> <span class="dv">3</span>,</span>
+<span id="cb184-61"><a href="#cb184-61" aria-hidden="true" tabindex="-1"></a>  <span class="at">sync =</span> <span class="cn">TRUE</span></span>
+<span id="cb184-62"><a href="#cb184-62" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Take-home_Ex03_files/figure-html/unnamed-chunk-109-1.png" class="img-fluid figure-img" width="1152"></p>
+<p><img src="Take-home_Ex03_files/figure-html/unnamed-chunk-112-1.png" class="img-fluid figure-img" width="1152"></p>
 </figure>
 </div>
 </div>
@@ -3164,23 +3305,58 @@ Observed Moran I      Expectation         Variance
 </section>
 <section id="residual-distribution-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="residual-distribution-analysis">9.6 Residual Distribution Analysis</h2>
-<p>This section examines the residual distributions of both models to evaluate normality and potential bias.</p>
-<p>The histogram of MLR errors shows a roughly symmetric, bell-shaped distribution centered near zero, suggesting that the model’s residuals are balanced between over- and under-predictions. The QQ plot for MLR errors aligns closely with the 45° line, confirming that residuals approximately follow a normal distribution.</p>
-<p>In contrast, the GWRF residuals exhibit a noticeable right skew, with a long tail of large positive errors, indicating that the model tends to underestimate resale prices in certain cases. The QQ plot further supports this, as deviations from the theoretical line are more pronounced in the upper quantiles.</p>
-<p>Overall, the MLR model produces more normally distributed and less biased residuals, reinforcing its greater stability and predictive reliability compared to the GWRF model.</p>
+<p>This section examines the residual distributions of the Multiple Linear Regression (MLR), Random Forest (RF), and Geographically Weighted Random Forest (gwRF) models to evaluate normality and potential bias.</p>
+<p>The histogram of MLR errors shows a roughly symmetric, bell-shaped distribution centered near zero, suggesting that the residuals are balanced between over- and under-predictions. The QQ plot for MLR errors aligns relatively closely with the 45° line, indicating that residuals approximately follow a normal distribution with only mild deviations at the tails.</p>
+<p>The RF model exhibits an even tighter, more symmetric error distribution with a sharper peak around zero and thinner tails, reflecting smaller overall prediction errors and higher accuracy. Its QQ plot follows the theoretical line more closely than MLR, confirming that the residuals are more normally distributed and less biased.</p>
+<p>In contrast, the gwRF residuals display a strong right skew with a long positive tail, indicating a systematic underestimation of higher-priced units. The corresponding QQ plot shows pronounced deviations in the upper quantiles, reinforcing the presence of non-normality.</p>
+<p>Overall, the RF model produces the most normally distributed and least biased residuals, followed by MLR, while the gwRF model shows clear skewness and instability—consistent with the RMSE results indicating the superior predictive reliability of RF.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb182"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb182-1"><a href="#cb182-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
-<span id="cb182-2"><a href="#cb182-2" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(hdb_resale_test<span class="sc">$</span>error_vs_MLR, <span class="at">breaks =</span> <span class="dv">30</span>, <span class="at">main =</span> <span class="st">"Histogram of MLR Errors"</span>, <span class="at">col =</span> <span class="st">"lightblue"</span>)</span>
-<span id="cb182-3"><a href="#cb182-3" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(hdb_resale_test<span class="sc">$</span>error_vs_GWRF, <span class="at">breaks =</span> <span class="dv">30</span>, <span class="at">main =</span> <span class="st">"Histogram of GWRF Errors"</span>, <span class="at">col =</span> <span class="st">"lightgreen"</span>)</span>
-<span id="cb182-4"><a href="#cb182-4" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(hdb_resale_test<span class="sc">$</span>error_vs_MLR, <span class="at">main =</span> <span class="st">"QQ Plot: MLR Errors"</span>); <span class="fu">qqline</span>(hdb_resale_test<span class="sc">$</span>error_vs_MLR)</span>
-<span id="cb182-5"><a href="#cb182-5" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(hdb_resale_test<span class="sc">$</span>error_vs_GWRF, <span class="at">main =</span> <span class="st">"QQ Plot: GWRF Errors"</span>); <span class="fu">qqline</span>(hdb_resale_test<span class="sc">$</span>error_vs_GWRF)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb185"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb185-1"><a href="#cb185-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>))</span>
+<span id="cb185-2"><a href="#cb185-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb185-3"><a href="#cb185-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Histograms</span></span>
+<span id="cb185-4"><a href="#cb185-4" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(</span>
+<span id="cb185-5"><a href="#cb185-5" aria-hidden="true" tabindex="-1"></a>  hdb_resale_test<span class="sc">$</span>error_vs_MLR,</span>
+<span id="cb185-6"><a href="#cb185-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">breaks =</span> <span class="dv">30</span>,</span>
+<span id="cb185-7"><a href="#cb185-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">main   =</span> <span class="st">"Histogram of MLR Errors"</span>,</span>
+<span id="cb185-8"><a href="#cb185-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab   =</span> <span class="st">"Error (S$)"</span>,</span>
+<span id="cb185-9"><a href="#cb185-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">col    =</span> <span class="st">"lightblue"</span></span>
+<span id="cb185-10"><a href="#cb185-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb185-11"><a href="#cb185-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb185-12"><a href="#cb185-12" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(</span>
+<span id="cb185-13"><a href="#cb185-13" aria-hidden="true" tabindex="-1"></a>  hdb_resale_test<span class="sc">$</span>error_vs_RF,</span>
+<span id="cb185-14"><a href="#cb185-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">breaks =</span> <span class="dv">30</span>,</span>
+<span id="cb185-15"><a href="#cb185-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">main   =</span> <span class="st">"Histogram of RF Errors"</span>,</span>
+<span id="cb185-16"><a href="#cb185-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab   =</span> <span class="st">"Error (S$)"</span>,</span>
+<span id="cb185-17"><a href="#cb185-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">col    =</span> <span class="st">"lightgoldenrod"</span></span>
+<span id="cb185-18"><a href="#cb185-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb185-19"><a href="#cb185-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb185-20"><a href="#cb185-20" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(</span>
+<span id="cb185-21"><a href="#cb185-21" aria-hidden="true" tabindex="-1"></a>  hdb_resale_test<span class="sc">$</span>error_vs_GWRF,</span>
+<span id="cb185-22"><a href="#cb185-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">breaks =</span> <span class="dv">30</span>,</span>
+<span id="cb185-23"><a href="#cb185-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">main   =</span> <span class="st">"Histogram of gwRF Errors"</span>,</span>
+<span id="cb185-24"><a href="#cb185-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab   =</span> <span class="st">"Error (S$)"</span>,</span>
+<span id="cb185-25"><a href="#cb185-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">col    =</span> <span class="st">"lightgreen"</span></span>
+<span id="cb185-26"><a href="#cb185-26" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb185-27"><a href="#cb185-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb185-28"><a href="#cb185-28" aria-hidden="true" tabindex="-1"></a><span class="co"># QQ plots</span></span>
+<span id="cb185-29"><a href="#cb185-29" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(hdb_resale_test<span class="sc">$</span>error_vs_MLR,</span>
+<span id="cb185-30"><a href="#cb185-30" aria-hidden="true" tabindex="-1"></a>       <span class="at">main =</span> <span class="st">"QQ Plot: MLR Errors"</span>)</span>
+<span id="cb185-31"><a href="#cb185-31" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(hdb_resale_test<span class="sc">$</span>error_vs_MLR)</span>
+<span id="cb185-32"><a href="#cb185-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb185-33"><a href="#cb185-33" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(hdb_resale_test<span class="sc">$</span>error_vs_RF,</span>
+<span id="cb185-34"><a href="#cb185-34" aria-hidden="true" tabindex="-1"></a>       <span class="at">main =</span> <span class="st">"QQ Plot: RF Errors"</span>)</span>
+<span id="cb185-35"><a href="#cb185-35" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(hdb_resale_test<span class="sc">$</span>error_vs_RF)</span>
+<span id="cb185-36"><a href="#cb185-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb185-37"><a href="#cb185-37" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(hdb_resale_test<span class="sc">$</span>error_vs_GWRF,</span>
+<span id="cb185-38"><a href="#cb185-38" aria-hidden="true" tabindex="-1"></a>       <span class="at">main =</span> <span class="st">"QQ Plot: gwRF Errors"</span>)</span>
+<span id="cb185-39"><a href="#cb185-39" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(hdb_resale_test<span class="sc">$</span>error_vs_GWRF)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Take-home_Ex03_files/figure-html/unnamed-chunk-110-1.png" class="img-fluid figure-img" width="1152"></p>
+<p><img src="Take-home_Ex03_files/figure-html/unnamed-chunk-113-1.png" class="img-fluid figure-img" width="1536"></p>
 </figure>
 </div>
 </div>
@@ -3189,10 +3365,11 @@ Observed Moran I      Expectation         Variance
 </section>
 <section id="conclusion" class="level1">
 <h1>10 Conclusion</h1>
-<p>This study analyzed the resale prices of 4-room HDB flats in Singapore between July 2024 and September 2025, using both Multiple Linear Regression (MLR) and Geographically Weighted Random Forest (gwRF) models. The analysis incorporated a range of structural factors (e.g., floor area, storey level, and remaining lease) and locational attributes (e.g., distance to the CBD, MRT stations, parks, and schools) to examine their effects on resale price variations.</p>
-<p>The MLR model demonstrated strong predictive performance, achieving an adjusted R² of 0.79 and a relatively low RMSE of approximately S$78,240. Diagnostic tests confirmed that the model satisfied key assumptions, including linearity, normality, and absence of severe multicollinearity. However, Moran’s I test revealed significant spatial autocorrelation in the residuals, suggesting that spatial heterogeneity remained unaccounted for in the global regression framework.</p>
-<p>To address this issue, a geographically weighted random forest (gwRF) model was implemented, integrating spatial weighting into the random forest algorithm to capture localized, nonlinear relationships. While gwRF provided a spatially adaptive understanding of price determinants, its prediction accuracy (RMSE ≈ S$146,312) was lower than that of the MLR model. Residual and error maps indicated that gwRF exhibited greater spatial clustering of prediction errors, implying potential overfitting in certain local contexts.</p>
-<p>Overall, the results suggest that for 4-room HDB resale transactions during 2024–2025, the MLR model offers more stable and generalizable performance across Singapore. Nevertheless, the gwRF approach remains valuable for revealing spatial heterogeneity and local variations that linear models may overlook. Future research could enhance predictive power by extending the time frame, incorporating additional socioeconomic and environmental factors, or combining global and local modeling techniques to balance interpretability and spatial adaptivity.</p>
+<p>This study analyzed the resale prices of 4-room HDB flats in Singapore between July 2024 and September 2025 using Multiple Linear Regression (MLR), Random Forest (RF), and Geographically Weighted Random Forest (gwRF) models. The analysis incorporated a comprehensive set of structural factors (e.g., floor area, storey level, and remaining lease) and locational attributes (e.g., distance to the CBD, MRT stations, parks, and schools) to examine their effects on resale price variations.</p>
+<p>The MLR model demonstrated strong predictive performance, achieving an adjusted R² of 0.79 and a relatively low RMSE of approximately S$78,240. Diagnostic tests confirmed that the model satisfied key assumptions, including linearity, normality, and absence of severe multicollinearity. However, Moran’s I test revealed significant spatial autocorrelation in the residuals, indicating that spatial heterogeneity was not fully captured in the global linear framework.</p>
+<p>To address this limitation, a Random Forest (RF) model was applied to capture nonlinear relationships and complex feature interactions without assuming spatial structure. The RF model achieved the highest predictive accuracy (RMSE ≈ S$35,046), outperforming both the MLR and gwRF models, and exhibited well-behaved residuals that were approximately normally distributed. This result highlights the model’s strong capacity to learn nonlinear dependencies between structural and locational factors.</p>
+<p>A geographically weighted random forest (gwRF) model was also implemented to account for spatial heterogeneity by introducing location-based weighting. While gwRF provided valuable insights into localized variations in price determinants, its prediction accuracy (RMSE ≈ S$146,312) was notably lower, and residual analysis suggested possible overfitting within certain local clusters.</p>
+<p>Overall, the results suggest that for 4-room HDB resale transactions during 2024–2025, the Random Forest model provides the most accurate and stable price predictions, the MLR model remains effective and interpretable for global analysis, and the gwRF approach adds value in revealing spatial heterogeneity across Singapore. Future research could enhance predictive performance by integrating socioeconomic, environmental, and temporal dynamics, or by developing hybrid frameworks that combine the interpretability of global models with the spatial adaptivity of localized approaches.</p>
 </section>
 <section id="references" class="level1">
 <h1>11 References</h1>
